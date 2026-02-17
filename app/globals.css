@@ -1,26 +1,39 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Petite Maison – Design System */
+/* Farben: Grün, Beige, Braun | Akzente: Pink, Orange | Kein Blau, kein Rot */
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-cormorant);
+  --font-body: var(--font-geist-sans);
+  
+  /* Petite Maison Palette */
+  --petite-sand: #E8E4DF;
+  --petite-sand-dark: #D4CFC8;
+  --petite-forest: #4A5D4A;
+  --petite-forest-dark: #3A4A3A;
+  --petite-braun: #5C4033;
+  --petite-braun-light: #7A5C4D;
+  --petite-blush: #D4A5A5;
+  --petite-terracotta: #C9A86C;
+  --petite-cream: #F5F2ED;
+  --petite-charcoal: #2D2D2D;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: #F5F2ED;
+  --foreground: #2D2D2D;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+/* Elegante Überschriften */
+.font-display {
+  font-family: var(--font-sans), Georgia, serif;
 }
