@@ -38,7 +38,7 @@ export default function Header() {
         </nav>
 
         <Link
-          href="/kontakt?buchung=1"
+          href="/buchung"
           className="rounded-full bg-[#4A5D4A] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#3A4A3A]"
         >
           Termin buchen

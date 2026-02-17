@@ -99,20 +99,25 @@ export default function KontaktPage() {
                 Termin kannst du jederzeit online oder telefonisch vereinbaren.
               </p>
               <p className="mt-4 text-lg leading-relaxed text-[#2D2D2D]/85">
-                Das Buchungssystem ist in Vorbereitung. Bis dahin erreichst du
-                uns gerne telefonisch unter{" "}
+                Buche bequem online – oder rufe uns an unter{" "}
                 <a
                   href="tel:+4917669150964"
                   className="font-medium text-[#4A5D4A] hover:underline"
                 >
                   +49 176 69150964
                 </a>{" "}
-                oder per WhatsApp.
+                bzw. per WhatsApp.
               </p>
               <div className="mt-8 flex flex-wrap gap-4">
                 <a
-                  href="tel:+4917669150964"
+                  href="/buchung"
                   className="inline-block rounded-full bg-[#4A5D4A] px-6 py-3 font-medium text-white transition hover:bg-[#3A4A3A]"
+                >
+                  Online buchen
+                </a>
+                <a
+                  href="tel:+4917669150964"
+                  className="inline-block rounded-full border-2 border-[#4A5D4A] px-6 py-3 font-medium text-[#4A5D4A] transition hover:bg-[#4A5D4A] hover:text-white"
                 >
                   Jetzt anrufen
                 </a>
