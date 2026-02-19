@@ -8,6 +8,7 @@ type User = {
   email: string;
   firstName: string;
   lastName: string;
+  phone?: string;
   role?: string;
 };
 
@@ -32,6 +33,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         email: data.email,
         firstName: data.firstName,
         lastName: data.lastName,
+        phone: data.phone,
         role: data.role,
       });
     } catch {

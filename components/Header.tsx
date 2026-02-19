@@ -70,7 +70,6 @@ export default function Header() {
           </nav>
           {user ? (
             <div className="flex items-center gap-4">
-              <span className="text-sm text-[#2D2D2D]/80">{user.firstName}</span>
               <button
                 onClick={logout}
                 className="whitespace-nowrap text-sm font-medium text-[#2D2D2D] transition hover:text-[#4A5D4A]"
@@ -123,7 +122,6 @@ export default function Header() {
           <div className="mt-6 flex flex-col gap-3 border-t border-[#E8E4DF] pt-6">
             {user ? (
               <>
-                <span className="text-sm text-[#2D2D2D]/80">{user.firstName}</span>
                 <button
                   onClick={() => {
                     logout();

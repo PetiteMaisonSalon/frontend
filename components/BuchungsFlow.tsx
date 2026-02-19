@@ -48,7 +48,6 @@ export default function BuchungsFlow() {
   const [selectedSlot, setSelectedSlot] = useState<{ start: string; end: string } | null>(null);
   const [slots, setSlots] = useState<{ start: string; end: string }[]>([]);
   const [loading, setLoading] = useState(false);
-  const [servicesLoading, setServicesLoading] = useState(true);
   const [error, setError] = useState("");
   const [successType, setSuccessType] = useState<"booked" | "waitlist">("booked");
 
@@ -68,6 +67,7 @@ export default function BuchungsFlow() {
         firstName: f.firstName || user.firstName,
         lastName: f.lastName || user.lastName,
         email: f.email || user.email,
+        phone: f.phone || user.phone || "",
       }));
     }
   }, [user, step]);
@@ -89,15 +89,13 @@ export default function BuchungsFlow() {
   }, []);
 
   useEffect(() => {
-    setServicesLoading(true);
     getServices()
       .then((data) => {
         setServices(Array.isArray(data) && data.length > 0 ? data : FALLBACK_SERVICES);
       })
       .catch(() => {
         setServices(FALLBACK_SERVICES);
-      })
-      .finally(() => setServicesLoading(false));
+      });
     getStaff()
       .then((data) => {
         setStaff(Array.isArray(data) && data.length > 0 ? data : FALLBACK_STAFF);
@@ -159,10 +157,15 @@ export default function BuchungsFlow() {
     }
   };
 
+  const goToStep = (nextStep: Step) => {
+    setStep(nextStep);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const handleCategorySelect = (cat: string) => {
     setCategory(cat);
     setSelectedService(null);
-    setStep(1);
+    goToStep(1);
   };
 
   const handleServiceSelect = (s: Service) => {
@@ -170,7 +173,7 @@ export default function BuchungsFlow() {
     setSelectedStaff(null);
     setSelectedSlot(null);
     setSlots([]);
-    setStep(2);
+    goToStep(2);
   };
 
   const handleStaffSelect = (s: Staff | null) => {
@@ -349,7 +352,7 @@ export default function BuchungsFlow() {
       {step === 2 && selectedService && (
         <div className="space-y-10">
           <button
-            onClick={() => setStep(1)}
+            onClick={() => goToStep(1)}
             className="text-[#4A5D4A] hover:underline"
           >
             ← Zurück
@@ -396,7 +399,12 @@ export default function BuchungsFlow() {
               onChange={handleDateSelect}
               className="mt-4 w-full rounded-lg border border-[#E8E4DF] px-4 py-3"
             />
-            {loading && <p className="mt-2 text-sm text-[#2D2D2D]/70">Lade Zeiten…</p>}
+            {loading && (
+              <div className="mt-3 flex items-center gap-2 text-sm text-[#2D2D2D]/70">
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#4A5D4A]/30 border-t-[#4A5D4A]" />
+                <span>Zeiten werden geladen…</span>
+              </div>
+            )}
             {slots.length > 0 && (
               <div className="mt-4 flex flex-wrap gap-2">
                 {slots.map((slot) => (
@@ -421,7 +429,7 @@ export default function BuchungsFlow() {
               <p className="mt-4 text-[#2D2D2D]/70">
                 Wähle ein Datum oder{" "}
                 <button
-                  onClick={() => setStep(3)}
+                  onClick={() => goToStep(3)}
                   className="text-[#4A5D4A] hover:underline"
                 >
                   Warteliste
@@ -432,7 +440,7 @@ export default function BuchungsFlow() {
 
           {selectedSlot && (
             <button
-              onClick={() => setStep(3)}
+              onClick={() => goToStep(3)}
               className="w-full rounded-full bg-[#4A5D4A] py-3 font-medium text-white transition hover:bg-[#3A4A3A]"
             >
               Weiter
@@ -487,7 +495,7 @@ export default function BuchungsFlow() {
                 </Link>
               </div>
               <button
-                onClick={() => setStep(2)}
+                onClick={() => goToStep(2)}
                 className="mt-4 block w-full text-[#2D2D2D]/70 hover:underline"
               >
                 ← Zurück zur Terminauswahl
@@ -498,7 +506,7 @@ export default function BuchungsFlow() {
           {user && (
             <>
           <button
-            onClick={() => setStep(2)}
+            onClick={() => goToStep(2)}
             className="text-[#4A5D4A] hover:underline"
           >
             ← Zurück
