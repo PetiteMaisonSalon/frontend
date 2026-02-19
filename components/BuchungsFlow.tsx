@@ -9,6 +9,7 @@ import {
   addToWaitlist,
 } from "@/lib/api";
 import Link from "next/link";
+import { useAuth } from "./AuthContext";
 
 type Service = { _id: string; name: string; category: string; durationMinutes: number; priceEur: number };
 type Staff = { _id: string; firstName: string; lastName: string; serviceIds: { _id: string }[] };
@@ -34,7 +35,10 @@ const FALLBACK_STAFF: Staff[] = [
 
 type Step = 1 | 2 | 3 | 4 | 5;
 
+const BOOKING_STATE_KEY = "pm_booking_state";
+
 export default function BuchungsFlow() {
+  const { user, loading: authLoading } = useAuth();
   const [step, setStep] = useState<Step>(1);
   const [services, setServices] = useState<Service[]>([]);
   const [staff, setStaff] = useState<Staff[]>([]);
@@ -56,6 +60,33 @@ export default function BuchungsFlow() {
     note: "",
     privacy: false,
   });
+
+  useEffect(() => {
+    if (user && step === 3) {
+      setForm((f) => ({
+        ...f,
+        firstName: f.firstName || user.firstName,
+        lastName: f.lastName || user.lastName,
+        email: f.email || user.email,
+      }));
+    }
+  }, [user, step]);
+
+  useEffect(() => {
+    const saved = typeof window !== "undefined" ? sessionStorage.getItem(BOOKING_STATE_KEY) : null;
+    if (saved) {
+      try {
+        const s = JSON.parse(saved);
+        if (s?.service && s?.slot) {
+          setSelectedService(s.service);
+          setSelectedStaff(s.staff ?? null);
+          setSelectedSlot(s.slot);
+          setStep(3);
+        }
+        sessionStorage.removeItem(BOOKING_STATE_KEY);
+      } catch {}
+    }
+  }, []);
 
   useEffect(() => {
     setServicesLoading(true);
@@ -413,6 +444,59 @@ export default function BuchungsFlow() {
       {/* Step 3: Kontaktdaten */}
       {step === 3 && selectedService && (
         <div className="space-y-8">
+          {!authLoading && !user && (
+            <div className="rounded-xl border-2 border-[#4A5D4A]/50 bg-[#F5F2ED] p-6 text-center">
+              <h3 className="font-display text-xl font-medium text-[#2D2D2D]">
+                Anmeldung erforderlich
+              </h3>
+              <p className="mt-2 text-[#2D2D2D]/85">
+                Du kannst nur mit einem bestätigten Konto einen Termin buchen.
+              </p>
+              <div className="mt-6 flex flex-wrap justify-center gap-4">
+                <Link
+                  href={`/login?redirect=${encodeURIComponent("/buchung")}`}
+                  onClick={() => {
+                    sessionStorage.setItem(
+                      BOOKING_STATE_KEY,
+                      JSON.stringify({
+                        service: selectedService,
+                        staff: selectedStaff,
+                        slot: selectedSlot,
+                      })
+                    );
+                  }}
+                  className="rounded-full bg-[#4A5D4A] px-6 py-3 font-medium text-white transition hover:bg-[#3A4A3A]"
+                >
+                  Anmelden
+                </Link>
+                <Link
+                  href={`/register?redirect=${encodeURIComponent("/buchung")}`}
+                  onClick={() => {
+                    sessionStorage.setItem(
+                      BOOKING_STATE_KEY,
+                      JSON.stringify({
+                        service: selectedService,
+                        staff: selectedStaff,
+                        slot: selectedSlot,
+                      })
+                    );
+                  }}
+                  className="rounded-full border-2 border-[#4A5D4A] px-6 py-3 font-medium text-[#4A5D4A] transition hover:bg-[#4A5D4A]/10"
+                >
+                  Registrieren
+                </Link>
+              </div>
+              <button
+                onClick={() => setStep(2)}
+                className="mt-4 block w-full text-[#2D2D2D]/70 hover:underline"
+              >
+                ← Zurück zur Terminauswahl
+              </button>
+            </div>
+          )}
+
+          {user && (
+            <>
           <button
             onClick={() => setStep(2)}
             className="text-[#4A5D4A] hover:underline"
@@ -555,6 +639,8 @@ export default function BuchungsFlow() {
               </button>
             )}
           </div>
+            </>
+          )}
         </div>
       )}
     </section>

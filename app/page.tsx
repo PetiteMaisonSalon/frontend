@@ -5,7 +5,7 @@ export default function Home() {
     <main>
       {/* Hero – Startseite 1 & 2 */}
       <section className="relative overflow-hidden">
-        <div className="mx-auto max-w-7xl px-6 py-24 md:py-32 lg:py-40">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-center px-6 py-24 text-center md:py-32 lg:py-40">
           <div className="max-w-2xl">
             <h1 className="font-display text-4xl font-medium leading-tight tracking-tight text-[#2D2D2D] md:text-5xl lg:text-6xl">
               Deine Haare sind Vertrauenssache.
@@ -18,7 +18,7 @@ export default function Home() {
               wirklich zu dir passt.
             </p>
             <Link
-              href="/kontakt?buchung=1"
+              href="/buchung"
               className="mt-10 inline-block rounded-full bg-[#2D2D2D] px-8 py-4 font-medium text-white transition hover:bg-[#4A5D4A]"
             >
               Termin buchen
