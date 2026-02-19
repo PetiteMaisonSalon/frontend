@@ -1,9 +1,10 @@
-import BuchungsFlow from "@/components/BuchungsFlow";
+import BuchungsFlow from "../../components/BuchungsFlow";
 
 export const metadata = {
   title: "Termin buchen | Petite Maison",
-  description: "Buchen Sie Ihren Termin online – schnell und einfach.",
+  description: "Buchen Sie Ihren Termin online – schnell und einfach."
 };
+
 
 export default function BuchungPage() {
   return (

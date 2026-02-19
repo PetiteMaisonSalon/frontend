@@ -218,7 +218,7 @@ export default function BuchungsFlow() {
           note: form.note.trim() || undefined,
         },
       });
-      setStep(5);
+      goToStep(5);
     } catch (e: unknown) {
       setError((e as Error).message || "Buchung fehlgeschlagen.");
     } finally {
@@ -249,7 +249,7 @@ export default function BuchungsFlow() {
           phone: form.phone.trim() || undefined,
         },
       });
-      setStep(5);
+      goToStep(5);
     } catch (e: unknown) {
       setError((e as Error).message || "Fehler bei der Warteliste.");
     } finally {
@@ -397,7 +397,7 @@ export default function BuchungsFlow() {
               type="date"
               min={new Date().toISOString().slice(0, 10)}
               onChange={handleDateSelect}
-              className="mt-4 w-full rounded-lg border border-[#E8E4DF] px-4 py-3"
+              className="mt-4 w-full rounded-lg border border-[#E8E4DF] px-4 py-3 text-green-500"
             />
             {loading && (
               <div className="mt-3 flex items-center gap-2 text-sm text-[#2D2D2D]/70">
