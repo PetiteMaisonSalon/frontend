@@ -113,3 +113,55 @@ export async function getAppointmentByToken(token: string) {
 export async function cancelAppointment(token: string) {
   return fetchAPI(`/api/appointments/cancel/${token}`, { method: "POST" });
 }
+
+// --- Admin / CMS ---
+export async function getAdminOverview() {
+  return fetchAPI("/api/admin/overview");
+}
+
+export async function getAdminAppointments(params?: {
+  from?: string;
+  to?: string;
+  status?: string;
+  paymentStatus?: string;
+}) {
+  const query = new URLSearchParams();
+  if (params?.from) query.set("from", params.from);
+  if (params?.to) query.set("to", params.to);
+  if (params?.status) query.set("status", params.status);
+  if (params?.paymentStatus) query.set("paymentStatus", params.paymentStatus);
+  const q = query.toString();
+  return fetchAPI(`/api/admin/appointments${q ? `?${q}` : ""}`);
+}
+
+export async function setAppointmentAttendance(appointmentId: string, attended: boolean) {
+  return fetchAPI(`/api/admin/appointments/${appointmentId}/attendance`, {
+    method: "PATCH",
+    body: JSON.stringify({ attended }),
+  });
+}
+
+export async function setAppointmentPayment(
+  appointmentId: string,
+  payload: { paid: boolean; paymentMethod?: "cash" | "card" | "bank_transfer" | "other"; amountPaidEur?: number }
+) {
+  return fetchAPI(`/api/admin/appointments/${appointmentId}/payment`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function getRevenueEntries(params?: { from?: string; to?: string; exported?: boolean }) {
+  const query = new URLSearchParams();
+  if (params?.from) query.set("from", params.from);
+  if (params?.to) query.set("to", params.to);
+  if (typeof params?.exported === "boolean") query.set("exported", String(params.exported));
+  const q = query.toString();
+  return fetchAPI(`/api/admin/revenue${q ? `?${q}` : ""}`);
+}
+
+export async function markRevenueExported(entryId: string) {
+  return fetchAPI(`/api/admin/revenue/${entryId}/exported`, {
+    method: "PATCH",
+  });
+}

@@ -16,6 +16,10 @@ export default function Header() {
   const pathname = usePathname();
   const { user, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const navWithAdmin =
+    user?.role === "admin" || user?.role === "staff"
+      ? [...navItems, { href: "/admin", label: "CMS" }]
+      : navItems;
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#E8E4DF]/50 bg-[#F5F2ED]/95 backdrop-blur-sm">
@@ -56,7 +60,7 @@ export default function Header() {
         {/* Nav + Actions – rechts, Desktop/Tablet */}
         <div className="hidden items-center justify-end gap-6 md:flex">
           <nav className="flex items-center gap-8 lg:gap-10">
-            {navItems.map(({ href, label }) => (
+            {navWithAdmin.map(({ href, label }) => (
               <Link
                 key={href}
                 href={href}
@@ -106,7 +110,7 @@ export default function Header() {
       {menuOpen && (
         <div className="border-t border-[#E8E4DF] bg-white/95 px-6 py-6 md:hidden">
           <nav className="flex flex-col gap-4">
-            {navItems.map(({ href, label }) => (
+            {navWithAdmin.map(({ href, label }) => (
               <Link
                 key={href}
                 href={href}
