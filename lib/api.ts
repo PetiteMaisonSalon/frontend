@@ -6,11 +6,14 @@ function getAuthHeaders(): Record<string, string> {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-async function fetchAPI(endpoint: string, options?: RequestInit) {
+type FetchAPIOptions = RequestInit & { skipAuth?: boolean };
+
+async function fetchAPI(endpoint: string, options?: FetchAPIOptions) {
+  const authHeaders = options?.skipAuth ? {} : getAuthHeaders();
   const res = await fetch(`${API_URL}${endpoint}`, {
     headers: {
       "Content-Type": "application/json",
-      ...getAuthHeaders(),
+      ...authHeaders,
       ...(options?.headers as Record<string, string>),
     },
     ...options,
@@ -23,6 +26,7 @@ async function fetchAPI(endpoint: string, options?: RequestInit) {
 export async function login(email: string, password: string) {
   const data = await fetchAPI("/api/auth/login", {
     method: "POST",
+    skipAuth: true,
     body: JSON.stringify({ email, password }),
   });
   if (data.token && typeof window !== "undefined") {
@@ -40,6 +44,7 @@ export async function register(data: {
 }) {
   return fetchAPI("/api/auth/register", {
     method: "POST",
+    skipAuth: true,
     body: JSON.stringify(data),
   });
 }
@@ -47,6 +52,7 @@ export async function register(data: {
 export async function verifyEmail(token: string) {
   return fetchAPI("/api/auth/verify-email", {
     method: "POST",
+    skipAuth: true,
     body: JSON.stringify({ token }),
   });
 }

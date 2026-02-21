@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   getServices,
   getStaff,
@@ -45,11 +45,13 @@ export default function BuchungsFlow() {
   const [category, setCategory] = useState<string>("");
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
+  const [selectedDate, setSelectedDate] = useState("");
   const [selectedSlot, setSelectedSlot] = useState<{ start: string; end: string } | null>(null);
   const [slots, setSlots] = useState<{ start: string; end: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [successType, setSuccessType] = useState<"booked" | "waitlist">("booked");
+  const dateInputRef = useRef<HTMLInputElement | null>(null);
 
   const [form, setForm] = useState({
     firstName: "",
@@ -117,6 +119,36 @@ export default function BuchungsFlow() {
 
   const isFallbackData = selectedService?._id?.toString().startsWith("fallback-") ?? false;
 
+  const toLocalDateInput = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const todayDate = toLocalDateInput(new Date());
+  const quickDates = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() + i);
+    return {
+      value: toLocalDateInput(d),
+      label: d.toLocaleDateString("de-DE", {
+        weekday: "short",
+        day: "2-digit",
+        month: "2-digit",
+      }),
+    };
+  });
+
+  const selectedDateLabel = selectedDate
+    ? new Date(`${selectedDate}T12:00:00`).toLocaleDateString("de-DE", {
+        weekday: "long",
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      })
+    : "Datum auswählen";
+
   const generateDemoSlots = (date: string, durationMin: number) => {
     const dayStart = new Date(date);
     dayStart.setHours(0, 0, 0, 0);
@@ -182,8 +214,10 @@ export default function BuchungsFlow() {
     setSlots([]);
   };
 
-  const handleDateSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const date = e.target.value;
+  const handleDateSelect = async (date: string) => {
+    setSelectedDate(date);
+    setSelectedSlot(null);
+    setSlots([]);
     if (date) await fetchSlots(date);
   };
 
@@ -393,12 +427,47 @@ export default function BuchungsFlow() {
             <h2 className="font-display text-xl font-medium text-[#2D2D2D]">
               Datum & Uhrzeit
             </h2>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {quickDates.map((d) => (
+                <button
+                  key={d.value}
+                  onClick={() => handleDateSelect(d.value)}
+                  className={`rounded-full px-3 py-2 text-sm font-medium ${
+                    selectedDate === d.value
+                      ? "bg-[#4A5D4A] text-white"
+                      : "border border-[#E8E4DF] bg-white text-[#2D2D2D]"
+                  }`}
+                >
+                  {d.label}
+                </button>
+              ))}
+            </div>
             <input
               type="date"
-              min={new Date().toISOString().slice(0, 10)}
-              onChange={handleDateSelect}
-              className="mt-4 w-full rounded-lg border border-[#E8E4DF] px-4 py-3 text-[#2D2D2D]"
+              min={todayDate}
+              value={selectedDate}
+              onChange={(e) => handleDateSelect(e.target.value)}
+              ref={dateInputRef}
+              className="sr-only"
             />
+            <button
+              type="button"
+              onClick={() => {
+                if (!dateInputRef.current) return;
+                if (typeof dateInputRef.current.showPicker === "function") {
+                  dateInputRef.current.showPicker();
+                } else {
+                  dateInputRef.current.focus();
+                  dateInputRef.current.click();
+                }
+              }}
+              className="mt-3 flex w-full items-center justify-between rounded-lg border border-[#E8E4DF] bg-white px-4 py-3 text-left text-[#2D2D2D]"
+            >
+              <span className={selectedDate ? "" : "text-[#2D2D2D]/60"}>{selectedDateLabel}</span>
+              <span aria-hidden className="text-[#4A5D4A]">
+                📅
+              </span>
+            </button>
             {loading && (
               <div className="mt-3 flex items-center gap-2 text-sm text-[#2D2D2D]/70">
                 <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#4A5D4A]/30 border-t-[#4A5D4A]" />

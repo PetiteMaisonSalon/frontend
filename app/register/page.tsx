@@ -20,13 +20,15 @@ function RegisterForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [emailSent, setEmailSent] = useState(true);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
     try {
-      await register(form);
+      const result = await register(form);
+      setEmailSent(result?.emailSent !== false);
       setSuccess(true);
     } catch (e: unknown) {
       setError((e as Error).message);
@@ -43,14 +45,23 @@ function RegisterForm() {
             <h1 className="font-display text-2xl font-medium text-[#2D2D2D]">
               E-Mail bestätigen
             </h1>
-            <p className="mt-4 text-[#2D2D2D]/85">
-              Wir haben dir eine E-Mail mit einem Bestätigungslink geschickt. Bitte
-              klicke darauf, um dein Konto zu aktivieren. Der Link ist 24 Stunden
-              gültig.
-            </p>
-            <p className="mt-4 text-sm text-[#2D2D2D]/70">
-              Hast du keine E-Mail erhalten? Prüfe deinen Spam-Ordner.
-            </p>
+            {emailSent ? (
+              <>
+                <p className="mt-4 text-[#2D2D2D]/85">
+                  Wir haben dir eine E-Mail mit einem Bestätigungslink geschickt. Bitte
+                  klicke darauf, um dein Konto zu aktivieren. Der Link ist 24 Stunden
+                  gültig.
+                </p>
+                <p className="mt-4 text-sm text-[#2D2D2D]/70">
+                  Hast du keine E-Mail erhalten? Prüfe deinen Spam-Ordner.
+                </p>
+              </>
+            ) : (
+              <p className="mt-4 rounded-lg bg-[#D4A5A5]/30 px-4 py-3 text-sm text-[#5C4033]">
+                Registrierung erfolgreich, aber die Verifizierungs-E-Mail konnte gerade
+                nicht gesendet werden. Bitte versuche es in Kürze erneut.
+              </p>
+            )}
             <Link
               href="/login"
               className="mt-8 inline-block rounded-full bg-[#4A5D4A] px-6 py-3 font-medium text-white transition hover:bg-[#3A4A3A]"
