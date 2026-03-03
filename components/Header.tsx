@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "./AuthContext";
@@ -16,6 +16,13 @@ export default function Header() {
   const pathname = usePathname();
   const { user, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isAdminDomain, setIsAdminDomain] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsAdminDomain(window.location.hostname.startsWith("admin."));
+    }
+  }, []);
   const navWithAdmin =
     user?.role === "admin" || user?.role === "staff"
       ? [...navItems, { href: "/admin", label: "CMS" }]
@@ -80,12 +87,14 @@ export default function Header() {
               >
                 Abmelden
               </button>
-              <Link
-                href="/buchung"
-                className="whitespace-nowrap rounded-full bg-[#4A5D4A] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#3A4A3A]"
-              >
-                Termin buchen
-              </Link>
+              {!isAdminDomain && (
+                <Link
+                  href="/buchung"
+                  className="whitespace-nowrap rounded-full bg-[#4A5D4A] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#3A4A3A]"
+                >
+                  Termin buchen
+                </Link>
+              )}
             </div>
           ) : (
             <div className="flex items-center gap-4">
@@ -95,12 +104,14 @@ export default function Header() {
               >
                 Anmelden
               </Link>
-              <Link
-                href="/buchung"
-                className="whitespace-nowrap rounded-full bg-[#4A5D4A] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#3A4A3A]"
-              >
-                Termin buchen
-              </Link>
+              {!isAdminDomain && (
+                <Link
+                  href="/buchung"
+                  className="whitespace-nowrap rounded-full bg-[#4A5D4A] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#3A4A3A]"
+                >
+                  Termin buchen
+                </Link>
+              )}
             </div>
           )}
         </div>
@@ -135,13 +146,15 @@ export default function Header() {
                 >
                   Abmelden
                 </button>
-                <Link
-                  href="/buchung"
-                  onClick={() => setMenuOpen(false)}
-                  className="rounded-full bg-[#4A5D4A] px-5 py-3 text-center font-medium text-white hover:bg-[#3A4A3A]"
-                >
-                  Termin buchen
-                </Link>
+                {!isAdminDomain && (
+                  <Link
+                    href="/buchung"
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-full bg-[#4A5D4A] px-5 py-3 text-center font-medium text-white hover:bg-[#3A4A3A]"
+                  >
+                    Termin buchen
+                  </Link>
+                )}
               </>
             ) : (
               <>
@@ -152,13 +165,15 @@ export default function Header() {
                 >
                   Anmelden
                 </Link>
-                <Link
-                  href="/buchung"
-                  onClick={() => setMenuOpen(false)}
-                  className="rounded-full bg-[#4A5D4A] px-5 py-3 text-center font-medium text-white hover:bg-[#3A4A3A]"
-                >
-                  Termin buchen
-                </Link>
+                {!isAdminDomain && (
+                  <Link
+                    href="/buchung"
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-full bg-[#4A5D4A] px-5 py-3 text-center font-medium text-white hover:bg-[#3A4A3A]"
+                  >
+                    Termin buchen
+                  </Link>
+                )}
               </>
             )}
           </div>
