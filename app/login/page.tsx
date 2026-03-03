@@ -25,7 +25,11 @@ function LoginForm() {
     try {
       await login(email, password);
       await refreshUser();
-      router.push(redirect);
+      if (redirect === "/admin") {
+        router.push("/admin");
+      } else {
+        router.push(redirect);
+      }
       router.refresh();
     } catch (e: unknown) {
       setError((e as Error).message);
