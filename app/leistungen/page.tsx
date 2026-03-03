@@ -28,10 +28,11 @@ const leistungsbereiche = [
 ];
 
 const weitereLeistungen = [
-  "Kosmetik",
-  "Wimpern und Augenbrauenfärben",
+  "Färbung",
+  "Stännen",
+  "Highlights",
   "Dauerwelle",
-  "Bart",
+  "Bartrasur",
 ];
 
 export default function LeistungenPage() {

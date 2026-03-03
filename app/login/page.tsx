@@ -87,6 +87,12 @@ function LoginForm() {
             />
           </div>
 
+          <div className="text-right text-sm">
+            <Link href="/passwort-vergessen" className="text-[#4A5D4A] hover:underline">
+              Passwort vergessen?
+            </Link>
+          </div>
+
           <button
             type="submit"
             disabled={loading}

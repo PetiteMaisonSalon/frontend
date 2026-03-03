@@ -33,6 +33,7 @@ export default function AdminPage() {
   } | null>(null);
   const [appointments, setAppointments] = useState<AdminAppointment[]>([]);
   const [dateFilter, setDateFilter] = useState(() => new Date().toISOString().slice(0, 10));
+  const [staffFilter, setStaffFilter] = useState<string>("alle");
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState("");
 
@@ -110,11 +111,21 @@ export default function AdminPage() {
     );
   }
 
+  const visibleAppointments =
+    staffFilter === "alle"
+      ? appointments
+      : appointments.filter(
+          (a) =>
+            a.staffId &&
+            `${a.staffId.firstName} ${a.staffId.lastName}`.toLowerCase() ===
+              staffFilter.toLowerCase()
+        );
+
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
-      <h1 className="font-display text-4xl font-medium text-[#2D2D2D]">Salon CMS</h1>
+      <h1 className="font-display text-4xl font-medium text-[#2D2D2D]">CMS</h1>
       <p className="mt-2 text-[#2D2D2D]/80">
-        Tagesübersicht, Anwesenheit, Zahlung und Umsatzerfassung.
+        Tagesübersicht, Zahlung und Umsatzerfassung
       </p>
 
       {error && (
@@ -143,18 +154,44 @@ export default function AdminPage() {
       </section>
 
       <section className="mt-8">
-        <div className="mb-4 flex items-center gap-3">
-          <label className="text-sm font-medium text-[#2D2D2D]">Datum</label>
-          <input
-            type="date"
-            value={dateFilter}
-            onChange={(e) => setDateFilter(e.target.value)}
-            className="rounded-lg border border-[#E8E4DF] px-3 py-2"
-          />
+        <div className="mb-4 flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-[#2D2D2D]">Datum</label>
+            <input
+              type="date"
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
+              className="rounded-lg border border-[#E8E4DF] px-3 py-2"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-[#2D2D2D]">Mitarbeiter</span>
+            <select
+              value={staffFilter}
+              onChange={(e) => setStaffFilter(e.target.value)}
+              className="rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+            >
+              <option value="alle">Alle</option>
+              {Array.from(
+                new Map(
+                  appointments
+                    .filter((a) => a.staffId)
+                    .map((a) => [a.staffId!.firstName + a.staffId!.lastName, a.staffId])
+                ).values()
+              ).map((s) => (
+                <option
+                  key={`${s!.firstName}-${s!.lastName}`}
+                  value={`${s!.firstName} ${s!.lastName}`}
+                >
+                  {s!.firstName} {s!.lastName}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div className="space-y-3">
-          {appointments.map((a) => (
+          {visibleAppointments.map((a) => (
             <div key={a._id} className="rounded-xl border border-[#E8E4DF] bg-white p-4">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
@@ -202,7 +239,7 @@ export default function AdminPage() {
               </div>
             </div>
           ))}
-          {appointments.length === 0 && (
+          {visibleAppointments.length === 0 && (
             <p className="rounded-xl border border-[#E8E4DF] bg-white p-6 text-[#2D2D2D]/70">
               Keine Termine für dieses Datum.
             </p>

@@ -57,6 +57,22 @@ export async function verifyEmail(token: string) {
   });
 }
 
+export async function requestPasswordReset(email: string) {
+  return fetchAPI("/api/auth/forgot-password", {
+    method: "POST",
+    skipAuth: true,
+    body: JSON.stringify({ email }),
+  });
+}
+
+export async function resetPassword(token: string, password: string) {
+  return fetchAPI("/api/auth/reset-password", {
+    method: "POST",
+    skipAuth: true,
+    body: JSON.stringify({ token, password }),
+  });
+}
+
 export async function getMe() {
   return fetchAPI("/api/auth/me");
 }
