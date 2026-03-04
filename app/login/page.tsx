@@ -10,7 +10,8 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { refreshUser } = useAuth();
-  const redirect = searchParams.get("redirect") || "/buchung";
+  const redirectParam = searchParams.get("redirect");
+  const redirectDefault = "/buchung";
   const verified = searchParams.get("verified");
 
   const [email, setEmail] = useState("");
@@ -23,13 +24,18 @@ function LoginForm() {
     setError("");
     setLoading(true);
     try {
-      await login(email, password);
+      const data = await login(email, password);
       await refreshUser();
-      if (redirect === "/admin") {
-        router.push("/admin");
-      } else {
-        router.push(redirect);
+      const role = data?.user?.role;
+      let target = redirectDefault;
+
+      if (redirectParam) {
+        target = redirectParam;
+      } else if (role === "admin" || role === "staff") {
+        target = "/admin";
       }
+
+      router.push(target);
       router.refresh();
     } catch (e: unknown) {
       setError((e as Error).message);
@@ -108,7 +114,10 @@ function LoginForm() {
 
         <p className="mt-8 text-center text-[#2D2D2D]/85">
           Noch kein Konto?{" "}
-          <Link href={`/register?redirect=${encodeURIComponent(redirect)}`} className="text-[#4A5D4A] hover:underline">
+          <Link
+            href={`/register?redirect=${encodeURIComponent(redirectParam || redirectDefault)}`}
+            className="text-[#4A5D4A] hover:underline"
+          >
             Jetzt registrieren
           </Link>
         </p>

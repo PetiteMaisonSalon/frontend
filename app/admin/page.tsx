@@ -42,6 +42,7 @@ export default function AdminPage() {
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [creating, setCreating] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const [createForm, setCreateForm] = useState({
     serviceId: "",
     staffId: "",
@@ -197,6 +198,15 @@ export default function AdminPage() {
       <p className="mt-2 text-[#2D2D2D]/80">
         Tagesübersicht, Zahlung und Umsatzerfassung
       </p>
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          onClick={() => setShowCreateModal(true)}
+          className="rounded-full bg-[#4A5D4A] px-5 py-2 text-sm font-medium text-white hover:bg-[#3A4A3A]"
+        >
+          Neuen Termin eintragen
+        </button>
+      </div>
 
       {error && (
         <div className="mt-6 rounded-lg bg-[#D4A5A5]/30 px-4 py-3 text-[#5C4033]">{error}</div>
@@ -223,122 +233,152 @@ export default function AdminPage() {
         </div>
       </section>
 
-      <section className="mt-10 rounded-xl border border-[#E8E4DF] bg-white p-6">
-        <h2 className="font-display text-2xl font-medium text-[#2D2D2D]">
-          Neuen Termin anlegen
-        </h2>
-       
-        <div className="mt-4 grid gap-4 md:grid-cols-2">
-          <div>
-            <label className="block text-sm font-medium text-[#2D2D2D]">Leistung</label>
-            <select
-              value={createForm.serviceId}
-              onChange={(e) => setCreateForm({ ...createForm, serviceId: e.target.value, staffId: "" })}
-              className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
-            >
-              <option value="">Auswählen…</option>
-              {services.map((s) => (
-                <option key={s._id} value={s._id}>
-                  {s.name} ({s.durationMinutes} min · {s.priceEur} €)
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-[#2D2D2D]">Mitarbeiter</label>
-            <select
-              value={createForm.staffId}
-              onChange={(e) => setCreateForm({ ...createForm, staffId: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
-              disabled={!createForm.serviceId}
-            >
-              <option value="">Auswählen…</option>
-              {staff
-                .filter((st) => st.serviceIds.includes(createForm.serviceId))
-                .map((st) => (
-                  <option key={st._id} value={st._id}>
-                    {st.firstName} {st.lastName}
-                  </option>
-                ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-[#2D2D2D]">Datum</label>
-            <input
-              type="date"
-              value={createForm.date}
-              onChange={(e) => setCreateForm({ ...createForm, date: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-[#2D2D2D]">Uhrzeit</label>
-            <input
-              type="time"
-              value={createForm.time}
-              onChange={(e) => setCreateForm({ ...createForm, time: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
-            />
+      {showCreateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
+            <div className="flex items-center justify-between gap-4">
+              <h2 className="font-display text-2xl font-medium text-[#2D2D2D]">
+                Neuen Termin anlegen
+              </h2>
+              <button
+                type="button"
+                onClick={() => setShowCreateModal(false)}
+                className="text-sm text-[#2D2D2D]/70 hover:text-[#2D2D2D]"
+              >
+                Schließen
+              </button>
+            </div>
+
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
+              <div>
+                <label className="block text-sm font-medium text-[#2D2D2D]">Leistung</label>
+                <select
+                  value={createForm.serviceId}
+                  onChange={(e) =>
+                    setCreateForm({ ...createForm, serviceId: e.target.value, staffId: "" })
+                  }
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                >
+                  <option value="">Auswählen…</option>
+                  {services.map((s) => (
+                    <option key={s._id} value={s._id}>
+                      {s.name} ({s.durationMinutes} min · {s.priceEur} €)
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#2D2D2D]">Mitarbeiter</label>
+                <select
+                  value={createForm.staffId}
+                  onChange={(e) => setCreateForm({ ...createForm, staffId: e.target.value })}
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                >
+                  <option value="">Auswählen…</option>
+                  {staff.map((st) => (
+                    <option key={st._id} value={st._id}>
+                      {st.firstName} {st.lastName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#2D2D2D]">Datum</label>
+                <input
+                  type="date"
+                  value={createForm.date}
+                  onChange={(e) => setCreateForm({ ...createForm, date: e.target.value })}
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#2D2D2D]">Uhrzeit</label>
+                <input
+                  type="time"
+                  value={createForm.time}
+                  onChange={(e) => setCreateForm({ ...createForm, time: e.target.value })}
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                />
+              </div>
+            </div>
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
+              <div>
+                <label className="block text-sm font-medium text-[#2D2D2D]">Kunde Vorname</label>
+                <input
+                  type="text"
+                  value={createForm.firstName}
+                  onChange={(e) =>
+                    setCreateForm({ ...createForm, firstName: e.target.value })
+                  }
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#2D2D2D]">Kunde Nachname</label>
+                <input
+                  type="text"
+                  value={createForm.lastName}
+                  onChange={(e) =>
+                    setCreateForm({ ...createForm, lastName: e.target.value })
+                  }
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#2D2D2D]">E-Mail</label>
+                <input
+                  type="email"
+                  value={createForm.email}
+                  onChange={(e) => setCreateForm({ ...createForm, email: e.target.value })}
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#2D2D2D]">
+                  Telefon (optional)
+                </label>
+                <input
+                  type="tel"
+                  value={createForm.phone}
+                  onChange={(e) => setCreateForm({ ...createForm, phone: e.target.value })}
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                />
+              </div>
+            </div>
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-[#2D2D2D]">
+                Notiz (optional)
+              </label>
+              <textarea
+                value={createForm.note}
+                onChange={(e) => setCreateForm({ ...createForm, note: e.target.value })}
+                rows={2}
+                className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+              />
+            </div>
+            <div className="mt-4 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setShowCreateModal(false)}
+                className="rounded-full border border-[#E8E4DF] px-5 py-2 text-sm font-medium text-[#2D2D2D]"
+              >
+                Abbrechen
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  await createNewAppointment();
+                  if (!error) setShowCreateModal(false);
+                }}
+                disabled={creating}
+                className="rounded-full bg-[#4A5D4A] px-6 py-2 text-sm font-medium text-white hover:bg-[#3A4A3A] disabled:opacity-50"
+              >
+                {creating ? "Wird angelegt…" : "Termin speichern"}
+              </button>
+            </div>
           </div>
         </div>
-        <div className="mt-4 grid gap-4 md:grid-cols-2">
-          <div>
-            <label className="block text-sm font-medium text-[#2D2D2D]">Kunde Vorname</label>
-            <input
-              type="text"
-              value={createForm.firstName}
-              onChange={(e) => setCreateForm({ ...createForm, firstName: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-[#2D2D2D]">Kunde Nachname</label>
-            <input
-              type="text"
-              value={createForm.lastName}
-              onChange={(e) => setCreateForm({ ...createForm, lastName: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-[#2D2D2D]">E-Mail</label>
-            <input
-              type="email"
-              value={createForm.email}
-              onChange={(e) => setCreateForm({ ...createForm, email: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-[#2D2D2D]">Telefon (optional)</label>
-            <input
-              type="tel"
-              value={createForm.phone}
-              onChange={(e) => setCreateForm({ ...createForm, phone: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
-            />
-          </div>
-        </div>
-        <div className="mt-4">
-          <label className="block text-sm font-medium text-[#2D2D2D]">Notiz (optional)</label>
-          <textarea
-            value={createForm.note}
-            onChange={(e) => setCreateForm({ ...createForm, note: e.target.value })}
-            rows={2}
-            className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
-          />
-        </div>
-        <div className="mt-4">
-          <button
-            type="button"
-            onClick={createNewAppointment}
-            disabled={creating}
-            className="rounded-full bg-[#4A5D4A] px-6 py-2.5 text-sm font-medium text-white hover:bg-[#3A4A3A] disabled:opacity-50"
-          >
-            {creating ? "Termin wird angelegt…" : "Termin speichern"}
-          </button>
-        </div>
-      </section>
+      )}
 
       <section className="mt-8">
         <div className="mb-4 flex flex-wrap items-center gap-3">
