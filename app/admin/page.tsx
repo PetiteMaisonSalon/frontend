@@ -227,9 +227,7 @@ export default function AdminPage() {
         <h2 className="font-display text-2xl font-medium text-[#2D2D2D]">
           Neuen Termin anlegen
         </h2>
-        <p className="mt-1 text-sm text-[#2D2D2D]/75">
-          Für Anrufe oder Walk-in Kund:innen direkt im Salon eintragen.
-        </p>
+       
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           <div>
             <label className="block text-sm font-medium text-[#2D2D2D]">Leistung</label>
