@@ -205,6 +205,7 @@ export default function BuchungsFlow() {
     setSelectedStaff(null);
     setSelectedSlot(null);
     setSlots([]);
+    setSelectedDate("");
     goToStep(2);
   };
 
@@ -212,6 +213,11 @@ export default function BuchungsFlow() {
     setSelectedStaff(s);
     setSelectedSlot(null);
     setSlots([]);
+    // UX: direkt heutige Slots laden, wenn möglich
+    if (s && selectedService) {
+      setSelectedDate(todayDate);
+      fetchSlots(todayDate);
+    }
   };
 
   const handleDateSelect = async (date: string) => {
@@ -484,15 +490,17 @@ export default function BuchungsFlow() {
                 ))}
               </div>
             )}
-            {slots.length === 0 && !loading && (
+            {slots.length === 0 && !loading && selectedDate && (
               <p className="mt-4 text-[#2D2D2D]/70">
-                Wähle ein Datum oder{" "}
+                Für dieses Datum sind keine freien Zeiten verfügbar. Wähle ein anderes Datum
+                oder{" "}
                 <button
                   onClick={() => goToStep(3)}
                   className="text-[#4A5D4A] hover:underline"
                 >
                   Warteliste
                 </button>
+                .
               </p>
             )}
           </div>
