@@ -28,7 +28,7 @@ const FALLBACK_SERVICES: Service[] = [
 ];
 
 const FALLBACK_STAFF: Staff[] = [
-  { _id: "fallback-m1", firstName: "Mehtap", lastName: "Yılmaz", serviceIds: FALLBACK_SERVICES.map((s) => ({ _id: s._id })) },
+  { _id: "fallback-m1", firstName: "Mehtap", lastName: "Kücük", serviceIds: FALLBACK_SERVICES.map((s) => ({ _id: s._id })) },
   { _id: "fallback-s1", firstName: "Sevim", lastName: "Kaya", serviceIds: FALLBACK_SERVICES.filter((s) => s.category === "women").map((s) => ({ _id: s._id })) },
   { _id: "fallback-m2", firstName: "Maria", lastName: "Schmidt", serviceIds: FALLBACK_SERVICES.map((s) => ({ _id: s._id })) },
 ];
@@ -397,16 +397,6 @@ export default function BuchungsFlow() {
               Mitarbeiter
             </h2>
             <div className="mt-4 flex flex-wrap gap-2">
-              <button
-                onClick={() => handleStaffSelect(null)}
-                className={`rounded-full px-4 py-2 text-sm font-medium ${
-                  !selectedStaff
-                    ? "bg-[#4A5D4A] text-white"
-                    : "border border-[#E8E4DF] text-[#2D2D2D]"
-                }`}
-              >
-                Egal
-              </button>
               {availableStaff.map((s) => (
                 <button
                   key={s._id}
