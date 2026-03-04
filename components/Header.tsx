@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useAuth } from "./AuthContext";
 
@@ -36,7 +37,7 @@ export default function Header() {
           href="/"
           className="font-display text-2xl font-medium tracking-tight text-[#2D2D2D] transition hover:text-[#4A5D4A]"
         >
-          Petite Maison
+          <Image src="/petite-maison.png" alt="Petite Maison" width={200} height={100} />
         </Link>
 
         {/* Burger Button – nur Mobile */}

@@ -7,6 +7,9 @@ import {
   getAdminAppointments,
   setAppointmentAttendance,
   setAppointmentPayment,
+  getServices,
+  getStaff,
+  createAdminAppointment,
 } from "@/lib/api";
 
 type AdminAppointment = {
@@ -32,10 +35,24 @@ export default function AdminPage() {
     todayRevenueEur: number;
   } | null>(null);
   const [appointments, setAppointments] = useState<AdminAppointment[]>([]);
+  const [services, setServices] = useState<{ _id: string; name: string; durationMinutes: number; priceEur: number }[]>([]);
+  const [staff, setStaff] = useState<{ _id: string; firstName: string; lastName: string; serviceIds: string[] }[]>([]);
   const [dateFilter, setDateFilter] = useState(() => new Date().toISOString().slice(0, 10));
   const [staffFilter, setStaffFilter] = useState<string>("alle");
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState("");
+  const [creating, setCreating] = useState(false);
+  const [createForm, setCreateForm] = useState({
+    serviceId: "",
+    staffId: "",
+    date: new Date().toISOString().slice(0, 10),
+    time: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    note: "",
+  });
 
   const isAllowed = useMemo(
     () => user?.role === "admin" || user?.role === "staff",
@@ -61,6 +78,25 @@ export default function AdminPage() {
     refreshData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAllowed, dateFilter]);
+
+  useEffect(() => {
+    if (!isAllowed) return;
+    getServices()
+      .then((s) => setServices(s))
+      .catch(() => {});
+    getStaff()
+      .then((st) =>
+        setStaff(
+          st.map((x: any) => ({
+            _id: x._id,
+            firstName: x.firstName,
+            lastName: x.lastName,
+            serviceIds: (x.serviceIds || []).map((id: any) => id.toString()),
+          }))
+        )
+      )
+      .catch(() => {});
+  }, [isAllowed]);
 
   async function markAttended(appointmentId: string, attended: boolean) {
     setBusyId(appointmentId);
@@ -89,6 +125,40 @@ export default function AdminPage() {
       setError((e as Error).message || "Zahlung konnte nicht verbucht werden.");
     } finally {
       setBusyId(null);
+    }
+  }
+
+  async function createNewAppointment() {
+    if (!createForm.serviceId || !createForm.staffId || !createForm.date || !createForm.time) {
+      setError("Bitte Leistung, Mitarbeiter, Datum und Uhrzeit auswählen.");
+      return;
+    }
+    if (!createForm.firstName.trim() || !createForm.lastName.trim() || !createForm.email.trim()) {
+      setError("Bitte Kundendaten (Name und E-Mail) ausfüllen.");
+      return;
+    }
+    setCreating(true);
+    setError("");
+    try {
+      const startLocal = new Date(`${createForm.date}T${createForm.time}:00`);
+      await createAdminAppointment({
+        serviceId: createForm.serviceId,
+        staffId: createForm.staffId,
+        startAt: startLocal.toISOString(),
+        customer: {
+          firstName: createForm.firstName.trim(),
+          lastName: createForm.lastName.trim(),
+          email: createForm.email.trim(),
+          phone: createForm.phone.trim() || undefined,
+          note: createForm.note.trim() || undefined,
+        },
+      });
+      await refreshData();
+      setCreateForm((f) => ({ ...f, time: "", firstName: "", lastName: "", email: "", phone: "", note: "" }));
+    } catch (e: unknown) {
+      setError((e as Error).message || "Termin konnte nicht erstellt werden.");
+    } finally {
+      setCreating(false);
     }
   }
 
@@ -150,6 +220,125 @@ export default function AdminPage() {
           <p className="mt-1 text-2xl font-semibold">
             {typeof overview?.todayRevenueEur === "number" ? `${overview.todayRevenueEur.toFixed(2)} €` : "-"}
           </p>
+        </div>
+      </section>
+
+      <section className="mt-10 rounded-xl border border-[#E8E4DF] bg-white p-6">
+        <h2 className="font-display text-2xl font-medium text-[#2D2D2D]">
+          Neuen Termin anlegen
+        </h2>
+        <p className="mt-1 text-sm text-[#2D2D2D]/75">
+          Für Anrufe oder Walk-in Kund:innen direkt im Salon eintragen.
+        </p>
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <div>
+            <label className="block text-sm font-medium text-[#2D2D2D]">Leistung</label>
+            <select
+              value={createForm.serviceId}
+              onChange={(e) => setCreateForm({ ...createForm, serviceId: e.target.value, staffId: "" })}
+              className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+            >
+              <option value="">Auswählen…</option>
+              {services.map((s) => (
+                <option key={s._id} value={s._id}>
+                  {s.name} ({s.durationMinutes} min · {s.priceEur} €)
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[#2D2D2D]">Mitarbeiter</label>
+            <select
+              value={createForm.staffId}
+              onChange={(e) => setCreateForm({ ...createForm, staffId: e.target.value })}
+              className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+              disabled={!createForm.serviceId}
+            >
+              <option value="">Auswählen…</option>
+              {staff
+                .filter((st) => st.serviceIds.includes(createForm.serviceId))
+                .map((st) => (
+                  <option key={st._id} value={st._id}>
+                    {st.firstName} {st.lastName}
+                  </option>
+                ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[#2D2D2D]">Datum</label>
+            <input
+              type="date"
+              value={createForm.date}
+              onChange={(e) => setCreateForm({ ...createForm, date: e.target.value })}
+              className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[#2D2D2D]">Uhrzeit</label>
+            <input
+              type="time"
+              value={createForm.time}
+              onChange={(e) => setCreateForm({ ...createForm, time: e.target.value })}
+              className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+            />
+          </div>
+        </div>
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <div>
+            <label className="block text-sm font-medium text-[#2D2D2D]">Kunde Vorname</label>
+            <input
+              type="text"
+              value={createForm.firstName}
+              onChange={(e) => setCreateForm({ ...createForm, firstName: e.target.value })}
+              className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[#2D2D2D]">Kunde Nachname</label>
+            <input
+              type="text"
+              value={createForm.lastName}
+              onChange={(e) => setCreateForm({ ...createForm, lastName: e.target.value })}
+              className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[#2D2D2D]">E-Mail</label>
+            <input
+              type="email"
+              value={createForm.email}
+              onChange={(e) => setCreateForm({ ...createForm, email: e.target.value })}
+              className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[#2D2D2D]">Telefon (optional)</label>
+            <input
+              type="tel"
+              value={createForm.phone}
+              onChange={(e) => setCreateForm({ ...createForm, phone: e.target.value })}
+              className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+            />
+          </div>
+        </div>
+        <div className="mt-4">
+          <label className="block text-sm font-medium text-[#2D2D2D]">Notiz (optional)</label>
+          <textarea
+            value={createForm.note}
+            onChange={(e) => setCreateForm({ ...createForm, note: e.target.value })}
+            rows={2}
+            className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+          />
+        </div>
+        <div className="mt-4">
+          <button
+            type="button"
+            onClick={createNewAppointment}
+            disabled={creating}
+            className="rounded-full bg-[#4A5D4A] px-6 py-2.5 text-sm font-medium text-white hover:bg-[#3A4A3A] disabled:opacity-50"
+          >
+            {creating ? "Termin wird angelegt…" : "Termin speichern"}
+          </button>
         </div>
       </section>
 

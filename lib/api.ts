@@ -156,6 +156,18 @@ export async function getAdminAppointments(params?: {
   return fetchAPI(`/api/admin/appointments${q ? `?${q}` : ""}`);
 }
 
+export async function createAdminAppointment(data: {
+  serviceId: string;
+  staffId: string;
+  startAt: string;
+  customer: { firstName: string; lastName: string; email: string; phone?: string; note?: string };
+}) {
+  return fetchAPI("/api/admin/appointments", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
 export async function setAppointmentAttendance(appointmentId: string, attended: boolean) {
   return fetchAPI(`/api/admin/appointments/${appointmentId}/attendance`, {
     method: "PATCH",
