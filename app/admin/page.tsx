@@ -163,6 +163,51 @@ export default function AdminPage() {
     }
   }
 
+  function exportAppointmentsCsv() {
+    if (visibleAppointments.length === 0) return;
+    const header = [
+      "Datum",
+      "Uhrzeit",
+      "Mitarbeiter",
+      "Kunde",
+      "E-Mail",
+      "Telefon",
+      "Leistung",
+      "Status",
+      "Zahlung",
+      "Betrag",
+    ];
+    const rows = visibleAppointments.map((a) => {
+      const d = new Date(a.startAt);
+      const date = d.toLocaleDateString("de-DE");
+      const time = d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+      const staffName = a.staffId ? `${a.staffId.firstName} ${a.staffId.lastName}` : "";
+      const customerName = `${a.customer.firstName} ${a.customer.lastName}`;
+      const email = a.customer.email;
+      const phone = a.customer.phone || "";
+      const serviceName = a.serviceId?.name || "";
+      const status = a.status;
+      const payment = a.paymentStatus;
+      const amount = a.amountPaidEur ?? a.priceEur ?? "";
+      return [date, time, staffName, customerName, email, phone, serviceName, status, payment, amount];
+    });
+    const csv = [header, ...rows]
+      .map((cols) =>
+        cols
+          .map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`)
+          .join(";")
+      )
+      .join("\n");
+    if (typeof window === "undefined") return;
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "termine.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   if (loading) {
     return (
       <main className="mx-auto max-w-6xl px-6 py-14">
@@ -415,6 +460,13 @@ export default function AdminPage() {
               ))}
             </select>
           </div>
+          <button
+            type="button"
+            onClick={exportAppointmentsCsv}
+            className="ml-auto rounded-full border border-[#E8E4DF] px-4 py-2 text-sm font-medium text-[#2D2D2D] hover:bg-[#F5F2ED]"
+          >
+            Liste als CSV exportieren
+          </button>
         </div>
 
         <div className="space-y-3">
