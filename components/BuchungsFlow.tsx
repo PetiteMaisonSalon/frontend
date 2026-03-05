@@ -589,7 +589,7 @@ export default function BuchungsFlow() {
                 <li>{selectedService.name}</li>
                 <li>
                   {selectedStaff
-                    ? `${selectedStaff.firstName} ${selectedStaff.lastName}`
+                    ? `${selectedStaff.firstName}`
                     : "Freier Mitarbeiter"}
                 </li>
                 <li>

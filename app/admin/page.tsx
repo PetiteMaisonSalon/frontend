@@ -277,7 +277,7 @@ export default function AdminPage() {
                   <option value="">Auswählen…</option>
                   {staff.map((st) => (
                     <option key={st._id} value={st._id}>
-                      {st.firstName} {st.lastName}
+                      {st.firstName}
                     </option>
                   ))}
                 </select>
