@@ -10,7 +10,6 @@ const navLinks = [
 
 const legalLinks = [
   { href: "/impressum", label: "Impressum" },
-  { href: "/disclaimer", label: "Disclaimer" },
   { href: "/datenschutz", label: "Datenschutz" },
 ];
 
@@ -67,7 +66,7 @@ export default function Footer() {
                 WhatsApp
               </a>
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/petite_maison_hamburg"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[#E8E4DF]/90 transition hover:text-white"
@@ -75,15 +74,7 @@ export default function Footer() {
               >
                 Instagram
               </a>
-              <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#E8E4DF]/90 transition hover:text-white"
-                aria-label="Facebook"
-              >
-                Facebook
-              </a>
+              
             </div>
           </div>
 

@@ -8,8 +8,8 @@ export default function KontaktPage() {
             Kontakt
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[#2D2D2D]/85">
-            Du erreichst uns telefonisch, per E-Mail oder über unsere Social-Media-Kanäle. Für
-            Terminbuchungen nutze gerne unseren Online-Buchungsbereich oder rufe
+            Du erreichst uns telefonisch, oder über unsere Social Media Kanal. Für
+            Terminbuchungen nutze gerne unseren Online Buchungsbereich oder rufe
             uns an.
           </p>
         </div>
@@ -70,21 +70,14 @@ export default function KontaktPage() {
                     WhatsApp
                   </a>
                   <a
-                    href="https://instagram.com"
+                    href="https://www.instagram.com/petite_maison_hamburg"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[#4A5D4A] transition hover:underline"
                   >
                     Instagram
                   </a>
-                  <a
-                    href="https://facebook.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[#4A5D4A] transition hover:underline"
-                  >
-                    Facebook
-                  </a>
+              
                 </div>
               </div>
             </div>
@@ -106,7 +99,7 @@ export default function KontaktPage() {
                 >
                   +49 176 69150964
                 </a>{" "}
-                bzw. per WhatsApp.
+                
               </p>
               <div className="mt-8 flex flex-wrap gap-4">
                 <a
@@ -120,14 +113,6 @@ export default function KontaktPage() {
                   className="inline-block rounded-full border-2 border-[#4A5D4A] px-6 py-3 font-medium text-[#4A5D4A] transition hover:bg-[#4A5D4A] hover:text-white"
                 >
                   Jetzt anrufen
-                </a>
-                <a
-                  href="https://wa.me/4917669150964"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block rounded-full border-2 border-[#4A5D4A] px-6 py-3 font-medium text-[#4A5D4A] transition hover:bg-[#4A5D4A] hover:text-white"
-                >
-                  WhatsApp
                 </a>
               </div>
             </div>
