@@ -465,7 +465,7 @@ export default function AdminPage() {
             onClick={exportAppointmentsCsv}
             className="ml-auto rounded-full border border-[#E8E4DF] px-4 py-2 text-sm font-medium text-[#2D2D2D] hover:bg-[#F5F2ED]"
           >
-            Liste als CSV exportieren
+            CSV exportieren
           </button>
         </div>
 
