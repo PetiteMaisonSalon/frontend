@@ -434,7 +434,7 @@ export default function AdminPage() {
                   </p>
                   <p className="text-sm text-[#2D2D2D]/80">
                     {a.customer.firstName} {a.customer.lastName} • {a.serviceId?.name} •{" "}
-                    {a.staffId ? `${a.staffId.firstName} ${a.staffId.lastName}` : "Team"}
+                    {a.staffId ? `${a.staffId.firstName}` : "Team"}
                   </p>
                   <p className="text-sm text-[#2D2D2D]/70">
                     Status: {a.status} • Zahlung: {a.paymentStatus}
