@@ -181,7 +181,7 @@ export default function AdminPage() {
       const d = new Date(a.startAt);
       const date = d.toLocaleDateString("de-DE");
       const time = d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
-      const staffName = a.staffId ? `${a.staffId.firstName} ${a.staffId.lastName}` : "";
+      const staffName = a.staffId ? `${a.staffId.firstName}` : "";
       const customerName = `${a.customer.firstName} ${a.customer.lastName}`;
       const email = a.customer.email;
       const phone = a.customer.phone || "";
@@ -203,7 +203,7 @@ export default function AdminPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "termine.csv";
+    a.download = "uebersicht.csv";
     a.click();
     URL.revokeObjectURL(url);
   }
