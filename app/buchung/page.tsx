@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import BuchungsFlow from "../../components/BuchungsFlow";
 
 export const metadata = {
@@ -19,7 +20,15 @@ export default function BuchungPage() {
           </p>
         </div>
       </section>
-      <BuchungsFlow />
+      <Suspense
+        fallback={
+          <div className="mx-auto max-w-2xl px-6 py-12 text-center text-[#2D2D2D]/70">
+            Lade Buchungsflow…
+          </div>
+        }
+      >
+        <BuchungsFlow />
+      </Suspense>
     </main>
   );
 }
