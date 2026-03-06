@@ -266,7 +266,18 @@ export default function BuchungsFlow() {
       });
       goToStep(5);
     } catch (e: unknown) {
-      setError((e as Error).message || "Buchung fehlgeschlagen.");
+      const message = (e as Error).message || "Buchung fehlgeschlagen.";
+      setError(message);
+      if (
+        selectedDate &&
+        (message.includes("Zeitslot nicht mehr verfügbar") ||
+          message.toLowerCase().includes("slot") ||
+          message.toLowerCase().includes("verfügbar"))
+      ) {
+        // Slotliste neu laden, damit belegte Zeiten ausgeblendet werden
+        fetchSlots(selectedDate);
+        setSelectedSlot(null);
+      }
     } finally {
       setLoading(false);
     }
