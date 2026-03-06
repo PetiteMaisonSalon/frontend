@@ -91,6 +91,12 @@ export default function BuchungsFlow() {
   }, []);
 
   useEffect(() => {
+    if (error && typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [error]);
+
+  useEffect(() => {
     getServices()
       .then((data) => {
         setServices(Array.isArray(data) && data.length > 0 ? data : FALLBACK_SERVICES);

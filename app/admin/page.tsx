@@ -82,6 +82,15 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (!isAllowed) return;
+    const id = setInterval(() => {
+      refreshData();
+    }, 30000); // alle 30 Sekunden aktualisieren
+    return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAllowed, dateFilter]);
+
+  useEffect(() => {
+    if (!isAllowed) return;
     getServices()
       .then((s) => setServices(s))
       .catch(() => {});
