@@ -116,6 +116,22 @@ export async function createAppointment(data: {
   });
 }
 
+export async function rescheduleAppointment(
+  token: string,
+  data: {
+    serviceId: string;
+    staffId: string;
+    startAt: string;
+    customer: { firstName: string; lastName: string; email: string; phone?: string; note?: string };
+  }
+) {
+  return fetchAPI(`/api/appointments/reschedule/${token}`, {
+    method: "POST",
+    skipAuth: true,
+    body: JSON.stringify(data),
+  });
+}
+
 export async function addToWaitlist(data: {
   serviceId: string;
   staffId?: string;

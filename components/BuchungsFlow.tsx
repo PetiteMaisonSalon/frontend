@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   getServices,
   getStaff,
   getAvailableSlots,
   createAppointment,
+  rescheduleAppointment,
   addToWaitlist,
 } from "@/lib/api";
 import Link from "next/link";
@@ -38,7 +40,9 @@ type Step = 1 | 2 | 3 | 4 | 5;
 const BOOKING_STATE_KEY = "pm_booking_state";
 
 export default function BuchungsFlow() {
+  const searchParams = useSearchParams();
   const { user, loading: authLoading } = useAuth();
+  const [rescheduleToken, setRescheduleToken] = useState(searchParams.get("rescheduleToken") || "");
   const [step, setStep] = useState<Step>(1);
   const [services, setServices] = useState<Service[]>([]);
   const [staff, setStaff] = useState<Staff[]>([]);
@@ -83,6 +87,7 @@ export default function BuchungsFlow() {
           setSelectedService(s.service);
           setSelectedStaff(s.staff ?? null);
           setSelectedSlot(s.slot);
+          setRescheduleToken(s.rescheduleToken || "");
           setStep(3);
         }
         sessionStorage.removeItem(BOOKING_STATE_KEY);
@@ -253,7 +258,7 @@ export default function BuchungsFlow() {
     setError("");
     try {
       setSuccessType("booked");
-      await createAppointment({
+      const payload = {
         serviceId: selectedService._id,
         staffId: selectedStaff._id,
         startAt: selectedSlot.start,
@@ -264,7 +269,12 @@ export default function BuchungsFlow() {
           phone: form.phone.trim() || undefined,
           note: form.note.trim() || undefined,
         },
-      });
+      };
+      if (rescheduleToken) {
+        await rescheduleAppointment(rescheduleToken, payload);
+      } else {
+        await createAppointment(payload);
+      }
       goToStep(5);
     } catch (e: unknown) {
       const message = (e as Error).message || "Buchung fehlgeschlagen.";
@@ -555,6 +565,7 @@ export default function BuchungsFlow() {
                         service: selectedService,
                         staff: selectedStaff,
                         slot: selectedSlot,
+                        rescheduleToken,
                       })
                     );
                   }}
@@ -571,6 +582,7 @@ export default function BuchungsFlow() {
                         service: selectedService,
                         staff: selectedStaff,
                         slot: selectedSlot,
+                        rescheduleToken,
                       })
                     );
                   }}

@@ -129,10 +129,10 @@ function StornoContent() {
             {loading ? "Wird storniert…" : "Termin stornieren"}
           </button>
           <Link
-            href="/buchung"
+            href={`/buchung?rescheduleToken=${token}`}
             className="rounded-full bg-[#4A5D4A] px-6 py-3 font-medium text-white transition hover:bg-[#3A4A3A]"
           >
-            Neuen Termin buchen
+            Termin ändern
           </Link>
         </div>
       </div>
