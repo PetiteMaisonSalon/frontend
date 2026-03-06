@@ -171,7 +171,7 @@ export default function BuchungsFlow() {
     return slots;
   };
 
-  const fetchSlots = async (date: string) => {
+  const fetchSlots = async (date: string, staffOverride?: Staff | null) => {
     if (!selectedService) return;
     setLoading(true);
     setError("");
@@ -180,10 +180,11 @@ export default function BuchungsFlow() {
         const demoSlots = generateDemoSlots(date, selectedService.durationMinutes);
         setSlots(demoSlots);
       } else {
+        const effectiveStaff = staffOverride === undefined ? selectedStaff : staffOverride;
         const data = await getAvailableSlots(
           date,
           selectedService._id,
-          selectedStaff?._id
+          effectiveStaff?._id
         );
         setSlots(data);
       }
@@ -222,7 +223,7 @@ export default function BuchungsFlow() {
     // UX: direkt heutige Slots laden, wenn möglich
     if (s && selectedService) {
       setSelectedDate(todayDate);
-      fetchSlots(todayDate);
+      fetchSlots(todayDate, s);
     }
   };
 
@@ -230,7 +231,7 @@ export default function BuchungsFlow() {
     setSelectedDate(date);
     setSelectedSlot(null);
     setSlots([]);
-    if (date) await fetchSlots(date);
+    if (date) await fetchSlots(date, selectedStaff);
   };
 
   const handleSlotSelect = (slot: { start: string; end: string }) => {
