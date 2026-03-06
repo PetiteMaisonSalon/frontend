@@ -503,21 +503,34 @@ export default function AdminPage() {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <button
-                    disabled={busyId === a._id || a.status === "attended" || a.status === "completed"}
+                    disabled={
+                      busyId === a._id ||
+                      a.status === "attended" ||
+                      a.status === "completed" ||
+                      a.status === "cancelled"
+                    }
                     onClick={() => markAttended(a._id, true)}
                     className="rounded-full border border-[#4A5D4A] px-4 py-2 text-sm text-[#4A5D4A] hover:bg-[#4A5D4A]/10 disabled:opacity-50"
                   >
                     Wahrgenommen
                   </button>
                   <button
-                    disabled={busyId === a._id || a.paymentStatus === "paid"}
+                    disabled={
+                      busyId === a._id ||
+                      a.paymentStatus === "paid" ||
+                      a.status === "cancelled"
+                    }
                     onClick={() => markPaid(a._id, a.amountPaidEur ?? a.priceEur, "card")}
                     className="rounded-full bg-[#4A5D4A] px-4 py-2 text-sm text-white hover:bg-[#3A4A3A] disabled:opacity-50"
                   >
                     Bezahlt (Karte)
                   </button>
                   <button
-                    disabled={busyId === a._id || a.paymentStatus === "paid"}
+                    disabled={
+                      busyId === a._id ||
+                      a.paymentStatus === "paid" ||
+                      a.status === "cancelled"
+                    }
                     onClick={() => markPaid(a._id, a.amountPaidEur ?? a.priceEur, "cash")}
                     className="rounded-full bg-[#2D2D2D] px-4 py-2 text-sm text-white hover:bg-black disabled:opacity-50"
                   >
