@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   getServices,
@@ -10,11 +10,18 @@ import {
   rescheduleAppointment,
   addToWaitlist,
 } from "@/lib/api";
+import { canStaffDoAllServices } from "@/lib/staffCapabilities";
 import Link from "next/link";
 import { useAuth } from "./AuthContext";
 
 type Service = { _id: string; name: string; category: string; durationMinutes: number; priceEur: number };
 type Staff = { _id: string; firstName: string; lastName: string; serviceIds: { _id: string }[] };
+type ServiceGroup = { id: string; label: string; matcher: (s: Service) => boolean };
+type GroupedServiceEntry = {
+  key: string;
+  title: string;
+  variants: Service[];
+};
 
 const CATEGORIES = [
   { id: "women", label: "Frauen" },
@@ -30,24 +37,49 @@ const FALLBACK_SERVICES: Service[] = [
 ];
 
 const FALLBACK_STAFF: Staff[] = [
-  { _id: "fallback-m1", firstName: "Mehtap", lastName: "Kücük", serviceIds: FALLBACK_SERVICES.map((s) => ({ _id: s._id })) },
-  { _id: "fallback-s1", firstName: "Sevim", lastName: "Kaya", serviceIds: FALLBACK_SERVICES.filter((s) => s.category === "women").map((s) => ({ _id: s._id })) },
-  { _id: "fallback-m2", firstName: "Maria", lastName: "Schmidt", serviceIds: FALLBACK_SERVICES.map((s) => ({ _id: s._id })) },
+  { _id: "fallback-mehtap", firstName: "Mehtap", lastName: "", serviceIds: FALLBACK_SERVICES.map((s) => ({ _id: s._id })) },
+  { _id: "fallback-sevim", firstName: "Sevim", lastName: "", serviceIds: FALLBACK_SERVICES.filter((s) => s.category === "men" || s.name.toLowerCase().includes("färb")).map((s) => ({ _id: s._id })) },
+  { _id: "fallback-maria", firstName: "Maria", lastName: "", serviceIds: FALLBACK_SERVICES.filter((s) => s.category === "women").map((s) => ({ _id: s._id })) },
+  { _id: "fallback-sarah", firstName: "Sarah", lastName: "", serviceIds: FALLBACK_SERVICES.map((s) => ({ _id: s._id })) },
+  { _id: "fallback-masoud", firstName: "Masoud", lastName: "", serviceIds: FALLBACK_SERVICES.map((s) => ({ _id: s._id })) },
+  { _id: "fallback-kanj", firstName: "Kanj", lastName: "", serviceIds: FALLBACK_SERVICES.map((s) => ({ _id: s._id })) },
 ];
 
 type Step = 1 | 2 | 3 | 4 | 5;
 
 const BOOKING_STATE_KEY = "pm_booking_state";
 
+function formatDurationLabel(minutes: number) {
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  if (h > 0 && m > 0) return `${h} Std. ${m} Min.`;
+  if (h > 0) return `${h} Std.`;
+  return `${m} Min.`;
+}
+
+function baseServiceTitle(name: string) {
+  return name.replace(/\s*\([^)]+\)\s*$/, "").trim();
+}
+
+function variantLabel(name: string) {
+  const match = name.match(/\(([^)]+)\)\s*$/);
+  return match ? match[1].trim() : "Standard";
+}
+
 export default function BuchungsFlow() {
   const searchParams = useSearchParams();
   const { user, loading: authLoading } = useAuth();
   const [rescheduleToken, setRescheduleToken] = useState(searchParams.get("rescheduleToken") || "");
+  const preselectedServiceIdsParam = searchParams.get("serviceIds") || "";
+  const preselectedServiceName = searchParams.get("service") || "";
+  const [preselectApplied, setPreselectApplied] = useState(false);
   const [step, setStep] = useState<Step>(1);
   const [services, setServices] = useState<Service[]>([]);
   const [staff, setStaff] = useState<Staff[]>([]);
   const [category, setCategory] = useState<string>("");
-  const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [selectedServices, setSelectedServices] = useState<Service[]>([]);
+  const [activeServiceGroupId, setActiveServiceGroupId] = useState<string>("");
+  const [expandedServiceKeys, setExpandedServiceKeys] = useState<Record<string, boolean>>({});
   const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedSlot, setSelectedSlot] = useState<{ start: string; end: string } | null>(null);
@@ -83,8 +115,8 @@ export default function BuchungsFlow() {
     if (saved) {
       try {
         const s = JSON.parse(saved);
-        if (s?.service && s?.slot) {
-          setSelectedService(s.service);
+        if ((s?.services?.length || s?.service) && s?.slot) {
+          setSelectedServices(s.services || [s.service]);
           setSelectedStaff(s.staff ?? null);
           setSelectedSlot(s.slot);
           setRescheduleToken(s.rescheduleToken || "");
@@ -102,6 +134,18 @@ export default function BuchungsFlow() {
   }, [error]);
 
   useEffect(() => {
+    if (step !== 2 || selectedServices.length === 0 || selectedDate || selectedStaff) return;
+    const init = async () => {
+      setSelectedDate(todayDate);
+      const autoStaff = await autoSelectAvailableStaff(todayDate);
+      setSelectedStaff(autoStaff);
+      await fetchSlots(todayDate, autoStaff);
+    };
+    init();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step, selectedServices.length]);
+
+  useEffect(() => {
     getServices()
       .then((data) => {
         setServices(Array.isArray(data) && data.length > 0 ? data : FALLBACK_SERVICES);
@@ -116,19 +160,129 @@ export default function BuchungsFlow() {
       .catch(() => setStaff(FALLBACK_STAFF));
   }, []);
 
+  useEffect(() => {
+    if (preselectApplied || services.length === 0) return;
+
+    const parsedIds = preselectedServiceIdsParam
+      ? preselectedServiceIdsParam
+          .split(",")
+          .map((id) => id.trim())
+          .filter(Boolean)
+      : [];
+
+    let matchedServices: Service[] = [];
+    if (parsedIds.length > 0) {
+      matchedServices = services.filter((s) => parsedIds.includes(String(s._id)));
+    } else if (preselectedServiceName) {
+      const normalizedQuery = preselectedServiceName.toLowerCase().trim();
+      const matched = services.find((s) => s.name.toLowerCase().includes(normalizedQuery));
+      if (matched) matchedServices = [matched];
+    }
+
+    if (matchedServices.length === 0) return;
+    setCategory(matchedServices[0].category);
+    setSelectedServices(matchedServices);
+    setSelectedStaff(null);
+    setSelectedSlot(null);
+    setSelectedDate("");
+    setSlots([]);
+    setPreselectApplied(true);
+    goToStep(2);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [preselectedServiceIdsParam, preselectedServiceName, preselectApplied, services]);
+
   const filteredServices = category
     ? services.filter((s) => s.category === category)
     : [];
 
-  const availableStaff = selectedService
-    ? staff.filter((s) =>
-        s.serviceIds?.some(
-          (sv) => String((sv as { _id: string })._id) === String(selectedService._id)
-        )
-      )
+  const serviceGroups: ServiceGroup[] =
+    category === "women"
+      ? [
+          {
+            id: "women-cut-styling",
+            label: "Damen - Haarschnitte & Stylings",
+            matcher: (s) =>
+              s.name.startsWith("Damen -") &&
+              !s.name.includes("Coloration") &&
+              !s.name.includes("Ansatzfarbe") &&
+              !s.name.includes("Foliensträhnen") &&
+              !s.name.includes("Balayage") &&
+              !s.name.includes("Glossing") &&
+              !s.name.includes("Face Frame"),
+          },
+          {
+            id: "women-color-styling",
+            label: "Damen - Colorationen & Styling",
+            matcher: (s) =>
+              !s.name.includes(", Haarschnitt & Styling") &&
+              (s.name.includes("Ansatzfarbe") ||
+                s.name.includes("Soft Coloration") ||
+                s.name.includes("Foliensträhnen") ||
+                s.name.includes("Balayage") ||
+                s.name.includes("Glossing/Milkshake") ||
+                s.name.includes("Face Frame")),
+          },
+          {
+            id: "women-color-cut-style",
+            label: "Damen - Colorationen, Waschen, Schneiden & Stylen",
+            matcher: (s) => s.name.includes(", Haarschnitt & Styling"),
+          },
+        ]
+      : category === "men"
+        ? [
+            {
+              id: "men-cut-styling",
+              label: "Herren - Haarschnitte & Stylings",
+              matcher: () => true,
+            },
+          ]
+        : [];
+
+  const groupedById = useMemo(() => {
+    const result: Record<string, GroupedServiceEntry[]> = {};
+    for (const group of serviceGroups) {
+      const groupServices = filteredServices
+        .filter(group.matcher)
+        .sort((a, b) => a.name.localeCompare(b.name));
+      const map = new Map<string, GroupedServiceEntry>();
+      groupServices.forEach((service) => {
+        const key = baseServiceTitle(service.name);
+        if (!map.has(key)) {
+          map.set(key, { key, title: key, variants: [] });
+        }
+        map.get(key)?.variants.push(service);
+      });
+      result[group.id] = Array.from(map.values()).map((entry) => ({
+        ...entry,
+        variants: entry.variants.sort((a, b) => a.priceEur - b.priceEur),
+      }));
+    }
+    return result;
+  }, [filteredServices, serviceGroups]);
+
+  const activeGroupedServices =
+    activeServiceGroupId && groupedById[activeServiceGroupId]
+      ? groupedById[activeServiceGroupId]
+      : groupedById[serviceGroups[0]?.id] || [];
+
+  useEffect(() => {
+    if (!category || serviceGroups.length === 0) return;
+    const first = serviceGroups[0].id;
+    setActiveServiceGroupId((prev) =>
+      prev && serviceGroups.some((g) => g.id === prev) ? prev : first
+    );
+  }, [category, serviceGroups]);
+
+  const selectedServiceIds = selectedServices.map((s) => s._id);
+  const primarySelectedService = selectedServices[0] ?? null;
+  const totalDuration = selectedServices.reduce((sum, s) => sum + s.durationMinutes, 0);
+  const totalPrice = selectedServices.reduce((sum, s) => sum + s.priceEur, 0);
+
+  const availableStaff = selectedServices.length > 0
+    ? staff.filter((s) => canStaffDoAllServices(s, selectedServices))
     : [];
 
-  const isFallbackData = selectedService?._id?.toString().startsWith("fallback-") ?? false;
+  const isFallbackData = selectedServices.some((s) => s._id?.toString().startsWith("fallback-"));
 
   const toLocalDateInput = (date: Date) => {
     const year = date.getFullYear();
@@ -177,18 +331,18 @@ export default function BuchungsFlow() {
   };
 
   const fetchSlots = async (date: string, staffOverride?: Staff | null) => {
-    if (!selectedService) return;
+    if (selectedServiceIds.length === 0) return;
     setLoading(true);
     setError("");
     try {
       if (isFallbackData) {
-        const demoSlots = generateDemoSlots(date, selectedService.durationMinutes);
+        const demoSlots = generateDemoSlots(date, totalDuration);
         setSlots(demoSlots);
       } else {
         const effectiveStaff = staffOverride === undefined ? selectedStaff : staffOverride;
         const data = await getAvailableSlots(
           date,
-          selectedService._id,
+          selectedServiceIds,
           effectiveStaff?._id
         );
         setSlots(data);
@@ -208,17 +362,40 @@ export default function BuchungsFlow() {
 
   const handleCategorySelect = (cat: string) => {
     setCategory(cat);
-    setSelectedService(null);
+    setSelectedServices([]);
+    setActiveServiceGroupId("");
+    setExpandedServiceKeys({});
+    setSelectedStaff(null);
+    setSelectedDate("");
+    setSlots([]);
     goToStep(1);
   };
 
-  const handleServiceSelect = (s: Service) => {
-    setSelectedService(s);
+  const handleServiceToggle = (s: Service) => {
+    setSelectedServices((prev) => {
+      const exists = prev.some((item) => item._id === s._id);
+      if (exists) return prev.filter((item) => item._id !== s._id);
+      return [...prev, s];
+    });
     setSelectedStaff(null);
     setSelectedSlot(null);
     setSlots([]);
     setSelectedDate("");
-    goToStep(2);
+  };
+
+  const autoSelectAvailableStaff = async (date: string) => {
+    if (availableStaff.length === 0) return null;
+    if (isFallbackData) return availableStaff[0] || null;
+    const checks = await Promise.all(
+      availableStaff.map(async (s) => {
+        const data = await getAvailableSlots(date, selectedServiceIds, s._id);
+        return { staff: s, hasSlots: Array.isArray(data) && data.length > 0, slots: data };
+      })
+    );
+    const firstAvailable = checks.find((c) => c.hasSlots);
+    if (!firstAvailable) return null;
+    setSlots(firstAvailable.slots);
+    return firstAvailable.staff;
   };
 
   const handleStaffSelect = (s: Staff | null) => {
@@ -226,7 +403,7 @@ export default function BuchungsFlow() {
     setSelectedSlot(null);
     setSlots([]);
     // UX: direkt heutige Slots laden, wenn möglich
-    if (s && selectedService) {
+    if (s && selectedServiceIds.length > 0) {
       setSelectedDate(todayDate);
       fetchSlots(todayDate, s);
     }
@@ -236,7 +413,14 @@ export default function BuchungsFlow() {
     setSelectedDate(date);
     setSelectedSlot(null);
     setSlots([]);
-    if (date) await fetchSlots(date, selectedStaff);
+    if (!date) return;
+    if (!selectedStaff) {
+      const autoStaff = await autoSelectAvailableStaff(date);
+      setSelectedStaff(autoStaff);
+      await fetchSlots(date, autoStaff);
+      return;
+    }
+    await fetchSlots(date, selectedStaff);
   };
 
   const handleSlotSelect = (slot: { start: string; end: string }) => {
@@ -244,7 +428,7 @@ export default function BuchungsFlow() {
   };
 
   const handleSubmit = async () => {
-    if (!selectedService || !selectedStaff || !selectedSlot || !form.privacy) return;
+    if (selectedServices.length === 0 || !selectedStaff || !selectedSlot || !form.privacy) return;
     if (!form.firstName.trim() || !form.lastName.trim() || !form.email.trim()) {
       setError("Bitte fülle alle Pflichtfelder aus.");
       return;
@@ -259,7 +443,7 @@ export default function BuchungsFlow() {
     try {
       setSuccessType("booked");
       const payload = {
-        serviceId: selectedService._id,
+        serviceIds: selectedServiceIds,
         staffId: selectedStaff._id,
         startAt: selectedSlot.start,
         customer: {
@@ -296,7 +480,7 @@ export default function BuchungsFlow() {
 
   const handleWaitlist = async () => {
     setSuccessType("waitlist");
-    if (!selectedService || !form.firstName.trim() || !form.lastName.trim() || !form.email.trim()) {
+    if (selectedServices.length === 0 || !form.firstName.trim() || !form.lastName.trim() || !form.email.trim()) {
       setError("Bitte fülle alle Pflichtfelder aus.");
       return;
     }
@@ -308,7 +492,7 @@ export default function BuchungsFlow() {
     setError("");
     try {
       await addToWaitlist({
-        serviceId: selectedService._id,
+        serviceId: selectedServiceIds[0],
         staffId: selectedStaff?._id,
         customer: {
           firstName: form.firstName.trim(),
@@ -349,7 +533,11 @@ export default function BuchungsFlow() {
   }
 
   return (
-    <section className="mx-auto max-w-2xl px-6 py-12">
+    <section
+      className={`mx-auto px-6 py-12 ${
+        step === 1 && category ? "max-w-6xl" : "max-w-2xl"
+      }`}
+    >
       {/* Fortschritt */}
       <div className="mb-12 flex gap-2">
         {[1, 2, 3, 4].map((s) => (
@@ -370,7 +558,7 @@ export default function BuchungsFlow() {
 
       {/* Step 1: Kategorie & Service */}
       {step === 1 && (
-        <div className="space-y-10">
+        <div className="space-y-10 pb-24">
           <div>
             <h2 className="font-display text-xl font-medium text-[#2D2D2D]">
               Kategorie
@@ -395,36 +583,152 @@ export default function BuchungsFlow() {
           {category && (
             <div>
               <h2 className="font-display text-xl font-medium text-[#2D2D2D]">
-                Leistung auswählen
+                Leistungen auswählen
               </h2>
-              <div className="mt-4 space-y-2">
-                {filteredServices.map((s) => (
-                  <button
-                    key={s._id}
-                    onClick={() => handleServiceSelect(s)}
-                    className="flex w-full items-center justify-between rounded-lg border border-[#E8E4DF] bg-white p-4 text-left transition hover:border-[#4A5D4A] hover:bg-[#F5F2ED]"
-                  >
-                    <span>{s.name}</span>
-                    <span className="text-[#4A5D4A]">
-                      {s.priceEur} € · ca. {s.durationMinutes} min
-                    </span>
-                  </button>
-                ))}
+              <div className="mt-4 grid items-start gap-6 lg:grid-cols-[250px_1fr]">
+                <div className="h-fit self-start rounded-xl border border-[#E8E4DF] bg-white p-2">
+                  <div className="flex gap-2 overflow-x-auto lg:block lg:overflow-visible">
+                    {serviceGroups.map((group) => (
+                      <button
+                        key={group.id}
+                        type="button"
+                        onClick={() => setActiveServiceGroupId(group.id)}
+                        className={`shrink-0 rounded-lg px-3 py-3 text-left text-sm font-medium lg:mb-1 lg:block lg:w-full ${
+                          activeServiceGroupId === group.id
+                            ? "border border-[#4A5D4A]/35 bg-[#4A5D4A]/10 text-[#2D2D2D]"
+                            : "border border-[#E8E4DF]/60 text-[#2D2D2D]/90 hover:bg-[#F7F7F9]"
+                        }`}
+                      >
+                        {group.label} ({groupedById[group.id]?.length || 0})
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-[#E8E4DF] bg-white">
+                    {activeGroupedServices.map((entry) => {
+                      const hasVariants = entry.variants.length > 1;
+                      const isExpanded = expandedServiceKeys[entry.key] || false;
+                      const minPrice = Math.min(...entry.variants.map((v) => v.priceEur));
+                      const minDuration = Math.min(...entry.variants.map((v) => v.durationMinutes));
+                      const maxDuration = Math.max(...entry.variants.map((v) => v.durationMinutes));
+                      return (
+                        <div key={entry.key} className="border-b border-[#E8E4DF] p-4 last:border-b-0">
+                          <div className="grid items-start gap-3 md:grid-cols-[1fr_auto_auto]">
+                            <div>
+                              <p className="font-medium text-[#2D2D2D]">{entry.title}</p>
+                              <p className="mt-1 text-sm text-[#2D2D2D]/70">
+                                {minDuration === maxDuration
+                                  ? formatDurationLabel(minDuration)
+                                  : `${formatDurationLabel(minDuration)} - ${formatDurationLabel(maxDuration)}`}
+                              </p>
+                            </div>
+                            <div className="text-right font-semibold text-[#2D2D2D]">
+                              {hasVariants ? `ab ${minPrice} €` : `${minPrice} €`}
+                            </div>
+                            {hasVariants ? (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setExpandedServiceKeys((prev) => ({
+                                    ...prev,
+                                    [entry.key]: !prev[entry.key],
+                                  }))
+                                }
+                                className="rounded-full border border-[#E8E4DF] px-4 py-2 text-sm font-medium text-[#2D2D2D] hover:bg-[#F5F2ED]"
+                              >
+                                {isExpanded ? "Varianten ausblenden" : "Varianten anzeigen"}
+                              </button>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => handleServiceToggle(entry.variants[0])}
+                                className={`rounded border px-4 py-2 text-sm font-medium ${
+                                  selectedServices.some((x) => x._id === entry.variants[0]._id)
+                                    ? "border-[#4A5D4A] bg-[#4A5D4A] text-white"
+                                    : "border-[#D4A5A5] text-[#C2787E]"
+                                }`}
+                              >
+                                {selectedServices.some((x) => x._id === entry.variants[0]._id)
+                                  ? "Ausgewählt"
+                                  : "Auswählen"}
+                              </button>
+                            )}
+                          </div>
+                          {hasVariants && isExpanded && (
+                            <div className="mt-3 space-y-2">
+                              {entry.variants.map((variant) => (
+                                <div
+                                  key={variant._id}
+                                  className="grid items-center gap-3 rounded-lg border border-[#E8E4DF] bg-[#FAF9F7] p-3 md:grid-cols-[1fr_auto_auto]"
+                                >
+                                  <div>
+                                    <p className="text-sm font-medium text-[#2D2D2D]">
+                                      {variantLabel(variant.name)}
+                                    </p>
+                                    <p className="text-sm text-[#2D2D2D]/70">
+                                      {formatDurationLabel(variant.durationMinutes)}
+                                    </p>
+                                  </div>
+                                  <div className="text-right font-semibold text-[#2D2D2D]">
+                                    {variant.priceEur} €
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleServiceToggle(variant)}
+                                    className={`rounded border px-4 py-2 text-sm font-medium ${
+                                      selectedServices.some((x) => x._id === variant._id)
+                                        ? "border-[#4A5D4A] bg-[#4A5D4A] text-white"
+                                        : "border-[#D4A5A5] text-[#C2787E]"
+                                    }`}
+                                  >
+                                    {selectedServices.some((x) => x._id === variant._id)
+                                      ? "Ausgewählt"
+                                      : "Auswählen"}
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                </div>
               </div>
+              {selectedServices.length > 0 && (
+                <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-[#E8E4DF] bg-white/95 p-4 backdrop-blur">
+                  <div className="mx-auto max-w-6xl">
+                    <p className="mb-2 text-sm text-[#2D2D2D]/85">
+                      {selectedServices.length} Leistung(en) ausgewählt · {totalDuration} min · {totalPrice} €
+                    </p>
+                    <button
+                      onClick={() => goToStep(2)}
+                      className="w-full rounded-full bg-[#4A5D4A] py-3 font-medium text-white transition hover:bg-[#3A4A3A]"
+                    >
+                      Weiter
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
       )}
 
       {/* Step 2: Mitarbeiter & Termin */}
-      {step === 2 && selectedService && (
-        <div className="space-y-10">
+      {step === 2 && primarySelectedService && (
+        <div className="space-y-10 pb-24">
           <button
             onClick={() => goToStep(1)}
             className="text-[#4A5D4A] hover:underline"
           >
             ← Zurück
           </button>
+
+          <div className="rounded-xl border border-[#4A5D4A]/35 bg-[#4A5D4A]/5 p-4">
+            <p className="text-sm text-[#2D2D2D]/70">Ausgewählte Leistungen</p>
+            <p className="mt-1 text-[#2D2D2D]">{selectedServices.map((s) => s.name).join(" + ")}</p>
+            <p className="mt-1 text-sm text-[#2D2D2D]/75">{totalDuration} min · {totalPrice} €</p>
+          </div>
 
           <div>
             <h2 className="font-display text-xl font-medium text-[#2D2D2D]">
@@ -438,7 +742,7 @@ export default function BuchungsFlow() {
                   className={`rounded-full px-4 py-2 text-sm font-medium ${
                     selectedStaff?._id === s._id
                       ? "bg-[#4A5D4A] text-white"
-                      : "border border-[#E8E4DF] text-[#2D2D2D]"
+                      : "border border-[#E8E4DF] text-[#2D2D2D] hover:border-[#4A5D4A] hover:bg-[#F5F2ED]"
                   }`}
                 >
                   {s.firstName} {s.lastName}
@@ -533,19 +837,22 @@ export default function BuchungsFlow() {
             )}
           </div>
 
-          {selectedSlot && (
-            <button
-              onClick={() => goToStep(3)}
-              className="w-full rounded-full bg-[#4A5D4A] py-3 font-medium text-white transition hover:bg-[#3A4A3A]"
-            >
-              Weiter
-            </button>
-          )}
+          <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-[#E8E4DF] bg-white/95 p-4 backdrop-blur">
+            <div className="mx-auto max-w-2xl">
+              <button
+                onClick={() => goToStep(3)}
+                disabled={!selectedSlot}
+                className="w-full rounded-full bg-[#4A5D4A] py-3 font-medium text-white transition hover:bg-[#3A4A3A] disabled:cursor-not-allowed disabled:bg-[#4A5D4A]/40"
+              >
+                Weiter
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
       {/* Step 3: Kontaktdaten */}
-      {step === 3 && selectedService && (
+      {step === 3 && primarySelectedService && (
         <div className="space-y-8">
           {!authLoading && !user && (
             <div className="rounded-xl border-2 border-[#4A5D4A]/50 bg-[#F5F2ED] p-6 text-center">
@@ -562,7 +869,7 @@ export default function BuchungsFlow() {
                     sessionStorage.setItem(
                       BOOKING_STATE_KEY,
                       JSON.stringify({
-                        service: selectedService,
+                        services: selectedServices,
                         staff: selectedStaff,
                         slot: selectedSlot,
                         rescheduleToken,
@@ -579,7 +886,7 @@ export default function BuchungsFlow() {
                     sessionStorage.setItem(
                       BOOKING_STATE_KEY,
                       JSON.stringify({
-                        service: selectedService,
+                        services: selectedServices,
                         staff: selectedStaff,
                         slot: selectedSlot,
                         rescheduleToken,
@@ -616,7 +923,7 @@ export default function BuchungsFlow() {
                 Übersicht
               </h3>
               <ul className="mt-3 space-y-1 text-[#2D2D2D]/85">
-                <li>{selectedService.name}</li>
+                <li>{selectedServices.map((s) => s.name).join(" + ")}</li>
                 <li>
                   {selectedStaff
                     ? `${selectedStaff.firstName}`
@@ -632,8 +939,8 @@ export default function BuchungsFlow() {
                     minute: "2-digit",
                   })}
                 </li>
-                <li>{selectedService.durationMinutes} min</li>
-                <li>{selectedService.priceEur} €</li>
+                <li>{totalDuration} min</li>
+                <li>{totalPrice} €</li>
               </ul>
               <p className="mt-3 text-sm text-[#2D2D2D]/70">
                 Stornierung bis 24h vorher möglich.
@@ -725,15 +1032,19 @@ export default function BuchungsFlow() {
             </div>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-3 pb-24">
             {selectedSlot ? (
-              <button
-                onClick={handleSubmit}
-                disabled={loading || !form.privacy}
-                className="w-full rounded-full bg-[#4A5D4A] py-3 font-medium text-white transition hover:bg-[#3A4A3A] disabled:opacity-50"
-              >
-                {loading ? "Buchen…" : "Termin verbindlich buchen"}
-              </button>
+              <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-[#E8E4DF] bg-white/95 p-4 backdrop-blur">
+                <div className="mx-auto max-w-2xl">
+                  <button
+                    onClick={handleSubmit}
+                    disabled={loading || !form.privacy}
+                    className="w-full rounded-full bg-[#4A5D4A] py-3 font-medium text-white transition hover:bg-[#3A4A3A] disabled:opacity-50"
+                  >
+                    {loading ? "Buchen…" : "Jetzt buchen"}
+                  </button>
+                </div>
+              </div>
             ) : (
               <button
                 onClick={handleWaitlist}

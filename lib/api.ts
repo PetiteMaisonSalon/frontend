@@ -98,14 +98,24 @@ export async function getAvailableDays(serviceId: string, from?: string) {
   return fetchAPI(`/api/availability/days?${params}`);
 }
 
-export async function getAvailableSlots(date: string, serviceId: string, staffId?: string) {
-  const params = new URLSearchParams({ date, serviceId });
+export async function getAvailableSlots(
+  date: string,
+  serviceIdOrIds: string | string[],
+  staffId?: string
+) {
+  const params = new URLSearchParams({ date });
+  if (Array.isArray(serviceIdOrIds)) {
+    params.set("serviceIds", serviceIdOrIds.join(","));
+  } else {
+    params.set("serviceId", serviceIdOrIds);
+  }
   if (staffId) params.set("staffId", staffId);
   return fetchAPI(`/api/availability/slots?${params}`);
 }
 
 export async function createAppointment(data: {
-  serviceId: string;
+  serviceId?: string;
+  serviceIds?: string[];
   staffId: string;
   startAt: string;
   customer: { firstName: string; lastName: string; email: string; phone?: string; note?: string };
@@ -119,7 +129,8 @@ export async function createAppointment(data: {
 export async function rescheduleAppointment(
   token: string,
   data: {
-    serviceId: string;
+    serviceId?: string;
+    serviceIds?: string[];
     staffId: string;
     startAt: string;
     customer: { firstName: string; lastName: string; email: string; phone?: string; note?: string };
@@ -148,6 +159,14 @@ export async function getAppointmentByToken(token: string) {
   return fetchAPI(`/api/appointments/by-token/${token}`);
 }
 
+export async function getMyAppointments(params?: { includePast?: boolean; includeCancelled?: boolean }) {
+  const query = new URLSearchParams();
+  if (params?.includePast) query.set("includePast", "true");
+  if (params?.includeCancelled) query.set("includeCancelled", "true");
+  const q = query.toString();
+  return fetchAPI(`/api/appointments/me${q ? `?${q}` : ""}`);
+}
+
 export async function cancelAppointment(token: string) {
   return fetchAPI(`/api/appointments/cancel/${token}`, { method: "POST" });
 }
@@ -173,7 +192,8 @@ export async function getAdminAppointments(params?: {
 }
 
 export async function createAdminAppointment(data: {
-  serviceId: string;
+  serviceId?: string;
+  serviceIds?: string[];
   staffId: string;
   startAt: string;
   customer: { firstName: string; lastName: string; email: string; phone?: string; note?: string };
@@ -213,5 +233,36 @@ export async function getRevenueEntries(params?: { from?: string; to?: string; e
 export async function markRevenueExported(entryId: string) {
   return fetchAPI(`/api/admin/revenue/${entryId}/exported`, {
     method: "PATCH",
+  });
+}
+
+export async function getAdminBlockedSlots(params?: {
+  from?: string;
+  to?: string;
+  staffId?: string;
+}) {
+  const query = new URLSearchParams();
+  if (params?.from) query.set("from", params.from);
+  if (params?.to) query.set("to", params.to);
+  if (params?.staffId) query.set("staffId", params.staffId);
+  const q = query.toString();
+  return fetchAPI(`/api/admin/blocked-slots${q ? `?${q}` : ""}`);
+}
+
+export async function createAdminBlockedSlot(data: {
+  staffId: string;
+  startAt: string;
+  endAt: string;
+  reason?: string;
+}) {
+  return fetchAPI("/api/admin/blocked-slots", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteAdminBlockedSlot(blockedSlotId: string) {
+  return fetchAPI(`/api/admin/blocked-slots/${blockedSlotId}`, {
+    method: "DELETE",
   });
 }

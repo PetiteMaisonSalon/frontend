@@ -11,7 +11,7 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const { refreshUser } = useAuth();
   const redirectParam = searchParams.get("redirect");
-  const redirectDefault = "/buchung";
+  const redirectDefault = "/konto/termine";
   const verified = searchParams.get("verified");
 
   const [email, setEmail] = useState("");
@@ -51,7 +51,7 @@ function LoginForm() {
           Anmelden
         </h1>
         <p className="mt-2 text-[#2D2D2D]/85">
-          Melde dich an, um einen Termin zu buchen.
+          Melde dich an, um deine Termine zu sehen und zu verwalten.
         </p>
 
         {verified === "true" && (

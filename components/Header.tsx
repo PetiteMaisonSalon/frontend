@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -17,17 +17,13 @@ export default function Header() {
   const pathname = usePathname();
   const { user, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isAdminDomain, setIsAdminDomain] = useState(false);
+  const isCmsArea = pathname?.startsWith("/admin");
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setIsAdminDomain(window.location.hostname.startsWith("admin."));
-    }
-  }, []);
-  const navWithAdmin =
+  const defaultNavWithAdmin =
     user?.role === "admin" || user?.role === "staff"
       ? [...navItems, { href: "/admin", label: "CMS" }]
       : navItems;
+  const navWithAdmin = isCmsArea ? [{ href: "/admin", label: "CMS" }] : defaultNavWithAdmin;
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#E8E4DF]/50 bg-[#F5F2ED]/95 backdrop-blur-sm">
@@ -82,13 +78,21 @@ export default function Header() {
           </nav>
           {user ? (
             <div className="flex items-center gap-4">
+              {!isCmsArea && (
+                <Link
+                  href="/konto/termine"
+                  className="whitespace-nowrap text-sm font-medium text-[#2D2D2D] transition hover:text-[#4A5D4A]"
+                >
+                  Meine Termine
+                </Link>
+              )}
               <button
                 onClick={logout}
-                className="whitespace-nowrap text-sm font-medium text-[#2D2D2D] transition hover:text-[#4A5D4A]"
+                className="whitespace-nowrap rounded-full border border-[#D4A5A5] px-4 py-2 text-sm font-semibold text-[#5C4033] transition hover:bg-[#D4A5A5]/20"
               >
                 Abmelden
               </button>
-              {!isAdminDomain && (
+              {!isCmsArea && (
                 <Link
                   href="/buchung"
                   className="whitespace-nowrap rounded-full bg-[#4A5D4A] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#3A4A3A]"
@@ -101,11 +105,11 @@ export default function Header() {
             <div className="flex items-center gap-4">
               <Link
                 href="/login"
-                className="whitespace-nowrap text-sm font-medium text-[#2D2D2D] transition hover:text-[#4A5D4A]"
+                className="whitespace-nowrap rounded-full border-2 border-[#4A5D4A] px-5 py-2.5 text-sm font-medium text-[#4A5D4A] transition hover:bg-[#4A5D4A]/10"
               >
                 Anmelden
               </Link>
-              {!isAdminDomain && (
+              {!isCmsArea && (
                 <Link
                   href="/buchung"
                   className="whitespace-nowrap rounded-full bg-[#4A5D4A] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#3A4A3A]"
@@ -138,16 +142,25 @@ export default function Header() {
           <div className="mt-6 flex flex-col gap-3 border-t border-[#E8E4DF] pt-6">
             {user ? (
               <>
+                {!isCmsArea && (
+                  <Link
+                    href="/konto/termine"
+                    onClick={() => setMenuOpen(false)}
+                    className="w-full rounded-full border border-[#E8E4DF] px-5 py-3 text-center font-medium text-[#2D2D2D]"
+                  >
+                    Meine Termine
+                  </Link>
+                )}
                 <button
                   onClick={() => {
                     logout();
                     setMenuOpen(false);
                   }}
-                  className="w-full text-left text-sm font-medium text-[#2D2D2D] hover:text-[#4A5D4A]"
+                  className="w-full rounded-full border border-[#D4A5A5] px-5 py-3 text-left text-sm font-semibold text-[#5C4033] hover:bg-[#D4A5A5]/20"
                 >
                   Abmelden
                 </button>
-                {!isAdminDomain && (
+                {!isCmsArea && (
                   <Link
                     href="/buchung"
                     onClick={() => setMenuOpen(false)}
@@ -162,11 +175,11 @@ export default function Header() {
                 <Link
                   href="/login"
                   onClick={() => setMenuOpen(false)}
-                  className="rounded-full border-2 border-[#4A5D4A] px-5 py-3 text-center font-medium text-[#4A5D4A] hover:bg-[#4A5D4A]/10"
+                  className="rounded-full border-[3px] border-[#4A5D4A] px-5 py-3 text-center font-medium text-[#4A5D4A] hover:bg-[#4A5D4A]/10"
                 >
                   Anmelden
                 </Link>
-                {!isAdminDomain && (
+                {!isCmsArea && (
                   <Link
                     href="/buchung"
                     onClick={() => setMenuOpen(false)}
