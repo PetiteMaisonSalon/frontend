@@ -164,7 +164,7 @@ export default function LeistungenPage() {
   return (
     <main>
       <section className="border-b border-[#E8E4DF]">
-        <div className="mx-auto max-w-7xl px-6 py-20 md:py-28">
+        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 md:py-28">
           <h1 className="font-display text-4xl font-medium tracking-tight text-[#2D2D2D] md:text-5xl">
             Unsere Leistungen
           </h1>
@@ -176,21 +176,21 @@ export default function LeistungenPage() {
         </div>
       </section>
 
-      <section className="bg-[#F5F2ED] py-20 pb-40 md:py-24 md:pb-44">
-        <div className="mx-auto max-w-6xl px-6">
+      <section className="bg-[#F5F2ED] py-14 pb-36 md:py-24 md:pb-44">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <h2 className="font-display text-2xl font-medium tracking-tight text-[#2D2D2D]">
             Alle Services
           </h2>
 
-          <div className="mt-8 grid items-start gap-6 lg:grid-cols-[250px_1fr]">
+          <div className="mt-8 grid items-start gap-4 lg:gap-6 lg:grid-cols-[250px_1fr]">
             <div className="h-fit self-start rounded-xl border border-[#E8E4DF] bg-white p-2">
-              <div className="flex gap-2 overflow-x-auto lg:block lg:overflow-visible">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:block">
                 {groupStats.map((group) => (
                   <button
                     key={group.id}
                     type="button"
                     onClick={() => setActiveGroupId(group.id)}
-                    className={`shrink-0 rounded-lg px-3 py-3 text-left text-sm font-medium lg:mb-1 lg:block lg:w-full ${
+                    className={`w-full whitespace-normal break-words rounded-lg px-3 py-3 text-left text-sm font-medium lg:mb-1 ${
                       activeGroupId === group.id
                         ? "border border-[#4A5D4A]/35 bg-[#4A5D4A]/10 text-[#2D2D2D]"
                         : "border border-[#E8E4DF]/60 text-[#2D2D2D]/90 hover:bg-[#F7F7F9]"
@@ -202,7 +202,7 @@ export default function LeistungenPage() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-[#E8E4DF] bg-white">
+            <div className="min-w-0 rounded-2xl border border-[#E8E4DF] bg-white">
               {visibleEntries.map((entry) => {
                 const hasVariants = entry.variants.length > 1;
                 const isExpanded = expandedKeys[entry.key] || false;
@@ -211,24 +211,24 @@ export default function LeistungenPage() {
                 const maxDuration = Math.max(...entry.variants.map((v) => v.durationMinutes));
 
                 return (
-                  <div key={entry.key} className="border-b border-[#E8E4DF] p-4 last:border-b-0">
-                    <div className="grid items-start gap-3 md:grid-cols-[1fr_auto_auto]">
-                      <div>
-                        <p className="font-medium text-[#2D2D2D]">{entry.title}</p>
+                  <div key={entry.key} className="min-w-0 border-b border-[#E8E4DF] p-4 last:border-b-0">
+                    <div className="min-w-0 grid grid-cols-1 items-start gap-3 md:grid-cols-[minmax(0,1fr)_auto] lg:grid-cols-[minmax(0,1fr)_auto_auto]">
+                      <div className="min-w-0">
+                        <p className="break-words font-medium text-[#2D2D2D]">{entry.title}</p>
                         <p className="mt-1 text-sm text-[#2D2D2D]/70">
                           {minDuration === maxDuration
                             ? formatDuration(minDuration)
                             : `${formatDuration(minDuration)} - ${formatDuration(maxDuration)}`}
                         </p>
                       </div>
-                      <div className="text-right font-semibold text-[#2D2D2D]">
+                      <div className="text-left font-semibold text-[#2D2D2D] sm:text-right">
                         {hasVariants ? `ab ${minPrice} €` : `${minPrice} €`}
                       </div>
                       {hasVariants ? (
                         <button
                           type="button"
                           onClick={() => toggleExpanded(entry.key)}
-                          className="rounded-full border border-[#E8E4DF] px-4 py-2 text-sm font-medium text-[#2D2D2D] hover:bg-[#F5F2ED]"
+                          className="w-full rounded-full border border-[#E8E4DF] px-4 py-2 text-sm font-medium text-[#2D2D2D] hover:bg-[#F5F2ED] md:w-auto lg:justify-self-end"
                         >
                           {isExpanded ? "Varianten ausblenden" : "Varianten anzeigen"}
                         </button>
@@ -236,7 +236,7 @@ export default function LeistungenPage() {
                         <button
                           type="button"
                           onClick={() => toggleService(entry.variants[0].id)}
-                          className={`rounded border px-4 py-2 text-sm font-medium ${
+                          className={`w-full rounded border px-4 py-2 text-sm font-medium md:w-auto lg:justify-self-end ${
                             selectedServiceIds.includes(entry.variants[0].id)
                               ? "border-[#4A5D4A] bg-[#4A5D4A] text-white"
                               : "border-[#D4A5A5] text-[#C2787E]"
@@ -254,21 +254,21 @@ export default function LeistungenPage() {
                         {entry.variants.map((variant) => (
                           <div
                             key={variant.id}
-                            className="grid items-center gap-3 rounded-lg border border-[#E8E4DF] bg-[#FAF9F7] p-3 md:grid-cols-[1fr_auto_auto]"
+                            className="min-w-0 grid grid-cols-1 items-center gap-3 rounded-lg border border-[#E8E4DF] bg-[#FAF9F7] p-3 md:grid-cols-[minmax(0,1fr)_auto] lg:grid-cols-[minmax(0,1fr)_auto_auto]"
                           >
-                            <div>
-                              <p className="text-sm font-medium text-[#2D2D2D]">{variant.label}</p>
+                            <div className="min-w-0">
+                              <p className="break-words text-sm font-medium text-[#2D2D2D]">{variant.label}</p>
                               <p className="text-sm text-[#2D2D2D]/70">
                                 {formatDuration(variant.durationMinutes)}
                               </p>
                             </div>
-                            <div className="text-right font-semibold text-[#2D2D2D]">
+                            <div className="text-left font-semibold text-[#2D2D2D] sm:text-right">
                               {variant.priceEur} €
                             </div>
                             <button
                               type="button"
                               onClick={() => toggleService(variant.id)}
-                              className={`rounded border px-4 py-2 text-sm font-medium ${
+                              className={`w-full rounded border px-4 py-2 text-sm font-medium md:w-auto lg:justify-self-end ${
                                 selectedServiceIds.includes(variant.id)
                                   ? "border-[#4A5D4A] bg-[#4A5D4A] text-white"
                                   : "border-[#D4A5A5] text-[#C2787E]"
