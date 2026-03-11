@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/components/AuthContext";
 import {
@@ -84,7 +84,7 @@ function getAppointmentServiceIds(a: MyAppointment) {
   return [];
 }
 
-export default function AccountPage() {
+function AccountPageContent() {
   const { user, loading: authLoading, logout, refreshUser } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -815,6 +815,23 @@ export default function AccountPage() {
         </section>
       </div>
     </main>
+  );
+}
+
+export default function AccountPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="mx-auto grid max-w-6xl place-items-center px-4 py-20 sm:px-6">
+          <div className="flex flex-col items-center gap-3">
+            <span className="h-10 w-10 animate-spin rounded-full border-4 border-[#4A5D4A]/25 border-t-[#4A5D4A]" />
+            <p className="text-sm text-[#2D2D2D]/70">Konto wird geladen…</p>
+          </div>
+        </main>
+      }
+    >
+      <AccountPageContent />
+    </Suspense>
   );
 }
 
