@@ -77,6 +77,34 @@ export async function getMe() {
   return fetchAPI("/api/auth/me");
 }
 
+export async function updateMyProfile(data: {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+}) {
+  return fetchAPI("/api/auth/me", {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function updateMyPassword(data: {
+  currentPassword: string;
+  newPassword: string;
+}) {
+  return fetchAPI("/api/auth/me/password", {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteMyProfile() {
+  return fetchAPI("/api/auth/me", {
+    method: "DELETE",
+  });
+}
+
 export function logout() {
   if (typeof window !== "undefined") {
     localStorage.removeItem("pm_token");
@@ -152,6 +180,16 @@ export async function addToWaitlist(data: {
   return fetchAPI("/api/waitlist", {
     method: "POST",
     body: JSON.stringify(data),
+  });
+}
+
+export async function getMyWaitlistEntries() {
+  return fetchAPI("/api/waitlist/me");
+}
+
+export async function deleteMyWaitlistEntry(entryId: string) {
+  return fetchAPI(`/api/waitlist/${entryId}`, {
+    method: "DELETE",
   });
 }
 

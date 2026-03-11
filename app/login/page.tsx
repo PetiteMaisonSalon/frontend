@@ -11,7 +11,7 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const { refreshUser } = useAuth();
   const redirectParam = searchParams.get("redirect");
-  const redirectDefault = "/konto/termine";
+  const redirectDefault = "/konto";
   const verified = searchParams.get("verified");
 
   const [email, setEmail] = useState("");

@@ -78,20 +78,21 @@ export default function Header() {
           </nav>
           {user ? (
             <div className="flex items-center gap-4">
-              {!isCmsArea && (
+              {!isCmsArea ? (
                 <Link
-                  href="/konto/termine"
-                  className="whitespace-nowrap text-sm font-medium text-[#2D2D2D] transition hover:text-[#4A5D4A]"
+                  href="/konto"
+                  className="whitespace-nowrap rounded-full border-2 border-[#4A5D4A] px-5 py-2.5 text-sm font-medium text-[#4A5D4A] transition hover:bg-[#4A5D4A]/10"
                 >
-                  Meine Termine
+                  Mein Profil
                 </Link>
+              ) : (
+                <button
+                  onClick={logout}
+                  className="whitespace-nowrap rounded-full border border-[#D4A5A5] px-4 py-2 text-sm font-semibold text-[#5C4033] transition hover:bg-[#D4A5A5]/20"
+                >
+                  Abmelden
+                </button>
               )}
-              <button
-                onClick={logout}
-                className="whitespace-nowrap rounded-full border border-[#D4A5A5] px-4 py-2 text-sm font-semibold text-[#5C4033] transition hover:bg-[#D4A5A5]/20"
-              >
-                Abmelden
-              </button>
               {!isCmsArea && (
                 <Link
                   href="/buchung"
@@ -142,24 +143,25 @@ export default function Header() {
           <div className="mt-6 flex flex-col gap-3 border-t border-[#E8E4DF] pt-6">
             {user ? (
               <>
-                {!isCmsArea && (
+                {!isCmsArea ? (
                   <Link
-                    href="/konto/termine"
+                    href="/konto"
                     onClick={() => setMenuOpen(false)}
-                    className="w-full rounded-full border border-[#E8E4DF] px-5 py-3 text-center font-medium text-[#2D2D2D]"
+                    className="w-full rounded-full border-2 border-[#4A5D4A] px-5 py-3 text-center font-medium text-[#4A5D4A] hover:bg-[#4A5D4A]/10"
                   >
-                    Meine Termine
+                    Mein Profil
                   </Link>
+                ) : (
+                  <button
+                    onClick={() => {
+                      logout();
+                      setMenuOpen(false);
+                    }}
+                    className="w-full rounded-full border border-[#D4A5A5] px-5 py-3 text-left text-sm font-semibold text-[#5C4033] hover:bg-[#D4A5A5]/20"
+                  >
+                    Abmelden
+                  </button>
                 )}
-                <button
-                  onClick={() => {
-                    logout();
-                    setMenuOpen(false);
-                  }}
-                  className="w-full rounded-full border border-[#D4A5A5] px-5 py-3 text-left text-sm font-semibold text-[#5C4033] hover:bg-[#D4A5A5]/20"
-                >
-                  Abmelden
-                </button>
                 {!isCmsArea && (
                   <Link
                     href="/buchung"

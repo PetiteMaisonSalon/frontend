@@ -138,6 +138,14 @@ export default function BuchungsFlow() {
   }, [error]);
 
   useEffect(() => {
+    if (step !== 5 || typeof window === "undefined") return;
+    const frame = window.requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [step]);
+
+  useEffect(() => {
     if (step !== 2 || selectedServices.length === 0 || selectedDate || selectedStaff) return;
     const init = async () => {
       setSelectedDate(todayDate);
@@ -570,21 +578,23 @@ export default function BuchungsFlow() {
           </p>
 
           <div className="mt-6 rounded-2xl border border-[#E8E4DF] p-5 text-left sm:p-6">
-            <p className="text-5xl font-medium leading-none text-[#2D2D2D]">{dayLabel}</p>
-            <div className="mt-4 flex items-center gap-2 text-2xl text-[#2D2D2D]/90">
-              <span aria-hidden>◷</span>
-              <span className="text-3xl font-medium">{timeLabel}</span>
+            <div className="text-center">
+              <p className="text-5xl font-medium leading-none text-[#2D2D2D]">{dayLabel}</p>
+              <div className="mt-4 flex items-center justify-center gap-2 text-2xl text-[#2D2D2D]/90">
+                <span aria-hidden>◷</span>
+                <span className="text-3xl font-medium">{timeLabel}</span>
+              </div>
+              {isBooked && googleCalendarHref && (
+                <a
+                  href={googleCalendarHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-3 inline-block text-sm text-[#4A5D4A] underline-offset-2 hover:underline"
+                >
+                  Zum Kalender hinzufügen
+                </a>
+              )}
             </div>
-            {isBooked && googleCalendarHref && (
-              <a
-                href={googleCalendarHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-3 inline-block text-sm text-[#4A5D4A] underline-offset-2 hover:underline"
-              >
-                Zum Kalender hinzufügen
-              </a>
-            )}
 
             <div className="mt-6 grid gap-5 sm:grid-cols-2">
               <div>
@@ -606,25 +616,60 @@ export default function BuchungsFlow() {
             </div>
 
             <div className="mt-6 border-t border-[#E8E4DF] pt-4 text-[#2D2D2D]/85">
-              <p className="text-lg">Petite Maison</p>
-              <p className="text-lg">Arndtstr. 33</p>
-              <p className="text-lg">22085 Hamburg</p>
-              <a
-                href="https://maps.google.com/?q=Arndtstr.+33,+22085+Hamburg"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-1 inline-block text-[#4A5D4A] underline-offset-2 hover:underline"
-              >
-                In Google Maps öffnen
-              </a>
-            </div>
+              <div className="flex items-start gap-3">
+                <svg
+                  className="mt-1 h-5 w-5 shrink-0 text-[#2D2D2D]"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M12 21s7-4.35 7-11a7 7 0 10-14 0c0 6.65 7 11 7 11z"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <circle cx="12" cy="10" r="2.5" />
+                </svg>
+                <div>
+                  <p className="text-lg">Petite Maison</p>
+                  <p className="text-lg">Arndtstr. 33</p>
+                  <p className="text-lg">22085 Hamburg</p>
+                  <a
+                    href="https://maps.google.com/?q=Arndtstr.+33,+22085+Hamburg"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-1 inline-block text-[#4A5D4A] underline-offset-2 hover:underline"
+                  >
+                    In Google Maps öffnen
+                  </a>
+                </div>
+              </div>
 
-            <p className="mt-5 text-2xl text-[#2D2D2D]">+49 176 69150964</p>
+              <div className="mt-5 flex items-center gap-3">
+                <svg
+                  className="h-5 w-5 shrink-0 text-[#2D2D2D]"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M22 16.92v3a2 2 0 01-2.18 2 19.86 19.86 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.86 19.86 0 012.01 4.18 2 2 0 014 2h3a2 2 0 012 1.72c.12.9.33 1.78.62 2.62a2 2 0 01-.45 2.11L8.1 9.9a16 16 0 006 6l1.45-1.08a2 2 0 012.11-.45c.84.29 1.72.5 2.62.62A2 2 0 0122 16.92z"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <p className="text-2xl text-[#2D2D2D]">+49 176 69150964</p>
+              </div>
+            </div>
           </div>
 
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
             <Link
-              href="/konto/termine"
+              href="/konto?tab=bookings"
               className="inline-flex items-center justify-center rounded-lg bg-[#4A5D4A] px-6 py-3 text-lg font-medium text-white transition hover:bg-[#3A4A3A]"
             >
               Gehe zu Buchungen
@@ -648,11 +693,22 @@ export default function BuchungsFlow() {
   }
 
   return (
-    <section
-      className={`mx-auto px-4 py-10 sm:px-6 sm:py-12 ${
-        (step === 1 && category) || step === 2 || step === 3 ? "max-w-6xl" : "max-w-2xl"
-      }`}
-    >
+    <>
+      <section className="border-b border-[#E8E4DF] py-12 md:py-16">
+        <div className="mx-auto max-w-2xl px-6 text-center">
+          <h1 className="font-display text-4xl font-medium tracking-tight text-[#2D2D2D] md:text-5xl">
+            Termin buchen
+          </h1>
+          <p className="mt-4 text-lg text-[#2D2D2D]/85">
+            Wähle deine Leistung, einen passenden Termin und bestätige deine Buchung.
+          </p>
+        </div>
+      </section>
+      <section
+        className={`mx-auto px-4 py-10 sm:px-6 sm:py-12 ${
+          (step === 1 && category) || step === 2 || step === 3 ? "max-w-6xl" : "max-w-2xl"
+        }`}
+      >
       {/* Fortschritt */}
       <div className="mb-12 flex gap-2">
         {[1, 2, 3, 4].map((s) => (
@@ -1337,6 +1393,7 @@ export default function BuchungsFlow() {
           )}
         </div>
       )}
-    </section>
+      </section>
+    </>
   );
 }
