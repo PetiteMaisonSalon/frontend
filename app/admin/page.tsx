@@ -2,6 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/components/AuthContext";
+import { DatePicker } from "@/components/DatePicker";
+import { TimePicker } from "@/components/TimePicker";
+import { CustomSelect } from "@/components/CustomSelect";
 import {
   getAdminAppointments,
   setAppointmentAttendance,
@@ -818,12 +821,12 @@ export default function AdminPage() {
             ))}
           </div>
 
-          <div className="mt-6 border-t border-[#E8E4DF] pt-5 text-center">
+          <div className="mt-6 hidden border-t border-[#E8E4DF] pt-5 text-center md:block">
             <p className="text-6xl font-light leading-none text-[#2D2D2D]">{nowTimeLabel}</p>
             <p className="mt-2 text-[#2D2D2D]/85">{nowDateLabel}</p>
           </div>
 
-          <div className="mt-6 rounded-xl border border-[#E8E4DF] p-3">
+          <div className="mt-6 hidden rounded-xl border border-[#E8E4DF] p-3 md:block">
             <div className="flex items-center justify-between gap-2">
               <button
                 type="button"
@@ -879,7 +882,7 @@ export default function AdminPage() {
                     key={`${value}-${idx}`}
                     type="button"
                     onClick={() => setDateFilter(value)}
-                    className={`h-7 rounded-md ${
+                    className={`h-7 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4A5D4A] focus:ring-offset-1 ${
                       isSelected
                         ? "bg-[#4A5D4A] text-white"
                         : isToday
@@ -931,16 +934,14 @@ export default function AdminPage() {
                   formatDateInput(addDays(parseDateInput(prev), viewMode === "day" ? -1 : -7))
                 )
               }
-              className="rounded-lg border border-[#E8E4DF] bg-white px-3 py-2 text-sm"
+              className="rounded-lg border border-[#E8E4DF] bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A5D4A] focus:ring-offset-1"
               aria-label={viewMode === "day" ? "Vortag" : "Vorwoche"}
             >
               ←
             </button>
-            <input
-              type="date"
+            <DatePicker
               value={dateFilter}
-              onChange={(e) => setDateFilter(e.target.value)}
-              className="rounded-lg border border-[#E8E4DF] px-3 py-2"
+              onChange={(v) => setDateFilter(v || formatDateInput(new Date()))}
             />
             <button
               type="button"
@@ -949,31 +950,30 @@ export default function AdminPage() {
                   formatDateInput(addDays(parseDateInput(prev), viewMode === "day" ? 1 : 7))
                 )
               }
-              className="rounded-lg border border-[#E8E4DF] bg-white px-3 py-2 text-sm"
+              className="rounded-lg border border-[#E8E4DF] bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A5D4A] focus:ring-offset-1"
               aria-label={viewMode === "day" ? "Nächster Tag" : "Nächste Woche"}
             >
               →
             </button>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex min-w-[160px] items-center gap-2">
             <span className="text-sm font-medium text-[#2D2D2D]">Mitarbeiter</span>
-            <select
+            <CustomSelect
               value={staffFilter}
-              onChange={(e) => setStaffFilter(e.target.value)}
-              className="rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
-            >
-              <option value="alle">Alle</option>
-              {staff.map((s) => (
-                <option
-                  key={s._id}
-                  value={s._id}
-                >
-                  {s.firstName} {s.lastName}
-                </option>
-              ))}
-            </select>
+              onChange={setStaffFilter}
+              options={[
+                { value: "alle", label: "Alle" },
+                ...staff.map((s) => ({
+                  value: s._id,
+                  label: `${s.firstName}`,
+                })),
+              ]}
+              placeholder="Alle"
+              clearable={false}
+              className="flex-1 rounded-lg px-4 py-2.5"
+            />
           </div>
-          <div className="ml-auto">
+          <div className="ml-auto hidden md:block">
             <button
               type="button"
               onClick={exportAppointmentsCsv}
@@ -1183,47 +1183,47 @@ export default function AdminPage() {
                     onClick={() =>
                       setDateFilter((prev) => formatDateInput(addDays(parseDateInput(prev), -1)))
                     }
-                    className="rounded-lg border border-[#E8E4DF] bg-white px-3 py-2 text-sm"
+                    className="rounded-lg border border-[#E8E4DF] bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A5D4A] focus:ring-offset-1"
                     aria-label="Vortag"
                   >
                     ←
                   </button>
-                  <input
-                    type="date"
+                  <DatePicker
                     value={dateFilter}
-                    onChange={(e) => setDateFilter(e.target.value)}
-                    className="rounded-lg border border-[#E8E4DF] px-3 py-2"
+                    onChange={(v) => setDateFilter(v || formatDateInput(new Date()))}
                   />
                   <button
                     type="button"
                     onClick={() =>
                       setDateFilter((prev) => formatDateInput(addDays(parseDateInput(prev), 1)))
                     }
-                    className="rounded-lg border border-[#E8E4DF] bg-white px-3 py-2 text-sm"
+                    className="rounded-lg border border-[#E8E4DF] bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A5D4A] focus:ring-offset-1"
                     aria-label="Nächster Tag"
                   >
                     →
                   </button>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex min-w-[160px] items-center gap-2">
                   <span className="text-sm font-medium text-[#2D2D2D]">Mitarbeiter</span>
-                  <select
+                  <CustomSelect
                     value={staffFilter}
-                    onChange={(e) => setStaffFilter(e.target.value)}
-                    className="rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
-                  >
-                    <option value="alle">Alle</option>
-                    {staff.map((s) => (
-                      <option key={s._id} value={s._id}>
-                        {s.firstName} {s.lastName}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={setStaffFilter}
+                    options={[
+                      { value: "alle", label: "Alle" },
+                      ...staff.map((s) => ({
+                        value: s._id,
+                        label: `${s.firstName}`,
+                      })),
+                    ]}
+                    placeholder="Alle"
+                    clearable={false}
+                    className="flex-1 rounded-lg px-4 py-2.5"
+                  />
                 </div>
                 <button
                   type="button"
                   onClick={exportAppointmentsCsv}
-                  className="ml-auto rounded-full border border-[#E8E4DF] px-4 py-2 text-sm font-medium text-[#2D2D2D] hover:bg-[#F5F2ED]"
+                  className="ml-auto hidden rounded-full border border-[#E8E4DF] px-4 py-2 text-sm font-medium text-[#2D2D2D] hover:bg-[#F5F2ED] md:inline-flex"
                 >
                   CSV exportieren
                 </button>
@@ -1397,7 +1397,7 @@ export default function AdminPage() {
                                 setServiceDeleteTarget({ id: service._id, name: service.name })
                               }
                               disabled={serviceDeletingId === service._id}
-                              className="rounded-md border border-[#D4A5A5]/70 px-3 py-1.5 text-sm font-medium text-[#8A4D53] hover:bg-[#D4A5A5]/20 disabled:opacity-50"
+                              className="rounded-md border border-[#D4A5A5]/70 px-3 py-1.5 text-sm font-medium text-[#8A4D53] hover:bg-[#D4A5A5]/20 focus:outline-none focus:ring-2 focus:ring-[#4A5D4A] focus:ring-offset-1 disabled:opacity-50"
                             >
                               Löschen
                             </button>
@@ -1424,74 +1424,68 @@ export default function AdminPage() {
       </div>
 
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
-            <div className="flex items-center justify-between gap-4">
-              <h2 className="font-display text-2xl font-medium text-[#2D2D2D]">
+        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/40 px-3 py-4 sm:items-center sm:px-4 sm:py-6">
+          <div className="w-full max-w-2xl shrink-0 rounded-2xl bg-white p-4 shadow-xl sm:p-6">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="font-display text-xl font-medium text-[#2D2D2D] sm:text-2xl">
                 Neuen Termin anlegen
               </h2>
               <button
                 type="button"
                 onClick={() => setShowCreateModal(false)}
-                className="text-sm text-[#2D2D2D]/70 hover:text-[#2D2D2D]"
+                className="shrink-0 rounded-lg px-3 py-2 text-sm text-[#2D2D2D]/70 hover:bg-[#F5F2ED] hover:text-[#2D2D2D]"
               >
                 Schließen
               </button>
             </div>
 
-            <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <label className="block text-sm font-medium text-[#2D2D2D]">Leistung</label>
-                <select
+                <CustomSelect
                   value={createForm.serviceId}
-                  onChange={(e) =>
-                    setCreateForm({ ...createForm, serviceId: e.target.value, staffId: "" })
+                  onChange={(v) =>
+                    setCreateForm({ ...createForm, serviceId: v, staffId: "" })
                   }
-                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
-                >
-                  <option value="">Auswählen…</option>
-                  {services.map((s) => (
-                    <option key={s._id} value={s._id}>
-                      {s.name} ({s.durationMinutes} min · {s.priceEur} €)
-                    </option>
-                  ))}
-                </select>
+                  options={services.map((s) => ({
+                    value: s._id,
+                    label: `${s.name} (${s.durationMinutes} min · ${s.priceEur} €)`,
+                  }))}
+                  placeholder="Auswählen…"
+                  className="mt-1"
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium text-[#2D2D2D]">Mitarbeiter</label>
-                <select
+                <CustomSelect
                   value={createForm.staffId}
-                  onChange={(e) => setCreateForm({ ...createForm, staffId: e.target.value })}
-                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
-                >
-                  <option value="">Auswählen…</option>
-                  {staff.map((st) => (
-                    <option key={st._id} value={st._id}>
-                      {st.firstName}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(v) => setCreateForm({ ...createForm, staffId: v })}
+                  options={staff.map((st) => ({
+                    value: st._id,
+                    label: `${st.firstName}`,
+                  }))}
+                  placeholder="Auswählen…"
+                  className="mt-1"
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium text-[#2D2D2D]">Datum</label>
-                <input
-                  type="date"
+                <DatePicker
                   value={createForm.date}
-                  onChange={(e) => setCreateForm({ ...createForm, date: e.target.value })}
-                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                  onChange={(v) => setCreateForm({ ...createForm, date: v || formatDateInput(new Date()) })}
+                  className="mt-1"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-[#2D2D2D]">Uhrzeit</label>
-                <input
-                  type="time"
+                <TimePicker
                   value={createForm.time}
-                  onChange={(e) => setCreateForm({ ...createForm, time: e.target.value })}
-                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                  onChange={(v) => setCreateForm({ ...createForm, time: v })}
+                  className="mt-1"
                 />
               </div>
             </div>
-            <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <label className="block text-sm font-medium text-[#2D2D2D]">Kunde Vorname</label>
                 <input
@@ -1500,7 +1494,7 @@ export default function AdminPage() {
                   onChange={(e) =>
                     setCreateForm({ ...createForm, firstName: e.target.value })
                   }
-                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm focus:border-[#4A5D4A] focus:outline-none focus:ring-2 focus:ring-[#4A5D4A]/20"
                 />
               </div>
               <div>
@@ -1511,7 +1505,7 @@ export default function AdminPage() {
                   onChange={(e) =>
                     setCreateForm({ ...createForm, lastName: e.target.value })
                   }
-                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm focus:border-[#4A5D4A] focus:outline-none focus:ring-2 focus:ring-[#4A5D4A]/20"
                 />
               </div>
               <div>
@@ -1520,7 +1514,7 @@ export default function AdminPage() {
                   type="email"
                   value={createForm.email}
                   onChange={(e) => setCreateForm({ ...createForm, email: e.target.value })}
-                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm focus:border-[#4A5D4A] focus:outline-none focus:ring-2 focus:ring-[#4A5D4A]/20"
                 />
               </div>
               <div>
@@ -1531,7 +1525,7 @@ export default function AdminPage() {
                   type="tel"
                   value={createForm.phone}
                   onChange={(e) => setCreateForm({ ...createForm, phone: e.target.value })}
-                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm focus:border-[#4A5D4A] focus:outline-none focus:ring-2 focus:ring-[#4A5D4A]/20"
                 />
               </div>
             </div>
@@ -1543,14 +1537,14 @@ export default function AdminPage() {
                 value={createForm.note}
                 onChange={(e) => setCreateForm({ ...createForm, note: e.target.value })}
                 rows={2}
-                className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm focus:border-[#4A5D4A] focus:outline-none focus:ring-2 focus:ring-[#4A5D4A]/20"
               />
             </div>
-            <div className="mt-4 flex justify-end gap-3">
+            <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end sm:gap-3">
               <button
                 type="button"
                 onClick={() => setShowCreateModal(false)}
-                className="rounded-full border border-[#E8E4DF] px-5 py-2 text-sm font-medium text-[#2D2D2D]"
+                className="w-full rounded-full border border-[#E8E4DF] px-5 py-3 text-sm font-medium text-[#2D2D2D] focus:outline-none focus:ring-2 focus:ring-[#4A5D4A] focus:ring-offset-1 sm:w-auto sm:py-2"
               >
                 Abbrechen
               </button>
@@ -1561,7 +1555,7 @@ export default function AdminPage() {
                   if (!error) setShowCreateModal(false);
                 }}
                 disabled={creating}
-                className="rounded-full bg-[#4A5D4A] px-6 py-2 text-sm font-medium text-white hover:bg-[#3A4A3A] disabled:opacity-50"
+                className="w-full rounded-full bg-[#4A5D4A] px-6 py-3 text-sm font-medium text-white hover:bg-[#3A4A3A] focus:outline-none focus:ring-2 focus:ring-[#4A5D4A] focus:ring-offset-1 disabled:opacity-50 sm:w-auto sm:py-2"
               >
                 {creating ? "Wird angelegt…" : "Termin speichern"}
               </button>
@@ -1583,7 +1577,7 @@ export default function AdminPage() {
                 type="button"
                 onClick={() => setServiceDeleteTarget(null)}
                 disabled={serviceDeletingId === serviceDeleteTarget.id}
-                className="rounded-full border border-[#E8E4DF] px-5 py-2 text-sm font-medium text-[#2D2D2D] disabled:opacity-50"
+                className="rounded-full border border-[#E8E4DF] px-5 py-2 text-sm font-medium text-[#2D2D2D] focus:outline-none focus:ring-2 focus:ring-[#4A5D4A] focus:ring-offset-1 disabled:opacity-50"
               >
                 Abbrechen
               </button>
@@ -1591,7 +1585,7 @@ export default function AdminPage() {
                 type="button"
                 onClick={() => removeService(serviceDeleteTarget.id)}
                 disabled={serviceDeletingId === serviceDeleteTarget.id}
-                className="rounded-full bg-[#B34A3F] px-6 py-2 text-sm font-medium text-white hover:bg-[#9C3F35] disabled:opacity-50"
+                className="rounded-full bg-[#B34A3F] px-6 py-2 text-sm font-medium text-white hover:bg-[#9C3F35] focus:outline-none focus:ring-2 focus:ring-[#4A5D4A] focus:ring-offset-1 disabled:opacity-50"
               >
                 {serviceDeletingId === serviceDeleteTarget.id ? "Löschen…" : "Endgültig löschen"}
               </button>
@@ -1625,26 +1619,29 @@ export default function AdminPage() {
                   onChange={(e) =>
                     setServiceEditorForm((prev) => ({ ...prev, name: e.target.value }))
                   }
-                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm focus:border-[#4A5D4A] focus:outline-none focus:ring-2 focus:ring-[#4A5D4A]/20"
                   placeholder="z.B. Damen - Haarschnitt & Styling (kurz)"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-[#2D2D2D]">Kategorie</label>
-                <select
+                <CustomSelect
                   value={serviceEditorForm.category}
-                  onChange={(e) =>
+                  onChange={(v) =>
                     setServiceEditorForm((prev) => ({
                       ...prev,
-                      category: e.target.value as ServiceCategory,
+                      category: v as ServiceCategory,
                     }))
                   }
-                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
-                >
-                  <option value="women">Damen</option>
-                  <option value="men">Herren</option>
-                  <option value="unisex">Unisex</option>
-                </select>
+                  options={[
+                    { value: "women", label: "Damen" },
+                    { value: "men", label: "Herren" },
+                    { value: "unisex", label: "Unisex" },
+                  ]}
+                  placeholder="Auswählen…"
+                  clearable={false}
+                  className="mt-1"
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium text-[#2D2D2D]">Dauer (Minuten)</label>
@@ -1659,7 +1656,7 @@ export default function AdminPage() {
                       durationMinutes: e.target.value,
                     }))
                   }
-                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm focus:border-[#4A5D4A] focus:outline-none focus:ring-2 focus:ring-[#4A5D4A]/20"
                 />
               </div>
               <div>
@@ -1672,7 +1669,7 @@ export default function AdminPage() {
                   onChange={(e) =>
                     setServiceEditorForm((prev) => ({ ...prev, priceEur: e.target.value }))
                   }
-                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm focus:border-[#4A5D4A] focus:outline-none focus:ring-2 focus:ring-[#4A5D4A]/20"
                 />
               </div>
               <div>
@@ -1688,7 +1685,7 @@ export default function AdminPage() {
                       bufferMinutes: e.target.value,
                     }))
                   }
-                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm focus:border-[#4A5D4A] focus:outline-none focus:ring-2 focus:ring-[#4A5D4A]/20"
                 />
               </div>
               <div className="sm:col-span-2">

@@ -26,11 +26,7 @@ export default function Header() {
     window.dispatchEvent(new CustomEvent(OPEN_ADMIN_CREATE_EVENT));
   };
 
-  const defaultNavWithAdmin =
-    user?.role === "admin" || user?.role === "staff"
-      ? [...navItems, { href: "/admin", label: "CMS" }]
-      : navItems;
-  const navWithAdmin = isCmsArea ? [{ href: "/admin", label: "CMS" }] : defaultNavWithAdmin;
+  const navItemsToShow = isCmsArea ? [] : navItems;
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#E8E4DF]/50 bg-[#F5F2ED]/95 backdrop-blur-sm">
@@ -72,19 +68,21 @@ export default function Header() {
 
         {/* Nav + Actions – rechts, Desktop/Tablet */}
         <div className="hidden items-center justify-end gap-6 md:flex">
-          <nav className="flex items-center gap-8 lg:gap-10">
-            {navWithAdmin.map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                className={`whitespace-nowrap text-sm font-medium transition hover:text-[#4A5D4A] ${
-                  pathname === href ? "text-[#4A5D4A]" : "text-[#2D2D2D]"
-                }`}
-              >
-                {label}
-              </Link>
-            ))}
-          </nav>
+          {navItemsToShow.length > 0 && (
+            <nav className="flex items-center gap-8 lg:gap-10">
+              {navItemsToShow.map(({ href, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`whitespace-nowrap text-sm font-medium transition hover:text-[#4A5D4A] ${
+                    pathname === href ? "text-[#4A5D4A]" : "text-[#2D2D2D]"
+                  }`}
+                >
+                  {label}
+                </Link>
+              ))}
+            </nav>
+          )}
           {user ? (
             <div className="flex items-center gap-4">
               {!isCmsArea ? (
@@ -145,21 +143,23 @@ export default function Header() {
       {/* Mobile Menu – Dropdown */}
       {menuOpen && (
         <div className="border-t border-[#E8E4DF] bg-white/95 px-6 py-6 md:hidden">
-          <nav className="flex flex-col gap-4">
-            {navWithAdmin.map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                onClick={() => setMenuOpen(false)}
-                className={`text-base font-medium transition hover:text-[#4A5D4A] ${
-                  pathname === href ? "text-[#4A5D4A]" : "text-[#2D2D2D]"
-                }`}
-              >
-                {label}
-              </Link>
-            ))}
-          </nav>
-          <div className="mt-6 flex flex-col gap-3 border-t border-[#E8E4DF] pt-6">
+          {navItemsToShow.length > 0 && (
+            <nav className="flex flex-col gap-4">
+              {navItemsToShow.map(({ href, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={() => setMenuOpen(false)}
+                  className={`text-base font-medium transition hover:text-[#4A5D4A] ${
+                    pathname === href ? "text-[#4A5D4A]" : "text-[#2D2D2D]"
+                  }`}
+                >
+                  {label}
+                </Link>
+              ))}
+            </nav>
+          )}
+          <div className={`flex flex-col gap-3 ${navItemsToShow.length > 0 ? "mt-6 border-t border-[#E8E4DF] pt-6" : ""}`}>
             {user ? (
               <>
                 {!isCmsArea ? (
