@@ -89,6 +89,7 @@ const SERVICE_GROUPS = [
     matcher: (s: AdminService) => s.category === "men",
   },
 ] as const;
+type ServiceGroupId = (typeof SERVICE_GROUPS)[number]["id"] | "other";
 
 export default function AdminPage() {
   const { user, loading } = useAuth();
@@ -99,7 +100,7 @@ export default function AdminPage() {
   const [blockedSlots, setBlockedSlots] = useState<AdminBlockedSlot[]>([]);
   const [services, setServices] = useState<AdminService[]>([]);
   const [servicesLoading, setServicesLoading] = useState(false);
-  const [activeServiceGroupId, setActiveServiceGroupId] = useState<string>(SERVICE_GROUPS[0].id);
+  const [activeServiceGroupId, setActiveServiceGroupId] = useState<ServiceGroupId>(SERVICE_GROUPS[0].id);
   const [showServiceEditor, setShowServiceEditor] = useState(false);
   const [serviceEditorMode, setServiceEditorMode] = useState<"create" | "edit">("create");
   const [serviceEditorId, setServiceEditorId] = useState<string | null>(null);
@@ -640,7 +641,7 @@ export default function AdminPage() {
     return grouped;
   })();
   const serviceGroupStats = (() => {
-    const stats = SERVICE_GROUPS.map((group) => ({
+    const stats: Array<{ id: ServiceGroupId; label: string; count: number }> = SERVICE_GROUPS.map((group) => ({
       id: group.id,
       label: group.label,
       count: servicesByGroup[group.id]?.length || 0,
