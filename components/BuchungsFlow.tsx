@@ -866,7 +866,7 @@ export default function BuchungsFlow() {
                 </div>
               </div>
               {selectedServices.length > 0 && (
-                <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-[#E8E4DF] bg-white/95 p-4 backdrop-blur">
+                <div className="fixed bottom-0 left-0 right-0 z-50 border-t-2 border-[#4A5D4A]/35 bg-white/95 p-4 shadow-[0_-12px_30px_rgba(45,45,45,0.14)] backdrop-blur">
                   <div className="mx-auto max-w-6xl">
                     <p className="mb-2 text-sm text-[#2D2D2D]/85">
                       {selectedServices.length} Leistung(en) ausgewählt · {totalDuration} min · {totalPrice} €

@@ -290,7 +290,7 @@ export default function LeistungenPage() {
       </section>
 
       {selectedServiceIds.length > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#4A5D4A]/20 bg-white/95 px-4 py-4 backdrop-blur">
+        <div className="fixed bottom-0 left-0 right-0 z-50 border-t-2 border-[#4A5D4A]/35 bg-white/95 px-4 py-4 shadow-[0_-12px_30px_rgba(45,45,45,0.14)] backdrop-blur">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4">
             <div>
               <p className="font-medium text-[#2D2D2D]">
