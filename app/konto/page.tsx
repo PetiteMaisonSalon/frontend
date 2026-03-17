@@ -104,6 +104,7 @@ function AccountPageContent() {
   const [profileError, setProfileError] = useState("");
   const [profileSuccess, setProfileSuccess] = useState("");
   const [deletingProfile, setDeletingProfile] = useState(false);
+  const [showDeleteProfileDialog, setShowDeleteProfileDialog] = useState(false);
   const [profileDraft, setProfileDraft] = useState({
     firstName: "",
     lastName: "",
@@ -265,15 +266,11 @@ function AccountPageContent() {
   };
 
   const handleDeleteProfile = async () => {
-    const confirmed = window.confirm(
-      "Möchtest du dein Profil wirklich löschen? Kommende Termine werden storniert."
-    );
-    if (!confirmed) return;
-
     setDeletingProfile(true);
     setProfileError("");
     try {
       await deleteMyProfile();
+      setShowDeleteProfileDialog(false);
       logout();
       router.push("/");
       router.refresh();
@@ -801,7 +798,11 @@ function AccountPageContent() {
                     </div>
                     <button
                       type="button"
-                      onClick={handleDeleteProfile}
+                      onClick={() => {
+                        setProfileError("");
+                        setProfileSuccess("");
+                        setShowDeleteProfileDialog(true);
+                      }}
                       disabled={deletingProfile}
                       className="text-[#B34A3F] hover:underline disabled:opacity-50"
                     >
@@ -814,6 +815,35 @@ function AccountPageContent() {
           )}
         </section>
       </div>
+
+      {showDeleteProfileDialog && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/45 px-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+            <h3 className="font-display text-2xl text-[#2D2D2D]">Profil wirklich löschen?</h3>
+            <p className="mt-2 text-sm text-[#2D2D2D]/75">
+              Dein Konto wird dauerhaft entfernt. Kommende Termine werden storniert.
+            </p>
+            <div className="mt-5 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setShowDeleteProfileDialog(false)}
+                disabled={deletingProfile}
+                className="rounded-full border border-[#E8E4DF] px-5 py-2 text-sm font-medium text-[#2D2D2D] disabled:opacity-50"
+              >
+                Abbrechen
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteProfile}
+                disabled={deletingProfile}
+                className="rounded-full bg-[#B34A3F] px-6 py-2 text-sm font-medium text-white hover:bg-[#9C3F35] disabled:opacity-50"
+              >
+                {deletingProfile ? "Löschen..." : "Endgültig löschen"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

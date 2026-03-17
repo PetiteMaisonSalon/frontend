@@ -12,12 +12,19 @@ const navItems = [
   { href: "/aveda", label: "Aveda" },
   { href: "/kontakt", label: "Kontakt" },
 ];
+const OPEN_ADMIN_CREATE_EVENT = "admin:create-appointment";
 
 export default function Header() {
   const pathname = usePathname();
   const { user, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const isCmsArea = pathname?.startsWith("/admin");
+  const containerWidthClass = isCmsArea ? "max-w-[1450px]" : "max-w-7xl";
+  const containerPaddingClass = isCmsArea ? "px-3 md:px-6" : "px-6";
+  const openAdminCreateModal = () => {
+    if (typeof window === "undefined") return;
+    window.dispatchEvent(new CustomEvent(OPEN_ADMIN_CREATE_EVENT));
+  };
 
   const defaultNavWithAdmin =
     user?.role === "admin" || user?.role === "staff"
@@ -27,7 +34,9 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#E8E4DF]/50 bg-[#F5F2ED]/95 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-5 md:flex-nowrap">
+      <div
+        className={`mx-auto flex ${containerWidthClass} flex-wrap items-center justify-between gap-4 ${containerPaddingClass} py-5 md:flex-nowrap`}
+      >
         {/* Logo – links */}
         <Link
           href="/"
@@ -86,12 +95,22 @@ export default function Header() {
                   Mein Profil
                 </Link>
               ) : (
-                <button
-                  onClick={logout}
-                  className="whitespace-nowrap rounded-full border border-[#D4A5A5] px-4 py-2 text-sm font-semibold text-[#5C4033] transition hover:bg-[#D4A5A5]/20"
-                >
-                  Abmelden
-                </button>
+                <>
+                  <button
+                    type="button"
+                    onClick={openAdminCreateModal}
+                    className="whitespace-nowrap rounded-full bg-[#4A5D4A] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#3A4A3A]"
+                  >
+                    Neuen Termin eintragen
+                  </button>
+                  <button
+                    type="button"
+                    onClick={logout}
+                    className="whitespace-nowrap rounded-full border border-[#D4A5A5] px-4 py-2 text-sm font-semibold text-[#5C4033] transition hover:bg-[#D4A5A5]/20"
+                  >
+                    Abmelden
+                  </button>
+                </>
               )}
               {!isCmsArea && (
                 <Link
@@ -152,15 +171,28 @@ export default function Header() {
                     Mein Profil
                   </Link>
                 ) : (
-                  <button
-                    onClick={() => {
-                      logout();
-                      setMenuOpen(false);
-                    }}
-                    className="w-full rounded-full border border-[#D4A5A5] px-5 py-3 text-left text-sm font-semibold text-[#5C4033] hover:bg-[#D4A5A5]/20"
-                  >
-                    Abmelden
-                  </button>
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        openAdminCreateModal();
+                        setMenuOpen(false);
+                      }}
+                      className="w-full rounded-full bg-[#4A5D4A] px-5 py-3 text-center font-medium text-white hover:bg-[#3A4A3A]"
+                    >
+                      Neuen Termin eintragen
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        logout();
+                        setMenuOpen(false);
+                      }}
+                      className="w-full rounded-full border border-[#D4A5A5] px-5 py-3 text-left text-sm font-semibold text-[#5C4033] hover:bg-[#D4A5A5]/20"
+                    >
+                      Abmelden
+                    </button>
+                  </>
                 )}
                 {!isCmsArea && (
                   <Link

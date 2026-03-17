@@ -304,3 +304,44 @@ export async function deleteAdminBlockedSlot(blockedSlotId: string) {
     method: "DELETE",
   });
 }
+
+export async function getAdminServices() {
+  return fetchAPI("/api/admin/services");
+}
+
+export async function createAdminService(data: {
+  name: string;
+  category: "women" | "men" | "unisex";
+  durationMinutes: number;
+  priceEur: number;
+  bufferMinutes?: number;
+  description?: string;
+}) {
+  return fetchAPI("/api/admin/services", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function updateAdminService(
+  serviceId: string,
+  data: Partial<{
+    name: string;
+    category: "women" | "men" | "unisex";
+    durationMinutes: number;
+    priceEur: number;
+    bufferMinutes: number;
+    description: string;
+  }>
+) {
+  return fetchAPI(`/api/admin/services/${serviceId}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteAdminService(serviceId: string) {
+  return fetchAPI(`/api/admin/services/${serviceId}`, {
+    method: "DELETE",
+  });
+}

@@ -6,17 +6,21 @@ import {
   getAdminAppointments,
   setAppointmentAttendance,
   setAppointmentPayment,
-  getServices,
   getStaff,
   createAdminAppointment,
   getAdminBlockedSlots,
   createAdminBlockedSlot,
   deleteAdminBlockedSlot,
+  getAdminServices,
+  createAdminService,
+  updateAdminService,
+  deleteAdminService,
 } from "@/lib/api";
 
 type AdminAppointment = {
   _id: string;
   startAt: string;
+  endAt?: string;
   durationMinutes: number;
   priceEur: number;
   status: string;
@@ -35,13 +39,84 @@ type AdminBlockedSlot = {
   reason?: string;
   staffId?: { _id?: string; firstName?: string };
 };
+type ServiceCategory = "women" | "men" | "unisex";
+type AdminService = {
+  _id: string;
+  name: string;
+  description?: string;
+  category: ServiceCategory;
+  durationMinutes: number;
+  priceEur: number;
+  bufferMinutes?: number;
+};
+type AdminSectionId = "kalender" | "leistungen" | "umsatz" | "kunden";
+const OPEN_ADMIN_CREATE_EVENT = "admin:create-appointment";
+const SERVICE_GROUPS = [
+  {
+    id: "women-cut-styling",
+    label: "Damen - Haarschnitte & Stylings",
+    matcher: (s: AdminService) =>
+      s.category === "women" &&
+      s.name.startsWith("Damen -") &&
+      !s.name.includes("Coloration") &&
+      !s.name.includes("Ansatzfarbe") &&
+      !s.name.includes("Foliensträhnen") &&
+      !s.name.includes("Balayage") &&
+      !s.name.includes("Glossing") &&
+      !s.name.includes("Face Frame"),
+  },
+  {
+    id: "women-color-styling",
+    label: "Damen - Colorationen & Styling",
+    matcher: (s: AdminService) =>
+      s.category === "women" &&
+      !s.name.includes(", Haarschnitt & Styling") &&
+      (s.name.includes("Ansatzfarbe") ||
+        s.name.includes("Soft Coloration") ||
+        s.name.includes("Foliensträhnen") ||
+        s.name.includes("Balayage") ||
+        s.name.includes("Glossing/Milkshake") ||
+        s.name.includes("Face Frame")),
+  },
+  {
+    id: "women-color-cut-style",
+    label: "Damen - Colorationen, Waschen, Schneiden & Stylen",
+    matcher: (s: AdminService) => s.category === "women" && s.name.includes(", Haarschnitt & Styling"),
+  },
+  {
+    id: "men-cut-styling",
+    label: "Herren - Haarschnitte & Stylings",
+    matcher: (s: AdminService) => s.category === "men",
+  },
+] as const;
 
 export default function AdminPage() {
   const { user, loading } = useAuth();
   const [viewMode, setViewMode] = useState<"day" | "week">("day");
+  const [activeSection, setActiveSection] = useState<AdminSectionId>("kalender");
+  const [nowClock, setNowClock] = useState(() => new Date());
   const [appointments, setAppointments] = useState<AdminAppointment[]>([]);
   const [blockedSlots, setBlockedSlots] = useState<AdminBlockedSlot[]>([]);
-  const [services, setServices] = useState<{ _id: string; name: string; durationMinutes: number; priceEur: number }[]>([]);
+  const [services, setServices] = useState<AdminService[]>([]);
+  const [servicesLoading, setServicesLoading] = useState(false);
+  const [activeServiceGroupId, setActiveServiceGroupId] = useState<string>(SERVICE_GROUPS[0].id);
+  const [showServiceEditor, setShowServiceEditor] = useState(false);
+  const [serviceEditorMode, setServiceEditorMode] = useState<"create" | "edit">("create");
+  const [serviceEditorId, setServiceEditorId] = useState<string | null>(null);
+  const [serviceEditorForm, setServiceEditorForm] = useState({
+    name: "",
+    description: "",
+    category: "women" as ServiceCategory,
+    durationMinutes: "60",
+    priceEur: "0",
+    bufferMinutes: "0",
+  });
+  const [serviceSaving, setServiceSaving] = useState(false);
+  const [serviceDeletingId, setServiceDeletingId] = useState<string | null>(null);
+  const [serviceDeleteTarget, setServiceDeleteTarget] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
   const [staff, setStaff] = useState<{ _id: string; firstName: string; lastName: string; serviceIds: string[] }[]>([]);
   const [dateFilter, setDateFilter] = useState(() => new Date().toISOString().slice(0, 10));
   const [staffFilter, setStaffFilter] = useState<string>("alle");
@@ -60,6 +135,7 @@ export default function AdminPage() {
     fromMinute: number;
     toMinute: number;
     reason: string;
+    allDay: boolean;
   } | null>(null);
   const [createForm, setCreateForm] = useState({
     serviceId: "",
@@ -76,6 +152,7 @@ export default function AdminPage() {
     () => user?.role === "admin" || user?.role === "staff",
     [user]
   );
+  const canManageServices = user?.role === "admin";
 
   const parseDateInput = (value: string) => {
     const [year, month, day] = value.split("-").map(Number);
@@ -133,6 +210,110 @@ export default function AdminPage() {
     }
   }
 
+  async function loadServices() {
+    setServicesLoading(true);
+    try {
+      const data = await getAdminServices();
+      setServices(Array.isArray(data) ? data : []);
+    } catch {
+      setServices([]);
+    } finally {
+      setServicesLoading(false);
+    }
+  }
+
+  function openCreateServiceEditor() {
+    const defaultCategory: ServiceCategory = activeServiceGroupId === "men-cut-styling" ? "men" : "women";
+    setServiceEditorMode("create");
+    setServiceEditorId(null);
+    setServiceEditorForm({
+      name: "",
+      description: "",
+      category: defaultCategory,
+      durationMinutes: "60",
+      priceEur: "0",
+      bufferMinutes: "0",
+    });
+    setShowServiceEditor(true);
+  }
+
+  function openEditServiceEditor(service: AdminService) {
+    setServiceEditorMode("edit");
+    setServiceEditorId(service._id);
+    setServiceEditorForm({
+      name: service.name || "",
+      description: service.description || "",
+      category: service.category,
+      durationMinutes: String(service.durationMinutes ?? 60),
+      priceEur: String(service.priceEur ?? 0),
+      bufferMinutes: String(service.bufferMinutes ?? 0),
+    });
+    setShowServiceEditor(true);
+  }
+
+  async function saveServiceEditor() {
+    const name = serviceEditorForm.name.trim();
+    const durationMinutes = Number(serviceEditorForm.durationMinutes);
+    const priceEur = Number(serviceEditorForm.priceEur);
+    const bufferMinutes = Number(serviceEditorForm.bufferMinutes || "0");
+    if (!name) {
+      setError("Bitte einen Namen für die Leistung eingeben.");
+      return;
+    }
+    if (!Number.isFinite(durationMinutes) || durationMinutes <= 0) {
+      setError("Die Dauer muss größer als 0 sein.");
+      return;
+    }
+    if (!Number.isFinite(priceEur) || priceEur < 0) {
+      setError("Der Preis muss 0 oder größer sein.");
+      return;
+    }
+    if (!Number.isFinite(bufferMinutes) || bufferMinutes < 0) {
+      setError("Der Puffer muss 0 oder größer sein.");
+      return;
+    }
+
+    const payload = {
+      name,
+      description: serviceEditorForm.description.trim() || undefined,
+      category: serviceEditorForm.category,
+      durationMinutes: Math.round(durationMinutes),
+      priceEur: Number(priceEur.toFixed(2)),
+      bufferMinutes: Math.round(bufferMinutes),
+    };
+
+    setServiceSaving(true);
+    setError("");
+    try {
+      if (serviceEditorMode === "create") {
+        await createAdminService(payload);
+      } else if (serviceEditorId) {
+        await updateAdminService(serviceEditorId, payload);
+      }
+      await loadServices();
+      setShowServiceEditor(false);
+      setServiceEditorId(null);
+    } catch (e: unknown) {
+      setError((e as Error).message || "Leistung konnte nicht gespeichert werden.");
+    } finally {
+      setServiceSaving(false);
+    }
+  }
+
+  async function removeService(serviceId: string) {
+    setServiceDeletingId(serviceId);
+    setError("");
+    try {
+      await deleteAdminService(serviceId);
+      await loadServices();
+      setServiceDeleteTarget(null);
+    } catch (e: unknown) {
+      setError((e as Error).message || "Leistung konnte nicht gelöscht werden.");
+    } finally {
+      setServiceDeletingId(null);
+    }
+  }
+
   useEffect(() => {
     refreshData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -148,10 +329,22 @@ export default function AdminPage() {
   }, [isAllowed, dateFilter, viewMode]);
 
   useEffect(() => {
+    const id = setInterval(() => {
+      setNowClock(new Date());
+    }, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const openCreateModal = () => setShowCreateModal(true);
+    if (typeof window === "undefined") return;
+    window.addEventListener(OPEN_ADMIN_CREATE_EVENT, openCreateModal);
+    return () => window.removeEventListener(OPEN_ADMIN_CREATE_EVENT, openCreateModal);
+  }, []);
+
+  useEffect(() => {
     if (!isAllowed) return;
-    getServices()
-      .then((s) => setServices(s))
-      .catch(() => {});
+    loadServices();
     getStaff()
       .then((st) =>
         setStaff(
@@ -185,6 +378,7 @@ export default function AdminPage() {
           fromMinute,
           toMinute,
           reason: "Abwesenheit",
+          allDay: false,
         });
         return null;
       });
@@ -370,16 +564,6 @@ export default function AdminPage() {
         );
   const calendarAppointments = visibleAppointments.filter((a) => a.status !== "cancelled");
 
-  const kpiAppointmentsCount = visibleAppointments.length;
-  const kpiAttendedCount = visibleAppointments.filter((a) =>
-    ["attended", "completed"].includes(a.status)
-  ).length;
-  const kpiPaidCount = visibleAppointments.filter((a) => a.paymentStatus === "paid").length;
-  const kpiRevenue = visibleAppointments.reduce((sum, a) => {
-    if (a.paymentStatus !== "paid") return sum;
-    return sum + Number(a.amountPaidEur ?? a.priceEur ?? 0);
-  }, 0);
-
   const calendarStaff = staff;
   const weeklyGroups = (() => {
     const grouped: Record<string, AdminAppointment[]> = {};
@@ -412,6 +596,110 @@ export default function AdminPage() {
     return clampMinute(h * 60 + m);
   };
 
+  const normalizeReason = (value: string) =>
+    String(value || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+  const isVacationReason = (reason?: string) => normalizeReason(reason || "").includes("urlaub");
+  const toTimeLabel = (date: Date) =>
+    date.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+  const getAppointmentEnd = (appointment: AdminAppointment) => {
+    if (appointment.endAt) return new Date(appointment.endAt);
+    const start = new Date(appointment.startAt);
+    return new Date(start.getTime() + Math.max(appointment.durationMinutes || 30, 15) * 60000);
+  };
+  const appointmentRangeLabel = (appointment: AdminAppointment) =>
+    `${toTimeLabel(new Date(appointment.startAt))} - ${toTimeLabel(getAppointmentEnd(appointment))}`;
+  const formatDuration = (minutes: number) => {
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    if (h > 0 && m > 0) return `${h} Std. ${m} Min.`;
+    if (h > 0) return `${h} Std.`;
+    return `${m} Min.`;
+  };
+  const serviceCategoryLabel: Record<ServiceCategory, string> = {
+    women: "Damen",
+    men: "Herren",
+    unisex: "Unisex",
+  };
+  const servicesByGroup = (() => {
+    const grouped: Record<string, AdminService[]> = {};
+    const assigned = new Set<string>();
+    SERVICE_GROUPS.forEach((group) => {
+      const rows = services
+        .filter(group.matcher)
+        .sort((a, b) => a.name.localeCompare(b.name, "de"));
+      grouped[group.id] = rows;
+      rows.forEach((row) => assigned.add(row._id));
+    });
+    const uncategorized = services
+      .filter((service) => !assigned.has(service._id))
+      .sort((a, b) => a.name.localeCompare(b.name, "de"));
+    if (uncategorized.length > 0) grouped.other = uncategorized;
+    return grouped;
+  })();
+  const serviceGroupStats = (() => {
+    const stats = SERVICE_GROUPS.map((group) => ({
+      id: group.id,
+      label: group.label,
+      count: servicesByGroup[group.id]?.length || 0,
+    })).filter((group) => group.count > 0);
+    if ((servicesByGroup.other || []).length > 0) {
+      stats.push({
+        id: "other",
+        label: "Weitere Leistungen",
+        count: servicesByGroup.other.length,
+      });
+    }
+    return stats;
+  })();
+  const effectiveActiveServiceGroupId = serviceGroupStats.some(
+    (group) => group.id === activeServiceGroupId
+  )
+    ? activeServiceGroupId
+    : (serviceGroupStats[0]?.id || activeServiceGroupId);
+  const visibleServiceRows = servicesByGroup[effectiveActiveServiceGroupId] || [];
+  const sidebarItems: Array<{ id: AdminSectionId; label: string }> = [
+    { id: "kalender", label: "Kalender" },
+    { id: "leistungen", label: "Leistungen" },
+    { id: "umsatz", label: "Umsatz" },
+    { id: "kunden", label: "Kunden" },
+  ];
+  const sidebarIcon = (id: AdminSectionId) => {
+    if (id === "kalender") {
+      return (
+        <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8">
+          <rect x="3.5" y="5" width="17" height="15.5" rx="2.5" />
+          <path d="M8 3.8v3.3M16 3.8v3.3M3.5 9.5h17" />
+        </svg>
+      );
+    }
+    if (id === "leistungen") {
+      return (
+        <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8">
+          <path d="M4.5 7.5h15M4.5 12h15M4.5 16.5h15" />
+          <circle cx="7" cy="7.5" r="1" fill="currentColor" stroke="none" />
+          <circle cx="7" cy="12" r="1" fill="currentColor" stroke="none" />
+          <circle cx="7" cy="16.5" r="1" fill="currentColor" stroke="none" />
+        </svg>
+      );
+    }
+    if (id === "umsatz") {
+      return (
+        <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8">
+          <path d="M5 18.5h14M7.5 18.5V13m4.5 5.5V9.5m4.5 9V6.5" />
+        </svg>
+      );
+    }
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8">
+        <circle cx="9" cy="9" r="3" />
+        <path d="M3.8 18.5a5.2 5.2 0 0 1 10.4 0M16.5 8.2a2.4 2.4 0 1 1 0 4.8M15.2 18.5a4.1 4.1 0 0 1 4.8-3.8" />
+      </svg>
+    );
+  };
+
   const getMinuteOfDay = (isoDate: string) => {
     const d = new Date(isoDate);
     return d.getHours() * 60 + d.getMinutes();
@@ -423,46 +711,647 @@ export default function AdminPage() {
   const heightFromDuration = (duration: number) =>
     Math.max((duration / CALENDAR_STEP_MINUTES) * CALENDAR_ROW_HEIGHT, CALENDAR_ROW_HEIGHT / 2);
 
-  return (
-    <main className="mx-auto max-w-6xl px-6 py-10">
-      <h1 className="font-display text-4xl font-medium text-[#2D2D2D]">CMS</h1>
-      <p className="mt-2 text-[#2D2D2D]/80">
-        Tagesübersicht, Zahlung und Umsatzerfassung
-      </p>
-      <div className="mt-4 flex flex-wrap items-center gap-3">
-        <button
-          type="button"
-          onClick={() => setShowCreateModal(true)}
-          className="rounded-full bg-[#4A5D4A] px-5 py-2 text-sm font-medium text-white hover:bg-[#3A4A3A]"
-        >
-          Neuen Termin eintragen
-        </button>
-      </div>
+  const nowTimeLabel = nowClock.toLocaleTimeString("de-DE", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  const nowDateLabel = nowClock.toLocaleDateString("de-DE", {
+    weekday: "short",
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+  const sidebarMonthStart = new Date(
+    selectedDateObj.getFullYear(),
+    selectedDateObj.getMonth(),
+    1
+  );
+  const sidebarMonthLabel = sidebarMonthStart.toLocaleDateString("de-DE", {
+    month: "long",
+    year: "numeric",
+  });
+  const sidebarWeekdayLabels = ["M", "D", "M", "D", "F", "S", "S"];
+  const sidebarStartOffset = (sidebarMonthStart.getDay() + 6) % 7;
+  const sidebarDaysInCurrent = new Date(
+    selectedDateObj.getFullYear(),
+    selectedDateObj.getMonth() + 1,
+    0
+  ).getDate();
+  const sidebarDaysInPrev = new Date(
+    selectedDateObj.getFullYear(),
+    selectedDateObj.getMonth(),
+    0
+  ).getDate();
+  const sidebarCells = Array.from({ length: 42 }, (_, idx) => {
+    const dayIndex = idx - sidebarStartOffset + 1;
+    if (dayIndex <= 0) {
+      return {
+        date: new Date(
+          selectedDateObj.getFullYear(),
+          selectedDateObj.getMonth() - 1,
+          sidebarDaysInPrev + dayIndex
+        ),
+        isCurrentMonth: false,
+      };
+    }
+    if (dayIndex > sidebarDaysInCurrent) {
+      return {
+        date: new Date(
+          selectedDateObj.getFullYear(),
+          selectedDateObj.getMonth() + 1,
+          dayIndex - sidebarDaysInCurrent
+        ),
+        isCurrentMonth: false,
+      };
+    }
+    return {
+      date: new Date(selectedDateObj.getFullYear(), selectedDateObj.getMonth(), dayIndex),
+      isCurrentMonth: true,
+    };
+  });
 
+  return (
+    <main className="mx-auto max-w-[1450px] px-3 py-4 md:px-6 md:py-6">
       {error && (
-        <div className="mt-6 rounded-lg bg-[#D4A5A5]/30 px-4 py-3 text-[#5C4033]">{error}</div>
+        <div className="mt-4 rounded-lg bg-[#D4A5A5]/30 px-4 py-3 text-[#5C4033]">{error}</div>
       )}
 
-      <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-xl border border-[#E8E4DF] bg-white p-4">
-          <p className="text-sm text-[#2D2D2D]/70">Termine heute</p>
-          <p className="mt-1 text-2xl font-semibold">{kpiAppointmentsCount}</p>
-        </div>
-        <div className="rounded-xl border border-[#E8E4DF] bg-white p-4">
-          <p className="text-sm text-[#2D2D2D]/70">Wahrgenommen</p>
-          <p className="mt-1 text-2xl font-semibold">{kpiAttendedCount}</p>
-        </div>
-        <div className="rounded-xl border border-[#E8E4DF] bg-white p-4">
-          <p className="text-sm text-[#2D2D2D]/70">Bezahlt</p>
-          <p className="mt-1 text-2xl font-semibold">{kpiPaidCount}</p>
-        </div>
-        <div className="rounded-xl border border-[#E8E4DF] bg-white p-4">
-          <p className="text-sm text-[#2D2D2D]/70">Umsatz heute</p>
-          <p className="mt-1 text-2xl font-semibold">
-            {`${kpiRevenue.toFixed(2)} €`}
+      <div className="mt-4 grid items-start gap-4 lg:grid-cols-[230px_minmax(0,1fr)]">
+        <aside className="h-fit self-start rounded-2xl border border-[#E8E4DF] bg-white p-4 shadow-sm">
+          <div className="flex items-center gap-2 rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm font-medium text-[#2D2D2D]">
+            <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8">
+              <path d="M4.5 13.5h6v6h-6zM13.5 4.5h6v6h-6zM4.5 4.5h6v6h-6zM13.5 13.5h6v6h-6z" />
+            </svg>
+            Dashboard
+          </div>
+          <p className="mt-3 px-1 text-xs font-medium uppercase tracking-wide text-[#2D2D2D]/55">
+            Kategorie
           </p>
+          <div className="mt-3 space-y-1">
+            {sidebarItems.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => setActiveSection(item.id)}
+                className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm transition ${
+                  activeSection === item.id
+                    ? "bg-[#4A5D4A]/10 font-medium text-[#4A5D4A]"
+                    : "text-[#2D2D2D]/90 hover:bg-[#F5F2ED]"
+                }`}
+              >
+                <span className="flex items-center gap-2">
+                  {sidebarIcon(item.id)}
+                  <span>{item.label}</span>
+                </span>
+                <span aria-hidden>›</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-6 border-t border-[#E8E4DF] pt-5 text-center">
+            <p className="text-6xl font-light leading-none text-[#2D2D2D]">{nowTimeLabel}</p>
+            <p className="mt-2 text-[#2D2D2D]/85">{nowDateLabel}</p>
+          </div>
+
+          <div className="mt-6 rounded-xl border border-[#E8E4DF] p-3">
+            <div className="flex items-center justify-between gap-2">
+              <button
+                type="button"
+                onClick={() =>
+                  setDateFilter((prev) =>
+                    formatDateInput(
+                      new Date(
+                        parseDateInput(prev).getFullYear(),
+                        parseDateInput(prev).getMonth() - 1,
+                        Math.min(parseDateInput(prev).getDate(), 28)
+                      )
+                    )
+                  )
+                }
+                className="rounded-md px-2 py-1 text-[#2D2D2D]/70 hover:bg-[#F5F2ED]"
+                aria-label="Vorheriger Monat"
+              >
+                ‹
+              </button>
+              <p className="text-sm font-medium capitalize text-[#2D2D2D]">{sidebarMonthLabel}</p>
+              <button
+                type="button"
+                onClick={() =>
+                  setDateFilter((prev) =>
+                    formatDateInput(
+                      new Date(
+                        parseDateInput(prev).getFullYear(),
+                        parseDateInput(prev).getMonth() + 1,
+                        Math.min(parseDateInput(prev).getDate(), 28)
+                      )
+                    )
+                  )
+                }
+                className="rounded-md px-2 py-1 text-[#2D2D2D]/70 hover:bg-[#F5F2ED]"
+                aria-label="Nächster Monat"
+              >
+                ›
+              </button>
+            </div>
+
+            <div className="mt-3 grid grid-cols-7 gap-1 text-center text-xs text-[#2D2D2D]/45">
+              {sidebarWeekdayLabels.map((label, idx) => (
+                <span key={`${label}-${idx}`}>{label}</span>
+              ))}
+            </div>
+            <div className="mt-2 grid grid-cols-7 gap-1 text-center text-xs">
+              {sidebarCells.map(({ date, isCurrentMonth }, idx) => {
+                const value = formatDateInput(date);
+                const isSelected = value === dateFilter;
+                const isToday = value === formatDateInput(new Date());
+                return (
+                  <button
+                    key={`${value}-${idx}`}
+                    type="button"
+                    onClick={() => setDateFilter(value)}
+                    className={`h-7 rounded-md ${
+                      isSelected
+                        ? "bg-[#4A5D4A] text-white"
+                        : isToday
+                          ? "border border-[#4A5D4A]/40 text-[#4A5D4A]"
+                          : isCurrentMonth
+                            ? "text-[#2D2D2D]"
+                            : "text-[#2D2D2D]/35"
+                    } hover:bg-[#4A5D4A]/10`}
+                  >
+                    {date.getDate()}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </aside>
+
+        <section className="min-w-0 space-y-4">
+          {activeSection === "kalender" && (
+            <section className="space-y-4">
+        <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-[#E8E4DF] bg-white p-3 shadow-sm">
+          <div className="flex items-center gap-2 rounded-full border border-[#E8E4DF] bg-white p-1">
+            <button
+              type="button"
+              onClick={() => setViewMode("day")}
+              className={`rounded-full px-4 py-1.5 text-sm font-medium ${
+                viewMode === "day" ? "bg-[#4A5D4A] text-white" : "text-[#2D2D2D]"
+              }`}
+            >
+              Tagesansicht
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode("week")}
+              className={`rounded-full px-4 py-1.5 text-sm font-medium ${
+                viewMode === "week" ? "bg-[#4A5D4A] text-white" : "text-[#2D2D2D]"
+              }`}
+            >
+              Wochenansicht
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-[#2D2D2D]">Datum</label>
+            <button
+              type="button"
+              onClick={() =>
+                setDateFilter((prev) =>
+                  formatDateInput(addDays(parseDateInput(prev), viewMode === "day" ? -1 : -7))
+                )
+              }
+              className="rounded-lg border border-[#E8E4DF] bg-white px-3 py-2 text-sm"
+              aria-label={viewMode === "day" ? "Vortag" : "Vorwoche"}
+            >
+              ←
+            </button>
+            <input
+              type="date"
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
+              className="rounded-lg border border-[#E8E4DF] px-3 py-2"
+            />
+            <button
+              type="button"
+              onClick={() =>
+                setDateFilter((prev) =>
+                  formatDateInput(addDays(parseDateInput(prev), viewMode === "day" ? 1 : 7))
+                )
+              }
+              className="rounded-lg border border-[#E8E4DF] bg-white px-3 py-2 text-sm"
+              aria-label={viewMode === "day" ? "Nächster Tag" : "Nächste Woche"}
+            >
+              →
+            </button>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-[#2D2D2D]">Mitarbeiter</span>
+            <select
+              value={staffFilter}
+              onChange={(e) => setStaffFilter(e.target.value)}
+              className="rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+            >
+              <option value="alle">Alle</option>
+              {staff.map((s) => (
+                <option
+                  key={s._id}
+                  value={s._id}
+                >
+                  {s.firstName} {s.lastName}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="ml-auto">
+            <button
+              type="button"
+              onClick={exportAppointmentsCsv}
+              className="rounded-full border border-[#E8E4DF] px-4 py-2 text-sm font-medium text-[#2D2D2D] hover:bg-[#F5F2ED]"
+            >
+              CSV exportieren
+            </button>
+          </div>
+        </div>
+
+        {viewMode === "day" ? (
+        <div className="overflow-x-auto rounded-2xl border border-[#E8E4DF] bg-white">
+          <div
+            className="grid min-w-[900px]"
+            style={{
+              gridTemplateColumns: `70px repeat(${Math.max(calendarStaff.length, 1)}, minmax(160px, 1fr))`,
+            }}
+          >
+            <div className="sticky left-0 z-10 border-r border-[#E8E4DF] bg-[#F8F7F4]" />
+            {calendarStaff.map((s) => (
+              <div key={s._id} className="border-r border-[#E8E4DF] bg-[#F8F7F4] p-2 text-center text-sm font-medium text-[#2D2D2D]">
+                {s.firstName} {s.lastName}
+              </div>
+            ))}
+
+            <div className="relative border-r border-[#E8E4DF]">
+              {calendarRows.map((m) => (
+                <div
+                  key={m}
+                  className="border-t border-[#E8E4DF] px-2 pt-1 text-xs text-[#2D2D2D]/60"
+                  style={{ height: `${CALENDAR_ROW_HEIGHT}px` }}
+                >
+                  {minuteLabel(m)}
+                </div>
+              ))}
+            </div>
+
+            {calendarStaff.map((s) => {
+              const staffAppointments = calendarAppointments.filter(
+                (a) => a.staffId?._id && String(a.staffId._id) === String(s._id)
+              );
+              const staffBlocks = blockedSlots.filter(
+                (b) => b.staffId?._id && String(b.staffId._id) === String(s._id)
+              );
+
+              return (
+                <div key={s._id} className="relative border-r border-[#E8E4DF]">
+                  {calendarRows.map((m) => (
+                    <div
+                      key={`${s._id}-${m}`}
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        setDragSelection({
+                          staffId: s._id,
+                          startMinute: m,
+                          endMinute: m,
+                        });
+                      }}
+                      onMouseEnter={(e) => {
+                        if (e.buttons !== 1) return;
+                        setDragSelection((current) =>
+                          current && current.staffId === s._id
+                            ? { ...current, endMinute: m }
+                            : current
+                        );
+                      }}
+                      onMouseUp={() => {
+                        setDragSelection((current) => {
+                          if (!current || current.staffId !== s._id) return null;
+                          const fromMinute = Math.min(current.startMinute, current.endMinute);
+                          const toMinute = Math.max(current.startMinute, current.endMinute) + CALENDAR_STEP_MINUTES;
+                          setBlockEditor({
+                            staffId: current.staffId,
+                            fromMinute,
+                            toMinute,
+                            reason: "Abwesenheit",
+                            allDay: false,
+                          });
+                          return null;
+                        });
+                      }}
+                      className="block w-full cursor-crosshair select-none border-t border-[#E8E4DF] text-left transition hover:bg-[#4A5D4A]/5"
+                      style={{ height: `${CALENDAR_ROW_HEIGHT}px` }}
+                      aria-label={`Abwesenheit für ${s.firstName} um ${minuteLabel(m)} eintragen`}
+                    />
+                  ))}
+
+                  {dragSelection && dragSelection.staffId === s._id && (
+                    <div
+                      className="pointer-events-none absolute left-1 right-1 rounded-md border border-[#7B8F7B] bg-[#4A5D4A]/20"
+                      style={{
+                        top: `${topFromMinute(Math.min(dragSelection.startMinute, dragSelection.endMinute))}px`,
+                        height: `${heightFromDuration(
+                          Math.abs(dragSelection.endMinute - dragSelection.startMinute) + CALENDAR_STEP_MINUTES
+                        )}px`,
+                      }}
+                    />
+                  )}
+
+                  {staffAppointments.map((a) => {
+                    const startMin = getMinuteOfDay(a.startAt);
+                    if (startMin >= dayEndMinute || startMin < dayStartMinute) return null;
+                    const endMin = Math.min(
+                      startMin + Math.max(a.durationMinutes || 30, 15),
+                      dayEndMinute
+                    );
+                    const top = topFromMinute(startMin);
+                    const height = heightFromDuration(a.durationMinutes || 30);
+                    return (
+                      <div
+                        key={a._id}
+                        className="absolute left-1 right-1 rounded-md border border-[#4A5D4A]/30 bg-[#4A5D4A]/15 p-1 text-[11px] text-[#2D2D2D]"
+                        style={{ top: `${top}px`, height: `${height}px` }}
+                        title={`${a.customer.firstName} ${a.customer.lastName}`}
+                      >
+                        <div className="truncate font-medium">{minuteLabel(startMin)} - {minuteLabel(endMin)}</div>
+                        <div className="truncate">{a.customer.firstName} {a.customer.lastName}</div>
+                        <div className="truncate opacity-80">{a.serviceId?.name || "Termin"}</div>
+                      </div>
+                    );
+                  })}
+
+                  {staffBlocks.map((b) => {
+                    const startMin = getMinuteOfDay(b.startAt);
+                    const endMin = getMinuteOfDay(b.endAt);
+                    if (startMin >= dayEndMinute || endMin <= dayStartMinute) return null;
+                    const clampedStart = Math.max(startMin, dayStartMinute);
+                    const clampedEnd = Math.min(endMin, dayEndMinute);
+                    const top = topFromMinute(clampedStart);
+                    const height = heightFromDuration(Math.max(clampedEnd - clampedStart, 15));
+                    const isVacation = isVacationReason(b.reason);
+                    return (
+                      <div
+                        key={b._id}
+                        className={`absolute left-1 right-1 rounded-md border p-1 text-[11px] ${
+                          isVacation
+                            ? "border-[#5B8FD6]/45 bg-[#5B8FD6]/28 text-[#1F3D68]"
+                            : "border-[#D4A5A5]/40 bg-[#D4A5A5]/35 text-[#5C4033]"
+                        }`}
+                        style={{ top: `${top}px`, height: `${height}px` }}
+                      >
+                        <div className="flex items-start justify-between gap-1">
+                          <span className="truncate font-medium">{b.reason || "Abwesenheit"}</span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeBlockedSlot(b._id);
+                            }}
+                            disabled={deletingBlockedId === b._id}
+                            className={`rounded px-1 text-[10px] disabled:opacity-50 ${
+                              isVacation ? "hover:bg-[#5B8FD6]/35" : "hover:bg-[#D4A5A5]/40"
+                            }`}
+                          >
+                            x
+                          </button>
+                        </div>
+                        <div>{minuteLabel(clampedStart)} - {minuteLabel(clampedEnd)}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        ) : (
+          <div className="rounded-2xl border border-[#E8E4DF] bg-white p-4">
+            {weeklyGroups.length === 0 ? (
+              <p className="text-[#2D2D2D]/70">Keine Termine in dieser Woche.</p>
+            ) : (
+              <div className="space-y-5">
+                {weeklyGroups.map(([day, dayAppointments]) => (
+                  <div key={day}>
+                    <h3 className="text-sm font-semibold text-[#2D2D2D]">{day}</h3>
+                    <div className="mt-2 space-y-2">
+                      {dayAppointments.map((a) => (
+                        <div key={a._id} className="rounded-lg border border-[#E8E4DF] p-3">
+                          <p className="font-medium text-[#2D2D2D]">
+                            {appointmentRangeLabel(a)} • {a.customer.firstName} {a.customer.lastName}
+                          </p>
+                          <p className="text-sm text-[#2D2D2D]/75">
+                            {a.serviceId?.name || "Leistung"} • {a.staffId?.firstName || "Team"}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        <div className="space-y-3 rounded-2xl border border-[#E8E4DF] bg-white p-4">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-[#2D2D2D]/70">
+            Termine & Zahlungen
+          </h3>
+          {visibleAppointments.map((a) => (
+            <div
+              key={a._id}
+              className={`rounded-xl border p-4 ${
+                a.status === "cancelled"
+                  ? "border-[#D4A5A5]/60 bg-[#D4A5A5]/18"
+                  : "border-[#E8E4DF] bg-white"
+              }`}
+            >
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <p className="font-medium text-[#2D2D2D]">
+                    {new Date(a.startAt).toLocaleDateString("de-DE", {
+                      weekday: "long",
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      timeZone: "Europe/Berlin",
+                    })}{" "}
+                    • {appointmentRangeLabel(a)}
+                  </p>
+                  <p className="text-sm text-[#2D2D2D]/80">
+                    {a.customer.firstName} {a.customer.lastName} • {a.serviceId?.name} •{" "}
+                    {a.staffId ? `${a.staffId.firstName}` : "Team"}
+                  </p>
+                  <p className="text-sm text-[#2D2D2D]/70">
+                    Status: {a.status} • Zahlung: {a.paymentStatus}
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    disabled={
+                      busyId === a._id ||
+                      a.status === "attended" ||
+                      a.status === "completed" ||
+                      a.status === "cancelled"
+                    }
+                    onClick={() => markAttended(a._id, true)}
+                    className="rounded-full border border-[#4A5D4A] px-4 py-2 text-sm text-[#4A5D4A] hover:bg-[#4A5D4A]/10 disabled:opacity-50"
+                  >
+                    Wahrgenommen
+                  </button>
+                  <button
+                    disabled={
+                      busyId === a._id ||
+                      a.paymentStatus === "paid" ||
+                      a.status === "cancelled"
+                    }
+                    onClick={() => markPaid(a._id, a.amountPaidEur ?? a.priceEur, "card")}
+                    className="rounded-full bg-[#4A5D4A] px-4 py-2 text-sm text-white hover:bg-[#3A4A3A] disabled:opacity-50"
+                  >
+                    Bezahlt (Karte)
+                  </button>
+                  <button
+                    disabled={
+                      busyId === a._id ||
+                      a.paymentStatus === "paid" ||
+                      a.status === "cancelled"
+                    }
+                    onClick={() => markPaid(a._id, a.amountPaidEur ?? a.priceEur, "cash")}
+                    className="rounded-full bg-[#2D2D2D] px-4 py-2 text-sm text-white hover:bg-black disabled:opacity-50"
+                  >
+                    Bezahlt (Bar)
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+          {visibleAppointments.length === 0 && (
+            <p className="rounded-xl border border-[#E8E4DF] bg-white p-6 text-[#2D2D2D]/70">
+              Keine Termine für dieses Datum.
+            </p>
+          )}
         </div>
       </section>
+          )}
+
+          {activeSection === "leistungen" && (
+            <section className="rounded-2xl border border-[#E8E4DF] bg-white p-4 shadow-sm md:p-5">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h3 className="font-display text-2xl font-medium text-[#2D2D2D]">
+                    Leistungen verwalten
+                  </h3>
+                  <p className="text-sm text-[#2D2D2D]/70">
+                    Preise, Dauer und neue Leistungen direkt im CMS bearbeiten.
+                  </p>
+                </div>
+                {canManageServices ? (
+                  <button
+                    type="button"
+                    onClick={openCreateServiceEditor}
+                    className="rounded-full bg-[#4A5D4A] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#3A4A3A]"
+                  >
+                    Neue Leistung
+                  </button>
+                ) : (
+                  <span className="rounded-full border border-[#E8E4DF] px-4 py-2 text-xs font-medium uppercase tracking-wide text-[#2D2D2D]/55">
+                    Nur Ansicht
+                  </span>
+                )}
+              </div>
+
+              <div className="mt-5 grid items-start gap-4 lg:grid-cols-[260px_minmax(0,1fr)]">
+                <div className="h-fit rounded-xl border border-[#E8E4DF] bg-[#F8F7F4] p-2">
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:block">
+                    {serviceGroupStats.map((group) => (
+                      <button
+                        key={group.id}
+                        type="button"
+                        onClick={() => setActiveServiceGroupId(group.id)}
+                        className={`w-full rounded-lg px-3 py-2.5 text-left text-sm font-medium ${
+                          effectiveActiveServiceGroupId === group.id
+                            ? "border border-[#4A5D4A]/35 bg-[#4A5D4A]/10 text-[#4A5D4A]"
+                            : "border border-[#E8E4DF] bg-white text-[#2D2D2D]/90 hover:bg-[#F5F2ED]"
+                        }`}
+                      >
+                        {group.label} ({group.count})
+                      </button>
+                    ))}
+                    {serviceGroupStats.length === 0 && (
+                      <p className="rounded-lg border border-[#E8E4DF] bg-white px-3 py-2 text-sm text-[#2D2D2D]/65">
+                        Noch keine Leistungen vorhanden.
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="min-w-0 rounded-xl border border-[#E8E4DF] bg-white">
+                  {servicesLoading ? (
+                    <div className="p-6 text-sm text-[#2D2D2D]/70">Leistungen werden geladen…</div>
+                  ) : visibleServiceRows.length === 0 ? (
+                    <div className="p-6 text-sm text-[#2D2D2D]/70">
+                      Keine Leistungen in dieser Kategorie.
+                    </div>
+                  ) : (
+                    visibleServiceRows.map((service) => (
+                      <div
+                        key={service._id}
+                        className="grid grid-cols-1 items-center gap-3 border-b border-[#E8E4DF] p-4 last:border-b-0 md:grid-cols-[minmax(0,1fr)_auto_auto]"
+                      >
+                        <div className="min-w-0">
+                          <p className="truncate font-medium text-[#2D2D2D]">{service.name}</p>
+                          <p className="text-sm text-[#2D2D2D]/70">
+                            {formatDuration(service.durationMinutes)}{" "}
+                            {service.bufferMinutes ? `· +${service.bufferMinutes} Min. Puffer` : ""} ·{" "}
+                            {serviceCategoryLabel[service.category]}
+                          </p>
+                        </div>
+                        <p className="text-sm font-semibold text-[#2D2D2D] md:text-base">
+                          {service.priceEur} €
+                        </p>
+                        {canManageServices ? (
+                          <div className="flex items-center gap-2 md:justify-self-end">
+                            <button
+                              type="button"
+                              onClick={() => openEditServiceEditor(service)}
+                              className="rounded-md border border-[#4A5D4A]/45 px-3 py-1.5 text-sm font-medium text-[#4A5D4A] hover:bg-[#4A5D4A]/10"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setServiceDeleteTarget({ id: service._id, name: service.name })
+                              }
+                              disabled={serviceDeletingId === service._id}
+                              className="rounded-md border border-[#D4A5A5]/70 px-3 py-1.5 text-sm font-medium text-[#8A4D53] hover:bg-[#D4A5A5]/20 disabled:opacity-50"
+                            >
+                              Löschen
+                            </button>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-[#2D2D2D]/55 md:justify-self-end">Nur Ansicht</span>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {activeSection !== "kalender" && activeSection !== "leistungen" && (
+            <div className="rounded-2xl border border-[#E8E4DF] bg-white p-6 text-[#2D2D2D]/75">
+              Dieser Bereich wird als Nächstes umgesetzt.
+            </div>
+          )}
+        </section>
+      </div>
 
       {showCreateModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
@@ -611,342 +1500,160 @@ export default function AdminPage() {
         </div>
       )}
 
-      <section className="mt-8">
-        <div className="mb-4 flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2 rounded-full border border-[#E8E4DF] bg-white p-1">
-            <button
-              type="button"
-              onClick={() => setViewMode("day")}
-              className={`rounded-full px-4 py-1.5 text-sm font-medium ${
-                viewMode === "day" ? "bg-[#4A5D4A] text-white" : "text-[#2D2D2D]"
-              }`}
-            >
-              Tagesansicht
-            </button>
-            <button
-              type="button"
-              onClick={() => setViewMode("week")}
-              className={`rounded-full px-4 py-1.5 text-sm font-medium ${
-                viewMode === "week" ? "bg-[#4A5D4A] text-white" : "text-[#2D2D2D]"
-              }`}
-            >
-              Wochenansicht
-            </button>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <label className="text-sm font-medium text-[#2D2D2D]">Datum</label>
-            <button
-              type="button"
-              onClick={() =>
-                setDateFilter((prev) =>
-                  formatDateInput(addDays(parseDateInput(prev), viewMode === "day" ? -1 : -7))
-                )
-              }
-              className="rounded-lg border border-[#E8E4DF] bg-white px-3 py-2 text-sm"
-              aria-label={viewMode === "day" ? "Vortag" : "Vorwoche"}
-            >
-              ←
-            </button>
-            <input
-              type="date"
-              value={dateFilter}
-              onChange={(e) => setDateFilter(e.target.value)}
-              className="rounded-lg border border-[#E8E4DF] px-3 py-2"
-            />
-            <button
-              type="button"
-              onClick={() =>
-                setDateFilter((prev) =>
-                  formatDateInput(addDays(parseDateInput(prev), viewMode === "day" ? 1 : 7))
-                )
-              }
-              className="rounded-lg border border-[#E8E4DF] bg-white px-3 py-2 text-sm"
-              aria-label={viewMode === "day" ? "Nächster Tag" : "Nächste Woche"}
-            >
-              →
-            </button>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-[#2D2D2D]">Mitarbeiter</span>
-            <select
-              value={staffFilter}
-              onChange={(e) => setStaffFilter(e.target.value)}
-              className="rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
-            >
-              <option value="alle">Alle</option>
-              {staff.map((s) => (
-                <option
-                  key={s._id}
-                  value={s._id}
-                >
-                  {s.firstName} {s.lastName}
-                </option>
-              ))}
-            </select>
-          </div>
-          <button
-            type="button"
-            onClick={exportAppointmentsCsv}
-            className="ml-auto rounded-full border border-[#E8E4DF] px-4 py-2 text-sm font-medium text-[#2D2D2D] hover:bg-[#F5F2ED]"
-          >
-            CSV exportieren
-          </button>
-        </div>
-
-        {viewMode === "day" ? (
-        <div className="overflow-x-auto rounded-2xl border border-[#E8E4DF] bg-white">
-          <div
-            className="grid min-w-[900px]"
-            style={{
-              gridTemplateColumns: `70px repeat(${Math.max(calendarStaff.length, 1)}, minmax(160px, 1fr))`,
-            }}
-          >
-            <div className="sticky left-0 z-10 border-r border-[#E8E4DF] bg-[#F8F7F4]" />
-            {calendarStaff.map((s) => (
-              <div key={s._id} className="border-r border-[#E8E4DF] bg-[#F8F7F4] p-2 text-center text-sm font-medium text-[#2D2D2D]">
-                {s.firstName} {s.lastName}
-              </div>
-            ))}
-
-            <div className="relative border-r border-[#E8E4DF]">
-              {calendarRows.map((m) => (
-                <div
-                  key={m}
-                  className="border-t border-[#E8E4DF] px-2 pt-1 text-xs text-[#2D2D2D]/60"
-                  style={{ height: `${CALENDAR_ROW_HEIGHT}px` }}
-                >
-                  {minuteLabel(m)}
-                </div>
-              ))}
-            </div>
-
-            {calendarStaff.map((s) => {
-              const staffAppointments = calendarAppointments.filter(
-                (a) => a.staffId?._id && String(a.staffId._id) === String(s._id)
-              );
-              const staffBlocks = blockedSlots.filter(
-                (b) => b.staffId?._id && String(b.staffId._id) === String(s._id)
-              );
-
-              return (
-                <div key={s._id} className="relative border-r border-[#E8E4DF]">
-                  {calendarRows.map((m) => (
-                    <div
-                      key={`${s._id}-${m}`}
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                        setDragSelection({
-                          staffId: s._id,
-                          startMinute: m,
-                          endMinute: m,
-                        });
-                      }}
-                      onMouseEnter={(e) => {
-                        if (e.buttons !== 1) return;
-                        setDragSelection((current) =>
-                          current && current.staffId === s._id
-                            ? { ...current, endMinute: m }
-                            : current
-                        );
-                      }}
-                      onMouseUp={() => {
-                        setDragSelection((current) => {
-                          if (!current || current.staffId !== s._id) return null;
-                          const fromMinute = Math.min(current.startMinute, current.endMinute);
-                          const toMinute = Math.max(current.startMinute, current.endMinute) + CALENDAR_STEP_MINUTES;
-                          setBlockEditor({
-                            staffId: current.staffId,
-                            fromMinute,
-                            toMinute,
-                            reason: "Abwesenheit",
-                          });
-                          return null;
-                        });
-                      }}
-                      className="block w-full cursor-crosshair select-none border-t border-[#E8E4DF] text-left transition hover:bg-[#4A5D4A]/5"
-                      style={{ height: `${CALENDAR_ROW_HEIGHT}px` }}
-                      aria-label={`Abwesenheit für ${s.firstName} um ${minuteLabel(m)} eintragen`}
-                    />
-                  ))}
-
-                  {dragSelection && dragSelection.staffId === s._id && (
-                    <div
-                      className="pointer-events-none absolute left-1 right-1 rounded-md border border-[#7B8F7B] bg-[#4A5D4A]/20"
-                      style={{
-                        top: `${topFromMinute(Math.min(dragSelection.startMinute, dragSelection.endMinute))}px`,
-                        height: `${heightFromDuration(
-                          Math.abs(dragSelection.endMinute - dragSelection.startMinute) + CALENDAR_STEP_MINUTES
-                        )}px`,
-                      }}
-                    />
-                  )}
-
-                  {staffAppointments.map((a) => {
-                    const startMin = getMinuteOfDay(a.startAt);
-                    if (startMin >= dayEndMinute || startMin < dayStartMinute) return null;
-                    const top = topFromMinute(startMin);
-                    const height = heightFromDuration(a.durationMinutes || 30);
-                    return (
-                      <div
-                        key={a._id}
-                        className="absolute left-1 right-1 rounded-md border border-[#4A5D4A]/30 bg-[#4A5D4A]/15 p-1 text-[11px] text-[#2D2D2D]"
-                        style={{ top: `${top}px`, height: `${height}px` }}
-                        title={`${a.customer.firstName} ${a.customer.lastName}`}
-                      >
-                        <div className="truncate font-medium">
-                          {minuteLabel(startMin)} {a.customer.firstName}
-                        </div>
-                        <div className="truncate opacity-80">{a.serviceId?.name || "Termin"}</div>
-                      </div>
-                    );
-                  })}
-
-                  {staffBlocks.map((b) => {
-                    const startMin = getMinuteOfDay(b.startAt);
-                    const endMin = getMinuteOfDay(b.endAt);
-                    if (startMin >= dayEndMinute || endMin <= dayStartMinute) return null;
-                    const clampedStart = Math.max(startMin, dayStartMinute);
-                    const clampedEnd = Math.min(endMin, dayEndMinute);
-                    const top = topFromMinute(clampedStart);
-                    const height = heightFromDuration(Math.max(clampedEnd - clampedStart, 15));
-                    return (
-                      <div
-                        key={b._id}
-                        className="absolute left-1 right-1 rounded-md border border-[#D4A5A5]/40 bg-[#D4A5A5]/35 p-1 text-[11px] text-[#5C4033]"
-                        style={{ top: `${top}px`, height: `${height}px` }}
-                      >
-                        <div className="flex items-start justify-between gap-1">
-                          <span className="truncate font-medium">{b.reason || "Abwesenheit"}</span>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              removeBlockedSlot(b._id);
-                            }}
-                            disabled={deletingBlockedId === b._id}
-                            className="rounded px-1 text-[10px] hover:bg-[#D4A5A5]/40 disabled:opacity-50"
-                          >
-                            x
-                          </button>
-                        </div>
-                        <div>{minuteLabel(clampedStart)} - {minuteLabel(clampedEnd)}</div>
-                      </div>
-                    );
-                  })}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        ) : (
-          <div className="rounded-2xl border border-[#E8E4DF] bg-white p-4">
-            {weeklyGroups.length === 0 ? (
-              <p className="text-[#2D2D2D]/70">Keine Termine in dieser Woche.</p>
-            ) : (
-              <div className="space-y-5">
-                {weeklyGroups.map(([day, dayAppointments]) => (
-                  <div key={day}>
-                    <h3 className="text-sm font-semibold text-[#2D2D2D]">{day}</h3>
-                    <div className="mt-2 space-y-2">
-                      {dayAppointments.map((a) => (
-                        <div key={a._id} className="rounded-lg border border-[#E8E4DF] p-3">
-                          <p className="font-medium text-[#2D2D2D]">
-                            {new Date(a.startAt).toLocaleTimeString("de-DE", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}{" "}
-                            • {a.customer.firstName} {a.customer.lastName}
-                          </p>
-                          <p className="text-sm text-[#2D2D2D]/75">
-                            {a.serviceId?.name || "Leistung"} • {a.staffId?.firstName || "Team"}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        <div className="space-y-3 m-5">
-          {visibleAppointments.map((a) => (
-            <div
-              key={a._id}
-              className={`rounded-xl border p-4 ${
-                a.status === "cancelled"
-                  ? "border-[#D4A5A5]/60 bg-[#D4A5A5]/18"
-                  : "border-[#E8E4DF] bg-white"
-              }`}
-            >
-              <div className="flex flex-wrap items-start justify-between gap-4">
-                <div>
-                  <p className="font-medium text-[#2D2D2D]">
-                    {new Date(a.startAt).toLocaleString("de-DE", {
-                      weekday: "long",
-                      day: "2-digit",
-                      month: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      timeZone: "Europe/Berlin",
-                    })}
-                  </p>
-                  <p className="text-sm text-[#2D2D2D]/80">
-                    {a.customer.firstName} {a.customer.lastName} • {a.serviceId?.name} •{" "}
-                    {a.staffId ? `${a.staffId.firstName}` : "Team"}
-                  </p>
-                  <p className="text-sm text-[#2D2D2D]/70">
-                    Status: {a.status} • Zahlung: {a.paymentStatus}
-                  </p>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    disabled={
-                      busyId === a._id ||
-                      a.status === "attended" ||
-                      a.status === "completed" ||
-                      a.status === "cancelled"
-                    }
-                    onClick={() => markAttended(a._id, true)}
-                    className="rounded-full border border-[#4A5D4A] px-4 py-2 text-sm text-[#4A5D4A] hover:bg-[#4A5D4A]/10 disabled:opacity-50"
-                  >
-                    Wahrgenommen
-                  </button>
-                  <button
-                    disabled={
-                      busyId === a._id ||
-                      a.paymentStatus === "paid" ||
-                      a.status === "cancelled"
-                    }
-                    onClick={() => markPaid(a._id, a.amountPaidEur ?? a.priceEur, "card")}
-                    className="rounded-full bg-[#4A5D4A] px-4 py-2 text-sm text-white hover:bg-[#3A4A3A] disabled:opacity-50"
-                  >
-                    Bezahlt (Karte)
-                  </button>
-                  <button
-                    disabled={
-                      busyId === a._id ||
-                      a.paymentStatus === "paid" ||
-                      a.status === "cancelled"
-                    }
-                    onClick={() => markPaid(a._id, a.amountPaidEur ?? a.priceEur, "cash")}
-                    className="rounded-full bg-[#2D2D2D] px-4 py-2 text-sm text-white hover:bg-black disabled:opacity-50"
-                  >
-                    Bezahlt (Bar)
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-          {visibleAppointments.length === 0 && (
-            <p className="rounded-xl border border-[#E8E4DF] bg-white p-6 text-[#2D2D2D]/70">
-              Keine Termine für dieses Datum.
+      {serviceDeleteTarget && (
+        <div className="fixed inset-0 z-[64] flex items-center justify-center bg-black/45 px-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+            <h3 className="font-display text-2xl text-[#2D2D2D]">Leistung löschen?</h3>
+            <p className="mt-2 text-sm text-[#2D2D2D]/75">
+              Die Leistung {serviceDeleteTarget.name} wird dauerhaft entfernt. Dieser Schritt kann nicht
+              rückgängig gemacht werden.
             </p>
-          )}
+            <div className="mt-5 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setServiceDeleteTarget(null)}
+                disabled={serviceDeletingId === serviceDeleteTarget.id}
+                className="rounded-full border border-[#E8E4DF] px-5 py-2 text-sm font-medium text-[#2D2D2D] disabled:opacity-50"
+              >
+                Abbrechen
+              </button>
+              <button
+                type="button"
+                onClick={() => removeService(serviceDeleteTarget.id)}
+                disabled={serviceDeletingId === serviceDeleteTarget.id}
+                className="rounded-full bg-[#B34A3F] px-6 py-2 text-sm font-medium text-white hover:bg-[#9C3F35] disabled:opacity-50"
+              >
+                {serviceDeletingId === serviceDeleteTarget.id ? "Löschen…" : "Endgültig löschen"}
+              </button>
+            </div>
+          </div>
         </div>
-      </section>
+      )}
+
+      {showServiceEditor && (
+        <div className="fixed inset-0 z-[65] flex items-center justify-center bg-black/45 px-4">
+          <div className="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl">
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="font-display text-2xl font-medium text-[#2D2D2D]">
+                {serviceEditorMode === "create" ? "Neue Leistung" : "Leistung bearbeiten"}
+              </h3>
+              <button
+                type="button"
+                onClick={() => setShowServiceEditor(false)}
+                className="text-sm text-[#2D2D2D]/70 hover:text-[#2D2D2D]"
+              >
+                Schließen
+              </button>
+            </div>
+
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <div className="sm:col-span-2">
+                <label className="block text-sm font-medium text-[#2D2D2D]">Name</label>
+                <input
+                  type="text"
+                  value={serviceEditorForm.name}
+                  onChange={(e) =>
+                    setServiceEditorForm((prev) => ({ ...prev, name: e.target.value }))
+                  }
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                  placeholder="z.B. Damen - Haarschnitt & Styling (kurz)"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#2D2D2D]">Kategorie</label>
+                <select
+                  value={serviceEditorForm.category}
+                  onChange={(e) =>
+                    setServiceEditorForm((prev) => ({
+                      ...prev,
+                      category: e.target.value as ServiceCategory,
+                    }))
+                  }
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                >
+                  <option value="women">Damen</option>
+                  <option value="men">Herren</option>
+                  <option value="unisex">Unisex</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#2D2D2D]">Dauer (Minuten)</label>
+                <input
+                  type="number"
+                  min={1}
+                  step={1}
+                  value={serviceEditorForm.durationMinutes}
+                  onChange={(e) =>
+                    setServiceEditorForm((prev) => ({
+                      ...prev,
+                      durationMinutes: e.target.value,
+                    }))
+                  }
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#2D2D2D]">Preis (€)</label>
+                <input
+                  type="number"
+                  min={0}
+                  step="0.5"
+                  value={serviceEditorForm.priceEur}
+                  onChange={(e) =>
+                    setServiceEditorForm((prev) => ({ ...prev, priceEur: e.target.value }))
+                  }
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#2D2D2D]">Puffer (Minuten)</label>
+                <input
+                  type="number"
+                  min={0}
+                  step={1}
+                  value={serviceEditorForm.bufferMinutes}
+                  onChange={(e) =>
+                    setServiceEditorForm((prev) => ({
+                      ...prev,
+                      bufferMinutes: e.target.value,
+                    }))
+                  }
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="block text-sm font-medium text-[#2D2D2D]">Beschreibung (optional)</label>
+                <textarea
+                  rows={3}
+                  value={serviceEditorForm.description}
+                  onChange={(e) =>
+                    setServiceEditorForm((prev) => ({ ...prev, description: e.target.value }))
+                  }
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                />
+              </div>
+            </div>
+
+            <div className="mt-5 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setShowServiceEditor(false)}
+                className="rounded-full border border-[#E8E4DF] px-5 py-2 text-sm font-medium text-[#2D2D2D]"
+              >
+                Abbrechen
+              </button>
+              <button
+                type="button"
+                onClick={saveServiceEditor}
+                disabled={serviceSaving}
+                className="rounded-full bg-[#4A5D4A] px-6 py-2 text-sm font-medium text-white hover:bg-[#3A4A3A] disabled:opacity-50"
+              >
+                {serviceSaving ? "Speichern…" : "Speichern"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {blockEditor && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 px-4">
@@ -969,12 +1676,33 @@ export default function AdminPage() {
                 year: "numeric",
               })}
             </p>
+            <label className="mt-3 inline-flex items-center gap-2 text-sm text-[#2D2D2D]">
+              <input
+                type="checkbox"
+                checked={blockEditor.allDay}
+                onChange={(e) =>
+                  setBlockEditor((current) =>
+                    current
+                      ? {
+                          ...current,
+                          allDay: e.target.checked,
+                          fromMinute: e.target.checked ? dayStartMinute : current.fromMinute,
+                          toMinute: e.target.checked ? dayEndMinute : current.toMinute,
+                        }
+                      : current
+                  )
+                }
+                className="h-4 w-4 rounded border-[#E8E4DF]"
+              />
+              Ganztägig abwesend
+            </label>
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               <div>
                 <label className="block text-sm font-medium text-[#2D2D2D]">Von</label>
                 <input
                   type="time"
                   step={300}
+                  disabled={blockEditor.allDay}
                   value={minuteToTimeInput(blockEditor.fromMinute)}
                   onChange={(e) =>
                     setBlockEditor((current) =>
@@ -986,7 +1714,7 @@ export default function AdminPage() {
                         : current
                     )
                   }
-                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm disabled:bg-[#F5F2ED] disabled:text-[#2D2D2D]/50"
                 />
               </div>
               <div>
@@ -994,6 +1722,7 @@ export default function AdminPage() {
                 <input
                   type="time"
                   step={300}
+                  disabled={blockEditor.allDay}
                   value={minuteToTimeInput(blockEditor.toMinute)}
                   onChange={(e) =>
                     setBlockEditor((current) =>
@@ -1005,7 +1734,7 @@ export default function AdminPage() {
                         : current
                     )
                   }
-                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm disabled:bg-[#F5F2ED] disabled:text-[#2D2D2D]/50"
                 />
               </div>
             </div>
@@ -1040,8 +1769,12 @@ export default function AdminPage() {
                 type="button"
                 disabled={creating}
                 onClick={() => {
-                  const fromMinute = clampMinute(blockEditor.fromMinute);
-                  const toMinute = clampMinute(blockEditor.toMinute);
+                  const fromMinute = blockEditor.allDay
+                    ? dayStartMinute
+                    : clampMinute(blockEditor.fromMinute);
+                  const toMinute = blockEditor.allDay
+                    ? dayEndMinute
+                    : clampMinute(blockEditor.toMinute);
                   if (toMinute <= fromMinute) {
                     setError("Endzeit muss nach der Startzeit liegen.");
                     return;
