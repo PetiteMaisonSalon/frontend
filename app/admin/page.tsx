@@ -49,7 +49,7 @@ type AdminService = {
   priceEur: number;
   bufferMinutes?: number;
 };
-type AdminSectionId = "kalender" | "leistungen" | "umsatz" | "kunden";
+type AdminSectionId = "kalender" | "termine" | "leistungen" | "umsatz" | "kunden";
 const OPEN_ADMIN_CREATE_EVENT = "admin:create-appointment";
 const SERVICE_GROUPS = [
   {
@@ -663,6 +663,7 @@ export default function AdminPage() {
   const visibleServiceRows = servicesByGroup[effectiveActiveServiceGroupId] || [];
   const sidebarItems: Array<{ id: AdminSectionId; label: string }> = [
     { id: "kalender", label: "Kalender" },
+    { id: "termine", label: "Termine" },
     { id: "leistungen", label: "Leistungen" },
     { id: "umsatz", label: "Umsatz" },
     { id: "kunden", label: "Kunden" },
@@ -683,6 +684,14 @@ export default function AdminPage() {
           <circle cx="7" cy="7.5" r="1" fill="currentColor" stroke="none" />
           <circle cx="7" cy="12" r="1" fill="currentColor" stroke="none" />
           <circle cx="7" cy="16.5" r="1" fill="currentColor" stroke="none" />
+        </svg>
+      );
+    }
+    if (id === "termine") {
+      return (
+        <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8">
+          <rect x="5" y="3.5" width="14" height="17" rx="2" />
+          <path d="M8 7.5h8M8 11.5h8M8 15.5h5" />
         </svg>
       );
     }
@@ -1158,86 +1167,144 @@ export default function AdminPage() {
             )}
           </div>
         )}
-
-        <div className="space-y-3 rounded-2xl border border-[#E8E4DF] bg-white p-4">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-[#2D2D2D]/70">
-            Termine & Zahlungen
-          </h3>
-          {visibleAppointments.map((a) => (
-            <div
-              key={a._id}
-              className={`rounded-xl border p-4 ${
-                a.status === "cancelled"
-                  ? "border-[#D4A5A5]/60 bg-[#D4A5A5]/18"
-                  : "border-[#E8E4DF] bg-white"
-              }`}
-            >
-              <div className="flex flex-wrap items-start justify-between gap-4">
-                <div>
-                  <p className="font-medium text-[#2D2D2D]">
-                    {new Date(a.startAt).toLocaleDateString("de-DE", {
-                      weekday: "long",
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                      timeZone: "Europe/Berlin",
-                    })}{" "}
-                    • {appointmentRangeLabel(a)}
-                  </p>
-                  <p className="text-sm text-[#2D2D2D]/80">
-                    {a.customer.firstName} {a.customer.lastName} • {a.serviceId?.name} •{" "}
-                    {a.staffId ? `${a.staffId.firstName}` : "Team"}
-                  </p>
-                  <p className="text-sm text-[#2D2D2D]/70">
-                    Status: {a.status} • Zahlung: {a.paymentStatus}
-                  </p>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    disabled={
-                      busyId === a._id ||
-                      a.status === "attended" ||
-                      a.status === "completed" ||
-                      a.status === "cancelled"
-                    }
-                    onClick={() => markAttended(a._id, true)}
-                    className="rounded-full border border-[#4A5D4A] px-4 py-2 text-sm text-[#4A5D4A] hover:bg-[#4A5D4A]/10 disabled:opacity-50"
-                  >
-                    Wahrgenommen
-                  </button>
-                  <button
-                    disabled={
-                      busyId === a._id ||
-                      a.paymentStatus === "paid" ||
-                      a.status === "cancelled"
-                    }
-                    onClick={() => markPaid(a._id, a.amountPaidEur ?? a.priceEur, "card")}
-                    className="rounded-full bg-[#4A5D4A] px-4 py-2 text-sm text-white hover:bg-[#3A4A3A] disabled:opacity-50"
-                  >
-                    Bezahlt (Karte)
-                  </button>
-                  <button
-                    disabled={
-                      busyId === a._id ||
-                      a.paymentStatus === "paid" ||
-                      a.status === "cancelled"
-                    }
-                    onClick={() => markPaid(a._id, a.amountPaidEur ?? a.priceEur, "cash")}
-                    className="rounded-full bg-[#2D2D2D] px-4 py-2 text-sm text-white hover:bg-black disabled:opacity-50"
-                  >
-                    Bezahlt (Bar)
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-          {visibleAppointments.length === 0 && (
-            <p className="rounded-xl border border-[#E8E4DF] bg-white p-6 text-[#2D2D2D]/70">
-              Keine Termine für dieses Datum.
-            </p>
-          )}
-        </div>
       </section>
+          )}
+
+          {activeSection === "termine" && (
+            <section className="space-y-4">
+              <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-[#E8E4DF] bg-white p-3 shadow-sm">
+                <p className="mr-2 text-sm font-semibold uppercase tracking-wide text-[#2D2D2D]/70">
+                  Termine & Zahlungen
+                </p>
+                <div className="flex items-center gap-2">
+                  <label className="text-sm font-medium text-[#2D2D2D]">Datum</label>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setDateFilter((prev) => formatDateInput(addDays(parseDateInput(prev), -1)))
+                    }
+                    className="rounded-lg border border-[#E8E4DF] bg-white px-3 py-2 text-sm"
+                    aria-label="Vortag"
+                  >
+                    ←
+                  </button>
+                  <input
+                    type="date"
+                    value={dateFilter}
+                    onChange={(e) => setDateFilter(e.target.value)}
+                    className="rounded-lg border border-[#E8E4DF] px-3 py-2"
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setDateFilter((prev) => formatDateInput(addDays(parseDateInput(prev), 1)))
+                    }
+                    className="rounded-lg border border-[#E8E4DF] bg-white px-3 py-2 text-sm"
+                    aria-label="Nächster Tag"
+                  >
+                    →
+                  </button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-[#2D2D2D]">Mitarbeiter</span>
+                  <select
+                    value={staffFilter}
+                    onChange={(e) => setStaffFilter(e.target.value)}
+                    className="rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                  >
+                    <option value="alle">Alle</option>
+                    {staff.map((s) => (
+                      <option key={s._id} value={s._id}>
+                        {s.firstName} {s.lastName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <button
+                  type="button"
+                  onClick={exportAppointmentsCsv}
+                  className="ml-auto rounded-full border border-[#E8E4DF] px-4 py-2 text-sm font-medium text-[#2D2D2D] hover:bg-[#F5F2ED]"
+                >
+                  CSV exportieren
+                </button>
+              </div>
+
+              <div className="space-y-3 rounded-2xl border border-[#E8E4DF] bg-white p-4">
+                {visibleAppointments.map((a) => (
+                  <div
+                    key={a._id}
+                    className={`rounded-xl border p-4 ${
+                      a.status === "cancelled"
+                        ? "border-[#D4A5A5]/60 bg-[#D4A5A5]/18"
+                        : "border-[#E8E4DF] bg-white"
+                    }`}
+                  >
+                    <div className="flex flex-wrap items-start justify-between gap-4">
+                      <div>
+                        <p className="font-medium text-[#2D2D2D]">
+                          {new Date(a.startAt).toLocaleDateString("de-DE", {
+                            weekday: "long",
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                            timeZone: "Europe/Berlin",
+                          })}{" "}
+                          • {appointmentRangeLabel(a)}
+                        </p>
+                        <p className="text-sm text-[#2D2D2D]/80">
+                          {a.customer.firstName} {a.customer.lastName} • {a.serviceId?.name} •{" "}
+                          {a.staffId ? `${a.staffId.firstName}` : "Team"}
+                        </p>
+                        <p className="text-sm text-[#2D2D2D]/70">
+                          Status: {a.status} • Zahlung: {a.paymentStatus}
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          disabled={
+                            busyId === a._id ||
+                            a.status === "attended" ||
+                            a.status === "completed" ||
+                            a.status === "cancelled"
+                          }
+                          onClick={() => markAttended(a._id, true)}
+                          className="rounded-full border border-[#4A5D4A] px-4 py-2 text-sm text-[#4A5D4A] hover:bg-[#4A5D4A]/10 disabled:opacity-50"
+                        >
+                          Wahrgenommen
+                        </button>
+                        <button
+                          disabled={
+                            busyId === a._id ||
+                            a.paymentStatus === "paid" ||
+                            a.status === "cancelled"
+                          }
+                          onClick={() => markPaid(a._id, a.amountPaidEur ?? a.priceEur, "card")}
+                          className="rounded-full bg-[#4A5D4A] px-4 py-2 text-sm text-white hover:bg-[#3A4A3A] disabled:opacity-50"
+                        >
+                          Bezahlt (Karte)
+                        </button>
+                        <button
+                          disabled={
+                            busyId === a._id ||
+                            a.paymentStatus === "paid" ||
+                            a.status === "cancelled"
+                          }
+                          onClick={() => markPaid(a._id, a.amountPaidEur ?? a.priceEur, "cash")}
+                          className="rounded-full bg-[#2D2D2D] px-4 py-2 text-sm text-white hover:bg-black disabled:opacity-50"
+                        >
+                          Bezahlt (Bar)
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                {visibleAppointments.length === 0 && (
+                  <p className="rounded-xl border border-[#E8E4DF] bg-white p-6 text-[#2D2D2D]/70">
+                    Keine Termine für dieses Datum.
+                  </p>
+                )}
+              </div>
+            </section>
           )}
 
           {activeSection === "leistungen" && (
@@ -1346,7 +1413,9 @@ export default function AdminPage() {
             </section>
           )}
 
-          {activeSection !== "kalender" && activeSection !== "leistungen" && (
+          {activeSection !== "kalender" &&
+            activeSection !== "termine" &&
+            activeSection !== "leistungen" && (
             <div className="rounded-2xl border border-[#E8E4DF] bg-white p-6 text-[#2D2D2D]/75">
               Dieser Bereich wird als Nächstes umgesetzt.
             </div>
