@@ -141,6 +141,7 @@ export default function AdminPage() {
     reason: string;
     allDay: boolean;
   } | null>(null);
+  const [dashboardExpanded, setDashboardExpanded] = useState(true);
   const [createForm, setCreateForm] = useState({
     serviceId: "",
     staffId: "",
@@ -791,12 +792,21 @@ export default function AdminPage() {
 
       <div className="mt-4 grid items-start gap-4 lg:grid-cols-[230px_minmax(0,1fr)]">
         <aside className="h-fit self-start rounded-2xl border border-[#E8E4DF] bg-white p-4 shadow-sm">
-          <div className="flex items-center gap-2 rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm font-medium text-[#2D2D2D]">
-            <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8">
-              <path d="M4.5 13.5h6v6h-6zM13.5 4.5h6v6h-6zM4.5 4.5h6v6h-6zM13.5 13.5h6v6h-6z" />
-            </svg>
-            Dashboard
-          </div>
+          <button
+            type="button"
+            onClick={() => setDashboardExpanded((e) => !e)}
+            className="flex w-full items-center justify-between gap-2 rounded-lg border border-[#E8E4DF] px-3 py-2 text-left text-sm font-medium text-[#2D2D2D] transition hover:bg-[#F5F2ED]"
+          >
+            <span className="flex items-center gap-2">
+              <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <path d="M4.5 13.5h6v6h-6zM13.5 4.5h6v6h-6zM4.5 4.5h6v6h-6zM13.5 13.5h6v6h-6z" />
+              </svg>
+              Dashboard
+            </span>
+            <span className={`shrink-0 text-[#2D2D2D]/50 transition-transform ${dashboardExpanded ? "rotate-180" : ""}`} aria-hidden>▼</span>
+          </button>
+          {dashboardExpanded && (
+          <>
           <p className="mt-3 px-1 text-xs font-medium uppercase tracking-wide text-[#2D2D2D]/55">
             Kategorie
           </p>
@@ -898,6 +908,8 @@ export default function AdminPage() {
               })}
             </div>
           </div>
+          </>
+          )}
         </aside>
 
         <section className="min-w-0 space-y-4">
