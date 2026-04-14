@@ -294,7 +294,7 @@ function AccountPageContent() {
   if (!user) {
     return (
       <main className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
-        <h1 className="font-display text-3xl text-[#2D2D2D]">Mein Profil</h1>
+        <h1 className="text-h2 text-[#2D2D2D]">Mein Profil</h1>
         <p className="mt-3 text-[#2D2D2D]/80">Bitte melde dich an, um dein Profil zu verwalten.</p>
         <Link
           href="/login?redirect=%2Fkonto"
@@ -315,7 +315,7 @@ function AccountPageContent() {
               {initials}
             </div>
             <div className="min-w-0">
-              <p className="truncate font-display text-3xl text-[#2D2D2D]">
+              <p className="truncate text-h2 text-[#2D2D2D]">
                 {user.firstName}
               </p>
             </div>
@@ -377,7 +377,7 @@ function AccountPageContent() {
               ) : (
                 <>
                   <section>
-                    <h2 className="font-display text-4xl text-[#2D2D2D]">Warteliste</h2>
+                    <h2 className="text-h1 text-[#2D2D2D]">Warteliste</h2>
                     <div className="mt-3 space-y-3">
                       {waitlistEntries.length > 0 ? (
                         waitlistEntries.map((entry) => {
@@ -418,7 +418,7 @@ function AccountPageContent() {
                   </section>
 
                   <section>
-                    <h2 className="font-display text-4xl text-[#2D2D2D]">Nächster Termin</h2>
+                    <h2 className="text-h1 text-[#2D2D2D]">Nächster Termin</h2>
                     <div className="mt-3">
                       {nextAppointment ? (
                         <div className="rounded-2xl border border-[#4A5D4A]/45 bg-white p-4 shadow-sm">
@@ -477,7 +477,7 @@ function AccountPageContent() {
                   </section>
 
                   <section>
-                    <h2 className="font-display text-4xl text-[#2D2D2D]">Vergangene</h2>
+                    <h2 className="text-h1 text-[#2D2D2D]">Vergangene</h2>
                     <div className="mt-3 space-y-3">
                       {pastAppointments.length > 0 ? (
                         pastAppointments.slice(0, 8).map((a) => (
@@ -536,7 +536,7 @@ function AccountPageContent() {
             </div>
           ) : (
             <div className="space-y-4">
-              <h2 className="font-display text-4xl text-[#2D2D2D]">Persönliche Daten</h2>
+              <h2 className="text-h1 text-[#2D2D2D]">Persönliche Daten</h2>
               {profileError && (
                 <div className="rounded-lg bg-[#D4A5A5]/30 px-4 py-3 text-[#5C4033]">
                   {profileError}
@@ -819,7 +819,7 @@ function AccountPageContent() {
       {showDeleteProfileDialog && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/45 px-4">
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
-            <h3 className="font-display text-2xl text-[#2D2D2D]">Profil wirklich löschen?</h3>
+            <h3 className="text-h2 text-[#2D2D2D]">Profil wirklich löschen?</h3>
             <p className="mt-2 text-sm text-[#2D2D2D]/75">
               Dein Konto wird dauerhaft entfernt. Kommende Termine werden storniert.
             </p>

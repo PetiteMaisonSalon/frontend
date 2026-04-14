@@ -1,19 +1,24 @@
 import type { Metadata } from "next";
-import { Geist, Cormorant_Garamond } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Providers } from "@/components/Providers";
+import HeaderSpacer from "@/components/HeaderSpacer";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const gildaDisplay = localFont({
+  src: "../public/GildaDisplay-Regular.ttf",
+  variable: "--font-gilda-display",
+  display: "swap",
+  weight: "400",
+  style: "normal",
 });
 
-const cormorant = Cormorant_Garamond({
-  variable: "--font-cormorant",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+const publicSans = localFont({
+  src: "../public/PublicSans-VariableFont_wght.ttf",
+  variable: "--font-public-sans",
+  display: "swap",
+  // Variable font: weight is handled by the font file itself.
 });
 
 export const metadata: Metadata = {
@@ -32,10 +37,11 @@ export default function RootLayout({
   return (
     <html lang="de">
       <body
-        className={`${geistSans.variable} ${cormorant.variable} antialiased`}
+        className={`${publicSans.variable} ${gildaDisplay.variable} font-sans antialiased`}
       >
         <Providers>
           <Header />
+          <HeaderSpacer />
           {children}
           <Footer />
         </Providers>

@@ -553,7 +553,7 @@ export default function AdminPage() {
   if (!isAllowed) {
     return (
       <main className="mx-auto max-w-2xl px-6 py-14">
-        <h1 className="font-display text-3xl text-[#2D2D2D]">Admin CMS</h1>
+        <h1 className="text-h2 text-[#2D2D2D]">Admin CMS</h1>
         <p className="mt-4 text-[#2D2D2D]/80">
           Kein Zugriff. Diese Seite ist nur für Inhaber/Team.
         </p>
@@ -1323,7 +1323,7 @@ export default function AdminPage() {
             <section className="rounded-2xl border border-[#E8E4DF] bg-white p-4 shadow-sm md:p-5">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <h3 className="font-display text-2xl font-medium text-[#2D2D2D]">
+                  <h3 className="text-h2 text-[#2D2D2D]">
                     Leistungen verwalten
                   </h3>
                   <p className="text-sm text-[#2D2D2D]/70">
@@ -1439,7 +1439,7 @@ export default function AdminPage() {
         <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/40 px-3 py-4 sm:items-center sm:px-4 sm:py-6">
           <div className="w-full max-w-2xl shrink-0 rounded-2xl bg-white p-4 shadow-xl sm:p-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <h2 className="font-display text-xl font-medium text-[#2D2D2D] sm:text-2xl">
+              <h2 className="text-h3 text-[#2D2D2D] sm:text-2xl">
                 Neuen Termin anlegen
               </h2>
               <button
@@ -1579,7 +1579,7 @@ export default function AdminPage() {
       {serviceDeleteTarget && (
         <div className="fixed inset-0 z-[64] flex items-center justify-center bg-black/45 px-4">
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
-            <h3 className="font-display text-2xl text-[#2D2D2D]">Leistung löschen?</h3>
+            <h3 className="text-h2 text-[#2D2D2D]">Leistung löschen?</h3>
             <p className="mt-2 text-sm text-[#2D2D2D]/75">
               Die Leistung {serviceDeleteTarget.name} wird dauerhaft entfernt. Dieser Schritt kann nicht
               rückgängig gemacht werden.
@@ -1610,7 +1610,7 @@ export default function AdminPage() {
         <div className="fixed inset-0 z-[65] flex items-center justify-center bg-black/45 px-4">
           <div className="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl">
             <div className="flex items-center justify-between gap-3">
-              <h3 className="font-display text-2xl font-medium text-[#2D2D2D]">
+              <h3 className="text-h2 text-[#2D2D2D]">
                 {serviceEditorMode === "create" ? "Neue Leistung" : "Leistung bearbeiten"}
               </h3>
               <button
@@ -1738,7 +1738,7 @@ export default function AdminPage() {
         <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 px-4">
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
             <div className="flex items-center justify-between gap-3">
-              <h3 className="font-display text-xl font-medium text-[#2D2D2D]">Abwesenheit eintragen</h3>
+              <h3 className="text-h3 text-[#2D2D2D]">Abwesenheit eintragen</h3>
               <button
                 type="button"
                 onClick={() => setBlockEditor(null)}

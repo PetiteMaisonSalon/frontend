@@ -165,7 +165,7 @@ export default function LeistungenPage() {
     <main>
       <section className="border-b border-[#E8E4DF]">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 md:py-28">
-          <h1 className="font-display text-4xl font-medium tracking-tight text-[#2D2D2D] md:text-5xl">
+          <h1 className="text-h1 text-[#2D2D2D]">
             Unsere Leistungen
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[#2D2D2D]/85">
@@ -178,7 +178,7 @@ export default function LeistungenPage() {
 
       <section className="bg-[#F5F2ED] py-14 pb-36 md:py-24 md:pb-44">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <h2 className="font-display text-2xl font-medium tracking-tight text-[#2D2D2D]">
+          <h2 className="text-h2 font-medium tracking-tight text-[#2D2D2D]">
             Alle Services
           </h2>
 

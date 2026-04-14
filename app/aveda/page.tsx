@@ -15,13 +15,13 @@ export default function AvedaPage() {
           <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
             <div className="aspect-[4/3] overflow-hidden rounded-lg bg-[#D4CFC8]">
               <div className="flex h-full w-full items-center justify-center">
-                <span className="font-display text-4xl text-[#B8A898]">
+                <span className="text-h1 text-[#B8A898]">
                   Aveda
                 </span>
               </div>
             </div>
             <div>
-              <h1 className="font-display text-4xl font-medium tracking-tight text-[#2D2D2D] md:text-5xl">
+              <h1 className="text-h1 text-[#2D2D2D]">
                 Aveda
               </h1>
               <p className="mt-6 text-lg leading-relaxed text-[#2D2D2D]/85">
@@ -42,7 +42,7 @@ export default function AvedaPage() {
       {/* Philosophie */}
       <section className="bg-[#F5F2ED] py-20 md:py-28">
         <div className="mx-auto max-w-3xl px-6">
-          <h2 className="font-display text-2xl font-medium tracking-tight text-[#2D2D2D]">
+          <h2 className="text-h2 font-medium tracking-tight text-[#2D2D2D]">
             Die Aveda-Philosophie
           </h2>
           <div className="mt-8 space-y-6 text-lg leading-relaxed text-[#2D2D2D]/85">
@@ -65,7 +65,7 @@ export default function AvedaPage() {
       {/* Aktuelle Produkte */}
       <section className="border-t border-[#E8E4DF] py-20 md:py-28">
         <div className="mx-auto max-w-7xl px-6">
-          <h2 className="font-display text-2xl font-medium tracking-tight text-[#2D2D2D]">
+          <h2 className="text-h2 font-medium tracking-tight text-[#2D2D2D]">
             Unsere Produkte
           </h2>
           <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[#2D2D2D]/85">
@@ -80,7 +80,7 @@ export default function AvedaPage() {
                 className="aspect-[3/4] overflow-hidden rounded-lg bg-[#E8E4DF]"
               >
                 <div className="flex h-full w-full items-center justify-center">
-                  <span className="font-display text-xl text-[#D4CFC8]">
+                  <span className="text-h3 text-[#D4CFC8]">
                     Produkt {i}
                   </span>
                 </div>
@@ -93,7 +93,7 @@ export default function AvedaPage() {
       {/* CTA */}
       <section className="bg-[#E8E4DF] py-20 md:py-24">
         <div className="mx-auto max-w-2xl px-6 text-center">
-          <h2 className="font-display text-2xl font-medium tracking-tight text-[#2D2D2D]">
+          <h2 className="text-h2 font-medium tracking-tight text-[#2D2D2D]">
             Entdecke unsere Arbeit
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-[#2D2D2D]/85">

@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 /* Petite Maison – Design System */
-/* Farben: Grün, Beige, Braun | Akzente: Pink, Orange | Kein Blau, kein Rot */
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-cormorant);
-  --font-body: var(--font-geist-sans);
-  
+  /* Tailwind v4 font tokens */
+  --font-sans: var(--font-public-sans, system-ui, sans-serif);
+  --font-body: var(--font-public-sans, system-ui, sans-serif);
+
   /* Petite Maison Palette */
   --petite-sand: #E8E4DF;
   --petite-sand-dark: #D4CFC8;
@@ -27,13 +27,108 @@
   --foreground: #2D2D2D;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-body), system-ui, sans-serif;
+  /*
+    Wichtig: `--font-gilda-display` und `--font-public-sans` werden von
+    `next/font/local` als CSS-Variablen auf dem <body> gesetzt.
+    Deshalb definieren wir Heading/Copy ebenfalls hier (nicht in :root),
+    damit sie überall korrekt aufgelöst werden.
+  */
+  --font-heading: var(--font-gilda-display, Georgia, serif);
+  --font-copy: var(--font-body);
+
+  font-family: var(--font-copy);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  letter-spacing: 0;
+  font-weight: 400;
 }
 
-/* Elegante Überschriften */
+/* Serif-Überschriften: Gilda Display Regular */
 .font-display {
-  font-family: var(--font-sans), Georgia, serif;
+  font-family: var(--font-heading);
+  font-weight: 400;
+}
+
+/*
+  Typescale (Screenshot):
+  H1 Gilda: 40px / 110% (Desktop), 32px / 120% (Mobile)
+  H2 Gilda: 28px / 120% (Desktop), 24px / 120% (Mobile)
+  H3 Gilda: 20px / 120%
+  Overline Public Sans: 14px / 150% / 4% tracking / uppercase
+  Copy Regular: 14px / 150%
+  Copy Small: 12px / 170% / 1% tracking
+*/
+
+.text-h1 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 2rem;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+@media (min-width: 768px) {
+  .text-h1 {
+    font-size: 2.5rem;
+    line-height: 1.1;
+  }
+}
+
+.text-h2 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+@media (min-width: 768px) {
+  .text-h2 {
+    font-size: 1.75rem;
+  }
+}
+
+.text-h3 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 1.25rem;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.text-overline {
+  font-family: var(--font-copy);
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.text-copy {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
+.text-copy-sm {
+  font-size: 0.75rem;
+  line-height: 1.7;
+  letter-spacing: 0.01em;
+}
+
+/* Anchor-Offsets für fixed Header + Submenü (Startseite) */
+.pm-home-section {
+  scroll-margin-top: 140px;
 }

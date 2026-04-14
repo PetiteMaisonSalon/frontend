@@ -44,7 +44,7 @@ export default function SalonPage() {
         <div className="mx-auto max-w-7xl px-6 py-20 md:py-28">
           <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
             <div className="order-2 lg:order-1">
-              <h2 className="font-display text-3xl font-medium tracking-tight text-[#2D2D2D]">
+              <h2 className="text-h2 text-[#2D2D2D]">
                 Unser Salon
               </h2>
               <p className="mt-6 text-lg leading-relaxed text-[#2D2D2D]/85">
@@ -61,7 +61,7 @@ export default function SalonPage() {
             </div>
             <div className="order-1 aspect-[4/3] overflow-hidden rounded-lg bg-[#E8E4DF] lg:order-2">
               <div className="flex h-full w-full items-center justify-center">
-                <span className="font-display text-3xl text-[#D4CFC8]">
+                <span className="text-h2 text-[#D4CFC8]">
                   Salonbild
                 </span>
               </div>
@@ -73,7 +73,7 @@ export default function SalonPage() {
       {/* Unsere Leistungen – Salonseite 1 */}
       <section className="bg-[#F5F2ED] py-20 md:py-28">
         <div className="mx-auto max-w-7xl px-6">
-          <h2 className="font-display text-3xl font-medium tracking-tight text-[#2D2D2D]">
+          <h2 className="text-h2 text-[#2D2D2D]">
             Unsere Leistungen
           </h2>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[#2D2D2D]/85">
@@ -81,7 +81,7 @@ export default function SalonPage() {
             Männer an – immer individuell abgestimmt auf dein Haar, deinen Typ
             und deinen Alltag.
           </p>
-          <h3 className="mt-10 font-display text-xl font-medium text-[#2D2D2D]">
+          <h3 className="mt-10 text-h3 text-[#2D2D2D]">
             Leistungsbereiche
           </h3>
           <ul className="mt-4 space-y-2">
@@ -109,7 +109,7 @@ export default function SalonPage() {
       <section className="border-t border-[#E8E4DF] py-20 md:py-28">
         <div className="mx-auto max-w-7xl px-6">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="font-display text-3xl font-medium tracking-tight text-[#2D2D2D]">
+            <h2 className="text-h2 text-[#2D2D2D]">
               Unser Team
             </h2>
             <p className="mt-6 text-lg leading-relaxed text-[#2D2D2D]/85">
@@ -137,7 +137,7 @@ export default function SalonPage() {
                 >
                   <div className="aspect-square max-w-md overflow-hidden rounded-lg bg-[#E8E4DF]">
                     <div className="flex h-full w-full items-center justify-center">
-                      <span className="font-display text-2xl text-[#D4CFC8]">
+                      <span className="text-h2 text-[#D4CFC8]">
                         {member.name}
                       </span>
                     </div>
@@ -148,7 +148,7 @@ export default function SalonPage() {
                     member.imagePos === "right" ? "lg:order-1" : "lg:order-2"
                   }
                 >
-                  <h3 className="font-display text-2xl font-medium text-[#2D2D2D]">
+                  <h3 className="text-h2 text-[#2D2D2D]">
                     {member.name}
                   </h3>
                   <p className="mt-1 text-sm uppercase tracking-wider text-[#4A5D4A]">
@@ -170,13 +170,13 @@ export default function SalonPage() {
           <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
             <div className="aspect-[4/3] overflow-hidden rounded-lg bg-[#D4CFC8]">
               <div className="flex h-full w-full items-center justify-center">
-                <span className="font-display text-3xl text-[#D4CFC8]">
+                <span className="text-h2 text-[#D4CFC8]">
                   Aveda
                 </span>
               </div>
             </div>
             <div>
-              <h2 className="font-display text-3xl font-medium tracking-tight text-[#2D2D2D]">
+              <h2 className="text-h2 text-[#2D2D2D]">
                 Aveda
               </h2>
               <p className="mt-6 text-lg leading-relaxed text-[#2D2D2D]/85">
@@ -203,7 +203,7 @@ export default function SalonPage() {
       {/* Termine – Salonseite 3 */}
       <section className="border-t border-[#E8E4DF] bg-[#F5F2ED] py-20 md:py-24">
         <div className="mx-auto max-w-2xl px-6 text-center">
-          <h2 className="font-display text-3xl font-medium tracking-tight text-[#2D2D2D] md:text-4xl">
+          <h2 className="text-h2 text-[#2D2D2D]">
             Termine
           </h2>
           <p className="mt-6 text-lg leading-relaxed text-[#2D2D2D]/85">

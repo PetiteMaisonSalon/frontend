@@ -1,16 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useAuth } from "./AuthContext";
 
-const navItems = [
-  { href: "/salon", label: "Salon" },
+/** Hauptnavigation wie Screenshot: nur Leistungen + Kontakt (Salon/Team/Aveda im Submenü auf der Startseite) */
+const mainNavItems = [
   { href: "/leistungen", label: "Leistungen" },
-  { href: "/aveda", label: "Aveda" },
   { href: "/kontakt", label: "Kontakt" },
+];
+
+const homeSubNavItems = [
+  { id: "salon" as const, href: "#salon", label: "Salon" },
+  { id: "team" as const, href: "#team", label: "Team" },
+  { id: "aveda" as const, href: "#aveda", label: "Aveda" },
 ];
 const OPEN_ADMIN_CREATE_EVENT = "admin:create-appointment";
 
@@ -19,63 +23,223 @@ export default function Header() {
   const { user, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const isCmsArea = pathname?.startsWith("/admin");
+  const isHome = pathname === "/" && !isCmsArea;
   const containerWidthClass = isCmsArea ? "max-w-[1450px]" : "max-w-7xl";
-  const containerPaddingClass = isCmsArea ? "px-3 md:px-6" : "px-6";
+  const containerPaddingClass = isCmsArea ? "px-3 md:px-2" : "px-2";
   const openAdminCreateModal = () => {
     if (typeof window === "undefined") return;
     window.dispatchEvent(new CustomEvent(OPEN_ADMIN_CREATE_EVENT));
   };
 
-  const navItemsToShow = isCmsArea ? [] : navItems;
+  const navItemsToShow = isCmsArea ? [] : mainNavItems;
+
+  const [homeHeroVisible, setHomeHeroVisible] = useState(true);
+  const [homeSectionBg, setHomeSectionBg] = useState<string>("#F1EEE9");
+  const [homeSubActiveId, setHomeSubActiveId] = useState<string>("salon");
+  const showHomeSubmenu = isHome && !homeHeroVisible;
+
+  useEffect(() => {
+    if (!isHome) return;
+
+    const onHero = (e: Event) => {
+      const ce = e as CustomEvent<{ visible?: boolean }>;
+      setHomeHeroVisible(Boolean(ce.detail?.visible));
+    };
+    const onSection = (e: Event) => {
+      const ce = e as CustomEvent<{ bg?: string; id?: string }>;
+      if (ce.detail?.bg) setHomeSectionBg(ce.detail.bg);
+      if (ce.detail?.id) setHomeSubActiveId(ce.detail.id);
+    };
+
+    window.addEventListener("pm:home:hero", onHero as EventListener);
+    window.addEventListener("pm:home:section", onSection as EventListener);
+    return () => {
+      window.removeEventListener("pm:home:hero", onHero as EventListener);
+      window.removeEventListener("pm:home:section", onSection as EventListener);
+    };
+  }, [isHome]);
+
+  useEffect(() => {
+    if (!isHome || typeof window === "undefined") return;
+    const syncHash = () => {
+      const h = window.location.hash.replace("#", "");
+      if (h === "salon" || h === "team" || h === "aveda") setHomeSubActiveId(h);
+    };
+    syncHash();
+    window.addEventListener("hashchange", syncHash);
+    return () => window.removeEventListener("hashchange", syncHash);
+  }, [isHome]);
+
+  const headerStyle = useMemo(() => {
+    if (!isHome) return undefined;
+    if (homeHeroVisible) return { backgroundColor: "transparent" };
+    return { backgroundColor: homeSectionBg };
+  }, [homeHeroVisible, homeSectionBg, isHome]);
+
+  const headerShell =
+    "fixed inset-x-0 top-0 z-50 w-full";
+
+  const headerChromeClass = isHome
+    ? homeHeroVisible
+      ? "border-0"
+      : "border-b border-black/10"
+    : "border-b border-[#E8E4DF]/50 bg-[#F5F2ED]/95 backdrop-blur-sm";
+
+  const isHomeHero = isHome && homeHeroVisible;
+
+  /** Hell (Startseite unterhalb Hero + alle anderen Seiten): Sans, dunkel; nur „Petite Maison“ unterstrichen */
+  const lightNavText =
+    "text-copy font-medium text-[#2D2D2D] antialiased transition hover:opacity-90";
+  const lightBrandUnderline = "border-b border-[#2D2D2D] pb-px";
+
+  /** Hero über Bild: weiß; nur „Petite Maison“ unterstrichen */
+  const heroNavText =
+    "text-copy font-medium text-white antialiased transition hover:text-white/95";
+  const heroBrandUnderline = "border-b border-white pb-px";
+
+  const outlineBtnHero =
+    "text-copy rounded-full border border-white bg-transparent px-5 py-2.5 font-medium text-white transition hover:bg-white/10";
+  const outlineBtnHeroWide = `${outlineBtnHero} px-6 py-3`;
+
+  const outlineBtnLight =
+    "text-copy rounded-full border border-[#2D2D2D] bg-transparent px-5 py-2.5 font-medium text-[#2D2D2D] transition hover:bg-[#2D2D2D]/5";
+  const outlineBtnLightWide = `${outlineBtnLight} px-6 py-3`;
+
+  const brandClass = isHomeHero
+    ? `${heroNavText} ${heroBrandUnderline}`
+    : `${lightNavText} ${lightBrandUnderline}`;
+  const mainNavLinkClass = isHomeHero ? heroNavText : lightNavText;
+
+  const burgerButton = (
+    <button
+      type="button"
+      onClick={() => setMenuOpen(!menuOpen)}
+      className={
+        isHomeHero
+          ? "flex h-10 w-10 shrink-0 flex-col items-center justify-center gap-1.5 rounded-lg border border-white/60 bg-black/20 md:hidden"
+          : "flex h-10 w-10 shrink-0 flex-col items-center justify-center gap-1.5 rounded-lg border border-[#2D2D2D]/15 bg-white/60 md:hidden"
+      }
+      aria-label="Menü öffnen"
+      aria-expanded={menuOpen}
+    >
+      <span
+        className={`block h-0.5 w-5 transition-all ${
+          isHomeHero ? "bg-white" : "bg-[#2D2D2D]"
+        } ${menuOpen ? "translate-y-2 rotate-45" : ""}`}
+      />
+      <span
+        className={`block h-0.5 w-5 transition-all ${
+          isHomeHero ? "bg-white" : "bg-[#2D2D2D]"
+        } ${menuOpen ? "opacity-0" : ""}`}
+      />
+      <span
+        className={`block h-0.5 w-5 transition-all ${
+          isHomeHero ? "bg-white" : "bg-[#2D2D2D]"
+        } ${menuOpen ? "-translate-y-2 -rotate-45" : ""}`}
+      />
+    </button>
+  );
+
+  const desktopAuthActions = (
+    <>
+      {user ? (
+        <div className="flex items-center gap-4">
+          {!isCmsArea ? (
+            <Link
+              href="/konto"
+              className={
+                isHomeHero
+                  ? `whitespace-nowrap ${outlineBtnHero}`
+                  : `whitespace-nowrap ${outlineBtnLight}`
+              }
+            >
+              Mein Profil
+            </Link>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={openAdminCreateModal}
+                className="whitespace-nowrap rounded-full bg-[#4A5D4A] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#3A4A3A]"
+              >
+                Neuen Termin eintragen
+              </button>
+              <button
+                type="button"
+                onClick={logout}
+                className="whitespace-nowrap rounded-full border border-[#D4A5A5] px-4 py-2 text-sm font-semibold text-[#5C4033] transition hover:bg-[#D4A5A5]/20"
+              >
+                Abmelden
+              </button>
+            </>
+          )}
+          {!isCmsArea && (
+            <Link
+              href="/buchung"
+              className={
+                isHomeHero
+                  ? `whitespace-nowrap ${outlineBtnHero}`
+                  : `whitespace-nowrap ${outlineBtnLight}`
+              }
+            >
+              Jetzt buchen
+            </Link>
+          )}
+        </div>
+      ) : (
+        <div className="flex items-center gap-4">
+          <Link
+            href="/login"
+            className={
+              isHomeHero
+                ? "whitespace-nowrap text-copy font-medium text-white transition hover:text-white/80"
+                : !isCmsArea
+                  ? "whitespace-nowrap text-copy font-medium text-[#2D2D2D] transition hover:opacity-80"
+                : "whitespace-nowrap rounded-full border-2 border-[#4A5D4A] px-5 py-2.5 text-sm font-medium text-[#4A5D4A] transition hover:bg-[#4A5D4A]/10"
+            }
+          >
+           Login
+          </Link>
+          {!isCmsArea && (
+            <Link
+              href="/buchung"
+              className={
+                isHomeHero
+                  ? `whitespace-nowrap ${outlineBtnHero}`
+                  : `whitespace-nowrap ${outlineBtnLight}`
+              }
+            >
+              Jetzt buchen
+            </Link>
+          )}
+        </div>
+      )}
+    </>
+  );
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#E8E4DF]/50 bg-[#F5F2ED]/95 backdrop-blur-sm">
+    <header className={`${headerShell} ${headerChromeClass}`} style={headerStyle}>
       <div
-        className={`mx-auto flex ${containerWidthClass} flex-wrap items-center justify-between gap-4 ${containerPaddingClass} py-5 md:flex-nowrap`}
+        className={`mx-auto flex ${containerWidthClass} w-full items-center justify-between gap-4 ${containerPaddingClass} py-5`}
       >
-        {/* Logo – links */}
-        <Link
-          href="/"
-          className="font-display text-2xl font-medium tracking-tight text-[#2D2D2D] transition hover:text-[#4A5D4A]"
-        >
-          <Image src="/petite-maison.png" alt="Petite Maison" width={200} height={100} />
-        </Link>
-
-        {/* Burger Button – nur Mobile */}
-        <button
-          type="button"
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-lg border border-[#E8E4DF] bg-white/80 md:hidden"
-          aria-label="Menü öffnen"
-          aria-expanded={menuOpen}
-        >
-          <span
-            className={`block h-0.5 w-5 bg-[#2D2D2D] transition-all ${
-              menuOpen ? "translate-y-2 rotate-45" : ""
-            }`}
-          />
-          <span
-            className={`block h-0.5 w-5 bg-[#2D2D2D] transition-all ${
-              menuOpen ? "opacity-0" : ""
-            }`}
-          />
-          <span
-            className={`block h-0.5 w-5 bg-[#2D2D2D] transition-all ${
-              menuOpen ? "-translate-y-2 -rotate-45" : ""
-            }`}
-          />
-        </button>
-
-        {/* Nav + Actions – rechts, Desktop/Tablet */}
-        <div className="hidden items-center justify-end gap-6 md:flex">
+        <div className="flex min-w-0 flex-1 items-center gap-6 lg:gap-10">
+          <Link href="/" className={`shrink-0 whitespace-nowrap ${brandClass}`}>
+            Petite Maison
+          </Link>
           {navItemsToShow.length > 0 && (
-            <nav className="flex items-center gap-8 lg:gap-10">
+            <nav className="hidden items-center gap-8 md:flex lg:gap-10">
               {navItemsToShow.map(({ href, label }) => (
                 <Link
                   key={href}
                   href={href}
-                  className={`whitespace-nowrap text-sm font-medium transition hover:text-[#4A5D4A] ${
-                    pathname === href ? "text-[#4A5D4A]" : "text-[#2D2D2D]"
+                  className={`whitespace-nowrap ${mainNavLinkClass} ${
+                    pathname === href
+                      ? isHomeHero
+                        ? "text-white"
+                        : "font-semibold text-[#2D2D2D]"
+                      : isHomeHero
+                        ? ""
+                        : "text-[#2D2D2D]/80"
                   }`}
                 >
                   {label}
@@ -83,66 +247,45 @@ export default function Header() {
               ))}
             </nav>
           )}
-          {user ? (
-            <div className="flex items-center gap-4">
-              {!isCmsArea ? (
-                <Link
-                  href="/konto"
-                  className="whitespace-nowrap rounded-full border-2 border-[#4A5D4A] px-5 py-2.5 text-sm font-medium text-[#4A5D4A] transition hover:bg-[#4A5D4A]/10"
-                >
-                  Mein Profil
-                </Link>
-              ) : (
-                <>
-                  <button
-                    type="button"
-                    onClick={openAdminCreateModal}
-                    className="whitespace-nowrap rounded-full bg-[#4A5D4A] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#3A4A3A]"
-                  >
-                    Neuen Termin eintragen
-                  </button>
-                  <button
-                    type="button"
-                    onClick={logout}
-                    className="whitespace-nowrap rounded-full border border-[#D4A5A5] px-4 py-2 text-sm font-semibold text-[#5C4033] transition hover:bg-[#D4A5A5]/20"
-                  >
-                    Abmelden
-                  </button>
-                </>
-              )}
-              {!isCmsArea && (
-                <Link
-                  href="/buchung"
-                  className="whitespace-nowrap rounded-full bg-[#4A5D4A] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#3A4A3A]"
-                >
-                  Termin buchen
-                </Link>
-              )}
-            </div>
-          ) : (
-            <div className="flex items-center gap-4">
-              <Link
-                href="/login"
-                className="whitespace-nowrap rounded-full border-2 border-[#4A5D4A] px-5 py-2.5 text-sm font-medium text-[#4A5D4A] transition hover:bg-[#4A5D4A]/10"
-              >
-                Anmelden
-              </Link>
-              {!isCmsArea && (
-                <Link
-                  href="/buchung"
-                  className="whitespace-nowrap rounded-full bg-[#4A5D4A] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#3A4A3A]"
-                >
-                  Termin buchen
-                </Link>
-              )}
-            </div>
-          )}
+        </div>
+        <div className="flex shrink-0 items-center gap-4">
+          <div className="hidden md:flex md:items-center">{desktopAuthActions}</div>
+          {burgerButton}
         </div>
       </div>
 
+      {/* Submenü unterhalb der Navbar – nur Startseite, erst nach Hero (zentriert wie Screenshot) */}
+      {showHomeSubmenu && (
+        <div className="border-t border-black/10">
+          <div
+            className={`mx-auto flex ${containerWidthClass} items-center justify-center gap-10 md:gap-14 ${containerPaddingClass} py-3 text-copy`}
+          >
+            {homeSubNavItems.map(({ id, href, label }) => (
+              <a
+                key={id}
+                href={href}
+                className={`font-medium transition hover:opacity-80 ${
+                  homeSubActiveId === id
+                    ? "text-[#2D2D2D]"
+                    : "text-[#2D2D2D]/45"
+                }`}
+              >
+                {label}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Mobile Menu – Dropdown */}
       {menuOpen && (
-        <div className="border-t border-[#E8E4DF] bg-white/95 px-6 py-6 md:hidden">
+        <div
+          className={
+            isHomeHero
+              ? "border-t border-white/20 bg-black/75 px-6 py-6 backdrop-blur-sm md:hidden"
+              : "border-t border-black/10 bg-[#F5F2ED]/95 px-6 py-6 md:hidden"
+          }
+        >
           {navItemsToShow.length > 0 && (
             <nav className="flex flex-col gap-4">
               {navItemsToShow.map(({ href, label }) => (
@@ -150,8 +293,14 @@ export default function Header() {
                   key={href}
                   href={href}
                   onClick={() => setMenuOpen(false)}
-                  className={`text-base font-medium transition hover:text-[#4A5D4A] ${
-                    pathname === href ? "text-[#4A5D4A]" : "text-[#2D2D2D]"
+                  className={`text-copy font-medium transition ${
+                    isHomeHero
+                      ? `hover:text-white ${pathname === href ? "text-white" : "text-white/90"}`
+                      : `hover:opacity-80 ${
+                          pathname === href
+                            ? "font-semibold text-[#2D2D2D]"
+                            : "text-[#2D2D2D]/80"
+                        }`
                   }`}
                 >
                   {label}
@@ -159,14 +308,26 @@ export default function Header() {
               ))}
             </nav>
           )}
-          <div className={`flex flex-col gap-3 ${navItemsToShow.length > 0 ? "mt-6 border-t border-[#E8E4DF] pt-6" : ""}`}>
+          <div
+            className={`flex flex-col gap-3 ${
+              navItemsToShow.length > 0
+                ? isHomeHero
+                  ? "mt-6 border-t border-white/20 pt-6"
+                  : "mt-6 border-t border-[#E8E4DF] pt-6"
+                : ""
+            }`}
+          >
             {user ? (
               <>
                 {!isCmsArea ? (
                   <Link
                     href="/konto"
                     onClick={() => setMenuOpen(false)}
-                    className="w-full rounded-full border-2 border-[#4A5D4A] px-5 py-3 text-center font-medium text-[#4A5D4A] hover:bg-[#4A5D4A]/10"
+                    className={
+                      isHomeHero
+                        ? `w-full text-center ${outlineBtnHeroWide}`
+                        : `w-full text-center ${outlineBtnLightWide}`
+                    }
                   >
                     Mein Profil
                   </Link>
@@ -198,9 +359,13 @@ export default function Header() {
                   <Link
                     href="/buchung"
                     onClick={() => setMenuOpen(false)}
-                    className="rounded-full bg-[#4A5D4A] px-5 py-3 text-center font-medium text-white hover:bg-[#3A4A3A]"
+                    className={
+                      isHomeHero
+                        ? `text-center ${outlineBtnHeroWide}`
+                        : `text-center ${outlineBtnLightWide}`
+                    }
                   >
-                    Termin buchen
+                    Jetzt buchen
                   </Link>
                 )}
               </>
@@ -209,17 +374,25 @@ export default function Header() {
                 <Link
                   href="/login"
                   onClick={() => setMenuOpen(false)}
-                  className="rounded-full border-[3px] border-[#4A5D4A] px-5 py-3 text-center font-medium text-[#4A5D4A] hover:bg-[#4A5D4A]/10"
+                  className={
+                    isHomeHero
+                      ? "rounded-full px-5 py-3 text-center text-base font-medium text-white hover:text-white/80"
+                      : "px-5 py-3 text-center text-copy font-medium text-[#2D2D2D] hover:opacity-80"
+                  }
                 >
-                  Anmelden
+                  {isHomeHero ? "Login" : "Anmelden"}
                 </Link>
                 {!isCmsArea && (
                   <Link
                     href="/buchung"
                     onClick={() => setMenuOpen(false)}
-                    className="rounded-full bg-[#4A5D4A] px-5 py-3 text-center font-medium text-white hover:bg-[#3A4A3A]"
+                    className={
+                      isHomeHero
+                        ? `text-center ${outlineBtnHeroWide}`
+                        : `text-center ${outlineBtnLightWide}`
+                    }
                   >
-                    Termin buchen
+                    Jetzt buchen
                   </Link>
                 )}
               </>

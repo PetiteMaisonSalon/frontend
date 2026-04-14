@@ -4,7 +4,7 @@ export default function KontaktPage() {
     <main>
       <section className="border-b border-[#E8E4DF]">
         <div className="mx-auto max-w-7xl px-6 py-20 md:py-28">
-          <h1 className="font-display text-4xl font-medium tracking-tight text-[#2D2D2D] md:text-5xl">
+          <h1 className="text-h1 text-[#2D2D2D]">
             Kontakt
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[#2D2D2D]/85">
@@ -21,7 +21,7 @@ export default function KontaktPage() {
             {/* Kontaktdaten */}
             <div className="space-y-10">
               <div>
-                <h2 className="font-display text-2xl font-medium text-[#2D2D2D]">
+                <h2 className="text-h2 text-[#2D2D2D]">
                   Adresse
                 </h2>
                 <address className="mt-4 not-italic text-lg text-[#2D2D2D]/85">
@@ -33,7 +33,7 @@ export default function KontaktPage() {
                 </address>
               </div>
               <div>
-                <h2 className="font-display text-2xl font-medium text-[#2D2D2D]">
+                <h2 className="text-h2 text-[#2D2D2D]">
                   Öffnungszeiten
                 </h2>
                 <p className="mt-4 text-lg text-[#2D2D2D]/85">
@@ -43,7 +43,7 @@ export default function KontaktPage() {
                 </p>
               </div>
               <div>
-                <h2 className="font-display text-2xl font-medium text-[#2D2D2D]">
+                <h2 className="text-h2 text-[#2D2D2D]">
                   Kontakt
                 </h2>
                 <div className="mt-4 space-y-2 text-lg">
@@ -84,7 +84,7 @@ export default function KontaktPage() {
 
             {/* Buchungshinweis */}
             <div className="rounded-2xl border border-[#E8E4DF] bg-white p-8 md:p-10">
-              <h2 className="font-display text-2xl font-medium text-[#2D2D2D]">
+              <h2 className="text-h2 text-[#2D2D2D]">
                 Termin buchen
               </h2>
               <p className="mt-6 text-lg leading-relaxed text-[#2D2D2D]/85">

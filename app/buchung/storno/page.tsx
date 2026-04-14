@@ -57,7 +57,7 @@ function StornoContent() {
     return (
       <main className="mx-auto max-w-xl px-6 py-16">
         <div className="rounded-2xl border border-[#E8E4DF] bg-white p-8 text-center">
-          <h1 className="font-display text-2xl font-medium text-[#2D2D2D]">
+          <h1 className="text-h2 text-[#2D2D2D]">
             {error}
           </h1>
           <Link
@@ -75,7 +75,7 @@ function StornoContent() {
     return (
       <main className="mx-auto max-w-xl px-6 py-16">
         <div className="rounded-2xl border border-[#4A5D4A]/30 bg-white p-8 text-center shadow-sm">
-          <h1 className="font-display text-2xl font-medium text-[#2D2D2D]">
+          <h1 className="text-h2 text-[#2D2D2D]">
             Termin storniert
           </h1>
           <p className="mt-4 text-[#2D2D2D]/85">
@@ -97,7 +97,7 @@ function StornoContent() {
   return (
     <main className="mx-auto max-w-xl px-6 py-16">
       <div className="rounded-2xl border border-[#E8E4DF] bg-white p-8">
-        <h1 className="font-display text-2xl font-medium text-[#2D2D2D]">
+        <h1 className="text-h2 text-[#2D2D2D]">
           Termin ändern oder stornieren
         </h1>
         <div className="mt-6 space-y-1 text-[#2D2D2D]/85">

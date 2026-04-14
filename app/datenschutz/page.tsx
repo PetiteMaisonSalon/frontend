@@ -9,7 +9,7 @@ export default function DatenschutzPage() {
     <main className="bg-white">
       <section className="border-b border-[#E8E4DF]">
         <div className="mx-auto max-w-4xl px-6 py-16 md:py-20">
-          <h1 className="font-display text-4xl font-medium tracking-tight text-[#2D2D2D]">
+          <h1 className="text-h1 text-[#2D2D2D]">
             Datenschutz und Cookie-Richtlinie
           </h1>
           <p className="mt-6 text-lg leading-relaxed text-[#2D2D2D]/85">
@@ -47,7 +47,7 @@ export default function DatenschutzPage() {
       <section className="bg-[#F9F7F3]">
         <div className="mx-auto max-w-4xl space-y-10 px-6 py-12 text-[#2D2D2D]/85">
           <section>
-            <h2 className="font-display text-2xl text-[#2D2D2D]">
+            <h2 className="text-h2 text-[#2D2D2D]">
               In dieser Datenschutzrichtlinie erfahren Sie:
             </h2>
             <ul className="mt-4 list-disc space-y-1 pl-6">
@@ -64,7 +64,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="font-display text-2xl text-[#2D2D2D]">Welche Daten erfassen wir?</h2>
+            <h2 className="text-h2 text-[#2D2D2D]">Welche Daten erfassen wir?</h2>
             <p className="mt-4 text-sm font-medium uppercase tracking-wide text-[#4A5D4A]">
               Kategorie: Immer
             </p>
@@ -91,7 +91,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="font-display text-2xl text-[#2D2D2D]">Wie sammeln wir Daten?</h2>
+            <h2 className="text-h2 text-[#2D2D2D]">Wie sammeln wir Daten?</h2>
             <p className="mt-4 text-sm font-medium uppercase tracking-wide text-[#4A5D4A]">
               Kategorie: Immer
             </p>
@@ -115,7 +115,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="font-display text-2xl text-[#2D2D2D]">
+            <h2 className="text-h2 text-[#2D2D2D]">
               Warum erfassen wir diese Daten?
             </h2>
             <p className="mt-4 text-sm font-medium uppercase tracking-wide text-[#4A5D4A]">
@@ -148,7 +148,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="font-display text-2xl text-[#2D2D2D]">
+            <h2 className="text-h2 text-[#2D2D2D]">
               An wen geben wir diese Daten weiter?
             </h2>
             <p className="mt-4 text-sm font-medium uppercase tracking-wide text-[#4A5D4A]">
@@ -201,7 +201,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="font-display text-2xl text-[#2D2D2D]">
+            <h2 className="text-h2 text-[#2D2D2D]">
               Cookies und ahnliche Technologien
             </h2>
             <p className="mt-3">
@@ -250,7 +250,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="font-display text-2xl text-[#2D2D2D]">Wo speichern wir die Daten?</h2>
+            <h2 className="text-h2 text-[#2D2D2D]">Wo speichern wir die Daten?</h2>
             <p className="mt-4 text-sm font-medium uppercase tracking-wide text-[#4A5D4A]">
               Kategorie: Immer - Nicht personenbezogene Daten
             </p>
@@ -273,7 +273,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="font-display text-2xl text-[#2D2D2D]">
+            <h2 className="text-h2 text-[#2D2D2D]">
               Wie lange werden die Daten vorgehalten?
             </h2>
             <p className="mt-4 text-sm font-medium uppercase tracking-wide text-[#4A5D4A]">
@@ -292,7 +292,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="font-display text-2xl text-[#2D2D2D]">
+            <h2 className="text-h2 text-[#2D2D2D]">
               Wie schutzen wir die Daten?
             </h2>
             <p className="mt-4 text-sm font-medium uppercase tracking-wide text-[#4A5D4A]">
@@ -334,7 +334,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="font-display text-2xl text-[#2D2D2D]">
+            <h2 className="text-h2 text-[#2D2D2D]">
               Wie gehen wir mit Minderjahrigen um?
             </h2>
             <p className="mt-4 text-sm font-medium uppercase tracking-wide text-[#4A5D4A]">
@@ -454,7 +454,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="font-display text-2xl text-[#2D2D2D]">
+            <h2 className="text-h2 text-[#2D2D2D]">
               Rechte gemaß kalifornischem Verbraucherschutzgesetz
             </h2>
             <p className="mt-3">
@@ -484,7 +484,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="font-display text-2xl text-[#2D2D2D]">
+            <h2 className="text-h2 text-[#2D2D2D]">
               Aktualisierungen oder Anderungen der Datenschutzrichtlinie
             </h2>
             <p className="mt-4 text-sm font-medium uppercase tracking-wide text-[#4A5D4A]">
@@ -506,7 +506,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="font-display text-2xl text-[#2D2D2D]">Kontakt</h2>
+            <h2 className="text-h2 text-[#2D2D2D]">Kontakt</h2>
             <p className="mt-4 text-sm font-medium uppercase tracking-wide text-[#4A5D4A]">
               Kategorie: Immer
             </p>
@@ -532,7 +532,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="font-display text-2xl text-[#2D2D2D]">Ausschlussklausel</h2>
+            <h2 className="text-h2 text-[#2D2D2D]">Ausschlussklausel</h2>
             <p className="mt-3">
               Die hier enthaltenen Informationen ersetzen keine Rechtsberatung und Sie sollten sich
               nicht allein darauf stutzen. Spezifische Anforderungen in Bezug auf Rechtsbegriffe und

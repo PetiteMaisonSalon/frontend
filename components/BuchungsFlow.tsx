@@ -568,7 +568,7 @@ export default function BuchungsFlow() {
             </div>
           </div>
 
-          <h2 className="font-display text-4xl font-medium text-[#2D2D2D]">
+          <h2 className="text-h1 text-[#2D2D2D]">
             {isBooked ? "Buchung bestätigt" : "Warteliste bestätigt"}
           </h2>
           <p className="mt-2 text-lg text-[#2D2D2D]/85">
@@ -696,7 +696,7 @@ export default function BuchungsFlow() {
     <>
       <section className="border-b border-[#E8E4DF] py-12 md:py-16">
         <div className="mx-auto max-w-2xl px-6 text-center">
-          <h1 className="font-display text-4xl font-medium tracking-tight text-[#2D2D2D] md:text-5xl">
+          <h1 className="text-h1 text-[#2D2D2D]">
             Termin buchen
           </h1>
           <p className="mt-4 text-lg text-[#2D2D2D]/85">
@@ -731,7 +731,7 @@ export default function BuchungsFlow() {
       {step === 1 && (
         <div className="space-y-10 pb-24">
           <div>
-            <h2 className="font-display text-xl font-medium text-[#2D2D2D]">
+            <h2 className="text-h3 text-[#2D2D2D]">
               Kategorie
             </h2>
             <div className="mt-4 flex flex-wrap gap-3">
@@ -753,7 +753,7 @@ export default function BuchungsFlow() {
 
           {category && (
             <div>
-              <h2 className="font-display text-xl font-medium text-[#2D2D2D]">
+              <h2 className="text-h3 text-[#2D2D2D]">
                 Leistungen auswählen
               </h2>
               <div className="mt-4 grid items-start gap-4 lg:gap-6 lg:grid-cols-[250px_1fr]">
@@ -896,7 +896,7 @@ export default function BuchungsFlow() {
           </button>
           <div className="grid gap-8 lg:grid-cols-[1fr_1.2fr] lg:items-start">
             <div>
-              <h2 className="font-display text-3xl font-medium text-[#2D2D2D]">
+              <h2 className="text-h2 text-[#2D2D2D]">
                 Mitarbeiter wählen
               </h2>
               <div className="mt-5 flex flex-wrap gap-3">
@@ -951,7 +951,7 @@ export default function BuchungsFlow() {
             </div>
 
             <div className="rounded-2xl border border-[#E9E9E9] bg-white p-4 shadow-sm">
-              <h2 className="font-display text-3xl font-medium text-[#2D2D2D]">
+              <h2 className="text-h2 text-[#2D2D2D]">
                 Datum und Uhrzeit auswählen
               </h2>
 
@@ -1123,7 +1123,7 @@ export default function BuchungsFlow() {
         <div className="space-y-8">
           {!authLoading && !user && (
             <div className="rounded-xl border-2 border-[#4A5D4A]/50 bg-[#F5F2ED] p-6 text-center">
-              <h3 className="font-display text-xl font-medium text-[#2D2D2D]">
+              <h3 className="text-h3 text-[#2D2D2D]">
                 Anmeldung erforderlich
               </h3>
               <p className="mt-2 text-[#2D2D2D]/85">
@@ -1186,7 +1186,7 @@ export default function BuchungsFlow() {
               <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
                 <div className="space-y-6">
                   <div>
-                    <h2 className="font-display text-3xl font-medium text-[#2D2D2D]">
+                    <h2 className="text-h2 text-[#2D2D2D]">
                       Kontaktdaten
                     </h2>
                     <div className="mt-4 rounded-2xl border border-[#E8E4DF] bg-white p-4 sm:p-5">
@@ -1254,7 +1254,7 @@ export default function BuchungsFlow() {
                   </div>
 
                   <div>
-                    <h3 className="font-display text-3xl font-medium text-[#2D2D2D]">
+                    <h3 className="text-h2 text-[#2D2D2D]">
                       Buchungsbedingungen
                     </h3>
                     <div className="mt-4 rounded-2xl border border-[#E8E4DF] bg-white p-4 sm:p-5">
@@ -1272,7 +1272,7 @@ export default function BuchungsFlow() {
                 </div>
 
                 <aside className="rounded-2xl border border-[#E8E4DF] bg-white p-5 shadow-sm lg:sticky lg:top-24">
-                  <h3 className="font-display text-3xl font-medium text-[#2D2D2D]">
+                  <h3 className="text-h2 text-[#2D2D2D]">
                     Dein Termin
                   </h3>
 
