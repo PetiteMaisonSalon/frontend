@@ -207,7 +207,7 @@ export default function HomeMain() {
         <div className="mx-auto grid max-w-7xl gap-6 md:grid-cols-3 md:gap-8">
           {[
             {
-              icon: "/icon-schere.png",
+              icon: "/schere.png",
               title: "Haarschnitt & Styling",
             },
             {
@@ -215,13 +215,13 @@ export default function HomeMain() {
               title: "Farbe & Highlights",
             },
             {
-              icon: "/icon-hand.png",
+              icon: "/hand.png",
               title: "Pflege & individuelle Beratung",
             },
           ].map((card) => (
             <div
               key={card.title}
-              className="flex flex-col items-center rounded-[28px] bg-white px-8 py-10 text-center shadow-sm"
+              className="flex flex-col items-center rounded-[28px] bg-white px-8 py-10 text-center shadow-sm transition-colors duration-300 ease-out hover:bg-[#BEA8FF]"
             >
               <div className="relative h-28 w-28">
                 <Image
