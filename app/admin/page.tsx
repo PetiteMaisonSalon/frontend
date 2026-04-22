@@ -51,6 +51,11 @@ type AdminService = {
   durationMinutes: number;
   priceEur: number;
   bufferMinutes?: number;
+  displaySection?: string;
+  displayOrder?: number;
+  groupKey?: string;
+  groupDurationLabel?: string;
+  ctaType?: "select" | "call";
 };
 type AdminSectionId = "kalender" | "termine" | "leistungen" | "umsatz" | "kunden";
 const OPEN_ADMIN_CREATE_EVENT = "admin:create-appointment";
@@ -60,31 +65,14 @@ const SERVICE_GROUPS = [
     label: "Damen - Haarschnitte & Stylings",
     matcher: (s: AdminService) =>
       s.category === "women" &&
-      s.name.startsWith("Damen -") &&
-      !s.name.includes("Coloration") &&
-      !s.name.includes("Ansatzfarbe") &&
-      !s.name.includes("Foliensträhnen") &&
-      !s.name.includes("Balayage") &&
-      !s.name.includes("Glossing") &&
-      !s.name.includes("Face Frame"),
+      (s.displaySection || "").toUpperCase() === "SCHNITT & STYLING",
   },
   {
     id: "women-color-styling",
     label: "Damen - Colorationen & Styling",
     matcher: (s: AdminService) =>
       s.category === "women" &&
-      !s.name.includes(", Haarschnitt & Styling") &&
-      (s.name.includes("Ansatzfarbe") ||
-        s.name.includes("Soft Coloration") ||
-        s.name.includes("Foliensträhnen") ||
-        s.name.includes("Balayage") ||
-        s.name.includes("Glossing/Milkshake") ||
-        s.name.includes("Face Frame")),
-  },
-  {
-    id: "women-color-cut-style",
-    label: "Damen - Colorationen, Waschen, Schneiden & Stylen",
-    matcher: (s: AdminService) => s.category === "women" && s.name.includes(", Haarschnitt & Styling"),
+      (s.displaySection || "").toUpperCase() === "COLORATIONEN (INKL. STYLING)",
   },
   {
     id: "men-cut-styling",
@@ -114,6 +102,11 @@ export default function AdminPage() {
     durationMinutes: "60",
     priceEur: "0",
     bufferMinutes: "0",
+    displaySection: "",
+    displayOrder: "1000",
+    groupKey: "",
+    groupDurationLabel: "",
+    ctaType: "select" as "select" | "call",
   });
   const [serviceSaving, setServiceSaving] = useState(false);
   const [serviceDeletingId, setServiceDeletingId] = useState<string | null>(null);
@@ -238,6 +231,12 @@ export default function AdminPage() {
       durationMinutes: "60",
       priceEur: "0",
       bufferMinutes: "0",
+      displaySection:
+        defaultCategory === "women" ? "SCHNITT & STYLING" : "",
+      displayOrder: "1000",
+      groupKey: "",
+      groupDurationLabel: "",
+      ctaType: "select",
     });
     setShowServiceEditor(true);
   }
@@ -252,6 +251,11 @@ export default function AdminPage() {
       durationMinutes: String(service.durationMinutes ?? 60),
       priceEur: String(service.priceEur ?? 0),
       bufferMinutes: String(service.bufferMinutes ?? 0),
+      displaySection: service.displaySection || "",
+      displayOrder: String(service.displayOrder ?? 1000),
+      groupKey: service.groupKey || "",
+      groupDurationLabel: service.groupDurationLabel || "",
+      ctaType: service.ctaType || "select",
     });
     setShowServiceEditor(true);
   }
@@ -261,6 +265,7 @@ export default function AdminPage() {
     const durationMinutes = Number(serviceEditorForm.durationMinutes);
     const priceEur = Number(serviceEditorForm.priceEur);
     const bufferMinutes = Number(serviceEditorForm.bufferMinutes || "0");
+    const displayOrder = Number(serviceEditorForm.displayOrder || "1000");
     if (!name) {
       setError("Bitte einen Namen für die Leistung eingeben.");
       return;
@@ -277,6 +282,10 @@ export default function AdminPage() {
       setError("Der Puffer muss 0 oder größer sein.");
       return;
     }
+    if (!Number.isFinite(displayOrder)) {
+      setError("Die Reihenfolge muss eine gültige Zahl sein.");
+      return;
+    }
 
     const payload = {
       name,
@@ -285,6 +294,11 @@ export default function AdminPage() {
       durationMinutes: Math.round(durationMinutes),
       priceEur: Number(priceEur.toFixed(2)),
       bufferMinutes: Math.round(bufferMinutes),
+      displaySection: serviceEditorForm.displaySection.trim() || undefined,
+      displayOrder: Math.round(displayOrder),
+      groupKey: serviceEditorForm.groupKey.trim() || undefined,
+      groupDurationLabel: serviceEditorForm.groupDurationLabel.trim() || undefined,
+      ctaType: serviceEditorForm.ctaType,
     };
 
     setServiceSaving(true);
@@ -634,13 +648,21 @@ export default function AdminPage() {
     SERVICE_GROUPS.forEach((group) => {
       const rows = services
         .filter(group.matcher)
-        .sort((a, b) => a.name.localeCompare(b.name, "de"));
+        .sort(
+          (a, b) =>
+            (a.displayOrder ?? 1000) - (b.displayOrder ?? 1000) ||
+            a.name.localeCompare(b.name, "de")
+        );
       grouped[group.id] = rows;
       rows.forEach((row) => assigned.add(row._id));
     });
     const uncategorized = services
       .filter((service) => !assigned.has(service._id))
-      .sort((a, b) => a.name.localeCompare(b.name, "de"));
+      .sort(
+        (a, b) =>
+          (a.displayOrder ?? 1000) - (b.displayOrder ?? 1000) ||
+          a.name.localeCompare(b.name, "de")
+      );
     if (uncategorized.length > 0) grouped.other = uncategorized;
     return grouped;
   })();
@@ -1390,6 +1412,15 @@ export default function AdminPage() {
                             {service.bufferMinutes ? `· +${service.bufferMinutes} Min. Puffer` : ""} ·{" "}
                             {serviceCategoryLabel[service.category]}
                           </p>
+                          <p className="text-xs text-[#2D2D2D]/55">
+                            {service.displaySection || "Ohne Sektion"} · Reihenfolge{" "}
+                            {service.displayOrder ?? 1000}
+                            {service.groupKey ? ` · Gruppe ${service.groupKey}` : ""}
+                            {service.groupDurationLabel
+                              ? ` · Gruppen-Dauer ${service.groupDurationLabel}`
+                              : ""}
+                            {service.ctaType === "call" ? " · CTA Anrufen" : ""}
+                          </p>
                         </div>
                         <p className="text-sm font-semibold text-[#2D2D2D] md:text-base">
                           {service.priceEur} €
@@ -1698,6 +1729,82 @@ export default function AdminPage() {
                     }))
                   }
                   className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm focus:border-[#4A5D4A] focus:outline-none focus:ring-2 focus:ring-[#4A5D4A]/20"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#2D2D2D]">Display-Reihenfolge</label>
+                <input
+                  type="number"
+                  step={1}
+                  value={serviceEditorForm.displayOrder}
+                  onChange={(e) =>
+                    setServiceEditorForm((prev) => ({
+                      ...prev,
+                      displayOrder: e.target.value,
+                    }))
+                  }
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm focus:border-[#4A5D4A] focus:outline-none focus:ring-2 focus:ring-[#4A5D4A]/20"
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="block text-sm font-medium text-[#2D2D2D]">Display-Sektion (optional)</label>
+                <input
+                  type="text"
+                  value={serviceEditorForm.displaySection}
+                  onChange={(e) =>
+                    setServiceEditorForm((prev) => ({
+                      ...prev,
+                      displaySection: e.target.value,
+                    }))
+                  }
+                  placeholder="z.B. SCHNITT & STYLING"
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#2D2D2D]">Group-Key (optional)</label>
+                <input
+                  type="text"
+                  value={serviceEditorForm.groupKey}
+                  onChange={(e) =>
+                    setServiceEditorForm((prev) => ({ ...prev, groupKey: e.target.value }))
+                  }
+                  placeholder="z.B. women-foils"
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#2D2D2D]">Gruppen-Dauer (optional)</label>
+                <input
+                  type="text"
+                  value={serviceEditorForm.groupDurationLabel}
+                  onChange={(e) =>
+                    setServiceEditorForm((prev) => ({
+                      ...prev,
+                      groupDurationLabel: e.target.value,
+                    }))
+                  }
+                  placeholder="z.B. 2 Std 15 Min"
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm"
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="block text-sm font-medium text-[#2D2D2D]">CTA-Typ</label>
+                <CustomSelect
+                  value={serviceEditorForm.ctaType}
+                  onChange={(v) =>
+                    setServiceEditorForm((prev) => ({
+                      ...prev,
+                      ctaType: (v as "select" | "call") || "select",
+                    }))
+                  }
+                  options={[
+                    { value: "select", label: "Auswählen" },
+                    { value: "call", label: "Anrufen" },
+                  ]}
+                  placeholder="Auswählen…"
+                  clearable={false}
+                  className="mt-1"
                 />
               </div>
               <div className="sm:col-span-2">

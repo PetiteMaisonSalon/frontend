@@ -91,11 +91,13 @@ export default function Header() {
   const lightNavText =
     "text-copy font-medium text-[#2D2D2D] antialiased transition hover:opacity-90";
   const lightBrandUnderline = "border-b border-[#2D2D2D] pb-px";
+  const lightActiveUnderline = "border-b border-[#2D2D2D] pb-px";
 
   /** Hero über Bild: weiß; nur „Petite Maison“ unterstrichen */
   const heroNavText =
     "text-copy font-medium text-white antialiased transition hover:text-white/95";
   const heroBrandUnderline = "border-b border-white pb-px";
+  const heroActiveUnderline = "border-b border-white pb-px";
 
   const outlineBtnHero =
     "text-copy rounded-full border border-white bg-transparent px-5 py-2.5 font-medium text-white transition hover:bg-white/10";
@@ -106,9 +108,16 @@ export default function Header() {
   const outlineBtnLightWide = `${outlineBtnLight} px-6 py-3`;
 
   const brandClass = isHomeHero
-    ? `${heroNavText} ${heroBrandUnderline}`
-    : `${lightNavText} ${lightBrandUnderline}`;
+    ? `${heroNavText} ${isHome ? heroBrandUnderline : ""}`
+    : `${lightNavText} ${isHome ? lightBrandUnderline : ""}`;
   const mainNavLinkClass = isHomeHero ? heroNavText : lightNavText;
+
+  const isNavActive = (href: string) => {
+    if (!pathname) return false;
+    // „Leistungen“ soll auch auf /buchung als aktiv gelten (weil Buchung im gleichen Flow läuft).
+    if (href === "/leistungen") return pathname.startsWith("/leistungen") || pathname.startsWith("/buchung");
+    return pathname === href;
+  };
 
   const burgerButton = (
     <button
@@ -233,10 +242,10 @@ export default function Header() {
                   key={href}
                   href={href}
                   className={`whitespace-nowrap ${mainNavLinkClass} ${
-                    pathname === href
+                    isNavActive(href)
                       ? isHomeHero
-                        ? "text-white"
-                        : "font-semibold text-[#2D2D2D]"
+                        ? `text-white ${heroActiveUnderline}`
+                        : `font-semibold text-[#2D2D2D] ${lightActiveUnderline}`
                       : isHomeHero
                         ? ""
                         : "text-[#2D2D2D]/80"

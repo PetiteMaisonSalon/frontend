@@ -316,6 +316,11 @@ export async function createAdminService(data: {
   priceEur: number;
   bufferMinutes?: number;
   description?: string;
+  displaySection?: string;
+  displayOrder?: number;
+  groupKey?: string;
+  groupDurationLabel?: string;
+  ctaType?: "select" | "call";
 }) {
   return fetchAPI("/api/admin/services", {
     method: "POST",
@@ -332,6 +337,11 @@ export async function updateAdminService(
     priceEur: number;
     bufferMinutes: number;
     description: string;
+    displaySection: string;
+    displayOrder: number;
+    groupKey: string;
+    groupDurationLabel: string;
+    ctaType: "select" | "call";
   }>
 ) {
   return fetchAPI(`/api/admin/services/${serviceId}`, {
