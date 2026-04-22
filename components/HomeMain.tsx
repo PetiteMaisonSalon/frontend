@@ -164,16 +164,7 @@ export default function HomeMain() {
 
       {/* Unsere Leistungen (wie Screenshot: Bild oben + zentrierter Text) */}
       <section className="pm-home-section bg-[#F1EEE9]" aria-labelledby="home-services-heading">
-        <div className="relative h-64 w-full overflow-hidden bg-[#E8E4DF] md:h-80">
-          <Image
-            src="/bg_mittig_bild.png"
-            alt="Background Mittig Bild"
-            fill
-            className="object-cover object-center grayscale"
-            sizes="100vw"
-            quality={100}
-          />
-        </div>
+      
         <div className="px-6 py-20 text-center md:py-24">
           <p className="text-overline text-[#2D2D2D]/70">Unsere Leistungen</p>
           <h2 id="home-services-heading" className="text-h2 mx-auto mt-6 max-w-3xl text-[#2D2D2D]">
@@ -275,62 +266,86 @@ export default function HomeMain() {
           {[
             {
               name: "Mehtap",
+              image: { src: "/mehtap.avif", alt: "Mehtap" },
               text: [
                 "Ich bin Mehtap, Friseurmeisterin und Inhaberin von Petite Maison. Seit vielen Jahren arbeite ich in diesem Beruf und habe früh gemerkt, dass mir der persönliche Umgang mit Menschen genauso wichtig ist wie das Handwerk selbst.",
                 "Für mich bedeutet Friseurhandwerk, Verantwortung zu übernehmen — für Entscheidungen, für Wünsche und für das Vertrauen, das mir entgegengebracht wird. Diese Haltung prägt meine tägliche Arbeit und den Salon als Ganzes.",
               ],
               layout: { img: "lg:col-span-7", body: "lg:col-span-5" },
               aspect: "aspect-[4/3]",
+              offset: "",
+            },
+            {
+              name: "Maria",
+              image: { src: "/maria.avif", alt: "Maria", grayscale: true },
+              text: [
+                "Maria ist unsere Schnittspezialistin! Sie ist seit 35 Jahren Friseurin mit Leidenschaft und hat 31 Jahre für den Starfriseur Jaques Le Coz gearbeitet. Maria isst gerne Tapas und tanzt leidenschaftlich Rumba. Seit Anfang 2022 gehört sie zum Team dazu.",
+              ],
+              layout: { img: "lg:col-span-4 lg:col-start-6", body: "lg:col-span-3 lg:col-start-10" },
+              aspect: "aspect-[4/3]",
+              offset: "lg:pt-24",
             },
             {
               name: "Sevim",
+              image: { src: "/sevim.avif", alt: "Sevim" },
               text: [
-                "Sevim ist unsere Farbspezialistin! Sie liebt es, mit Haaren zu experimentieren, einschließlich ihren Haaren. Zwölf Jahre lang hat sie beim Starfriseur Jaques Le Coz gearbeitet und ist seit Anfang 2022 bei Petite Maison Hamburg.",
+                "Sevim ist unsere Farbspezialistin! Sie liebt es, mit Haaren zu experimentieren, einschließlich ihren Haaren. Zwölf Jahre lang hat sie beim Starfriseur Jaques Le Coz gearbeitet und ist seit Anfang 2022 bei Petite Maison.",
               ],
-              layout: { img: "lg:col-span-5 lg:col-start-4", body: "lg:col-span-4 lg:col-start-9" },
+              layout: { img: "lg:col-span-4", body: "lg:col-span-4 lg:col-start-6" },
               aspect: "aspect-[5/4]",
+              offset: "",
             },
             {
-              name: "Lina",
+              name: "Masoud",
+              image: { src: "/masoud.avif", alt: "Masoud", grayscale: true },
               text: [
-                "Lina liebt klare Schnitte und feine Übergänge. Besonders wichtig ist ihr, dass sich dein Look im Alltag leicht stylen lässt und zu dir passt — ohne Stress, mit Ruhe und Präzision.",
+                "Masoud ist spezialisiert auf präzise Schnitte und Farbtechniken. Geboren im Iran, ausgebildet auf zwei Kontinenten, ist er seit über 20 Jahren Friseur und seit Ende 2025 bei Petite Maison. Als zertifizierter Aveda-Spezialist schwört er auf natürliche, nachhaltige Produkte.",
+              ],
+              layout: { img: "lg:col-span-4 lg:col-start-6", body: "lg:col-span-3 lg:col-start-10" },
+              aspect: "aspect-[5/4]",
+              offset: "lg:pt-8",
+            },
+            {
+              name: "Sarah",
+              image: { src: "/sarah.avif", alt: "Sarah" },
+              text: [
+                "Sarah ist spezialisiert auf Haarschnitte, Styling und natürliche Färbungen. Seit über 15 Jahren arbeitet sie mit Aveda-Produkten, 2022 hat sie ihren Meister gemacht — unter anderem lebte und arbeitete sie in Wien. Seit November 2024 ist sie bei Petite Maison. Ihr Hund Cooper gehört im Salon quasi zum Team.",
               ],
               layout: { img: "lg:col-span-4", body: "lg:col-span-4 lg:col-start-5" },
-              aspect: "aspect-[4/3]",
-            },
-            {
-              name: "Elif",
-              text: [
-                "Elif arbeitet besonders gerne mit natürlichen Nuancen und Glossings. Ihr Fokus liegt auf gesundem Haargefühl und einem Ergebnis, das sich stimmig anfühlt — auch Wochen nach dem Termin.",
-              ],
-              layout: { img: "lg:col-span-4 lg:col-start-2", body: "lg:col-span-4 lg:col-start-6" },
-              aspect: "aspect-square",
-            },
-            {
-              name: "Nora",
-              text: [
-                "Nora ist dein Ruhepol am Waschbecken und im Finish: Kopfmassage, Pflege und ein Styling, das deine Haarstruktur unterstützt — unaufgeregt und elegant.",
-              ],
-              layout: { img: "lg:col-span-4 lg:col-start-1", body: "lg:col-span-4 lg:col-start-5" },
-              aspect: "aspect-[4/3]",
-            },
-            {
-              name: "Daria",
-              text: [
-                "Daria ist detailverliebt bei Beratung und Form. Ihr ist wichtig, dass du dich gesehen fühlst — und mit einem Schnitt gehst, der dich jeden Tag gerne in den Spiegel schauen lässt.",
-              ],
-              layout: { img: "lg:col-span-5 lg:col-start-6", body: "lg:col-span-4 lg:col-start-11" },
               aspect: "aspect-[5/4]",
+              offset: "lg:pt-10",
+            },
+            {
+              name: "Kanj",
+              image: { src: "/kanj.avif", alt: "Kanj", grayscale: true },
+              text: [
+                "Kanj ist spezialisiert auf Strähnen, Balayage und Schnitte. Er hat 2016 in Libanon seine Ausbildung gemacht und ist seit August 2025 fester Bestandteil des Teams. Nebenbei spielt er libanesische Flöte, tritt mit seiner eigenen Band bei Festivals und Hochzeiten auf und war bereits im libanesischen Fernsehen zu sehen.",
+              ],
+              layout: { img: "lg:col-span-4 lg:col-start-6", body: "lg:col-span-3 lg:col-start-10" },
+              aspect: "aspect-[5/4]",
+              offset: "lg:pt-6",
+            },
+            {
+              name: "Cooper",
+              image: { src: "/cooper.avif", alt: "Cooper" },
+              text: [
+                "Cooper ist spezialisiert auf gute Laune und ist als Sarahs treuer Begleiter fester Bestandteil des Salons.",
+              ],
+              layout: { img: "lg:col-span-6", body: "lg:col-span-4 lg:col-start-7" },
+              aspect: "aspect-[4/3]",
+              offset: "lg:pt-10",
             },
           ].map((p) => (
-            <article key={p.name} className="grid items-start gap-10 lg:grid-cols-12 lg:gap-20">
+            <article key={p.name} className={`grid items-start gap-10 lg:grid-cols-12 lg:gap-20 ${p.offset}`}>
               <div className={p.layout.img}>
                 <div className={`relative w-full overflow-hidden bg-white/70 ${p.aspect}`}>
-                  <div className="absolute inset-0 grid place-items-center">
-                    <span className="text-copy-sm text-[#2D2D2D]/55">
-                      Bild folgt
-                    </span>
-                  </div>
+                  <Image
+                    src={p.image.src}
+                    alt={p.image.alt}
+                    fill
+                    className={`object-cover ${p.image.grayscale ? "grayscale" : ""}`}
+                    sizes="(min-width: 1024px) 60vw, 100vw"
+                  />
                 </div>
               </div>
               <div className={p.layout.body}>
@@ -383,7 +398,7 @@ export default function HomeMain() {
             <div className="lg:col-span-6">
               <div className="relative aspect-square w-full overflow-hidden bg-white/30">
                 <Image
-                  src="/aveda_bild_1.png"
+                  src="/aveda_bild1.png"
                   alt=""
                   fill
                   className="object-cover grayscale"
@@ -414,7 +429,7 @@ export default function HomeMain() {
             <div className="lg:col-span-4 lg:col-start-9">
               <div className="relative aspect-square w-full overflow-hidden bg-white/30">
                 <Image
-                  src="/aveda_bild_2.png"
+                  src="/aveda_bild2.png"
                   alt=""
                   fill
                   className="object-cover"
@@ -428,33 +443,36 @@ export default function HomeMain() {
 
       {/* Bildstreifen + 2er-Grid (wie Screenshot, vor Footer) */}
       <section className="bg-[#F1EEE9]" aria-label="Impressionen">
-        <div className="relative h-56 w-full overflow-hidden sm:h-64 md:h-80">
+        <div className="relative h-64 w-full overflow-hidden sm:h-72 md:h-96 lg:h-[520px]">
           <Image
-            src="/bg_mittig_bild.png"
+            src="/salon.png"
             alt=""
             fill
-            className="object-cover"
+            className="object-cover grayscale"
             sizes="100vw"
           />
         </div>
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-2 px-2 pb-2 pt-2 sm:gap-3 sm:px-3 md:gap-4 md:px-6 md:pb-4 md:pt-4">
-          <div className="relative aspect-square w-full overflow-hidden">
-            <Image
-              src="/footer_bild_2.png"
-              alt=""
-              fill
-              className="object-cover"
-              sizes="50vw"
-            />
-          </div>
-          <div className="relative aspect-square w-full overflow-hidden">
-            <Image
-              src="/footer_bild_1.png"
-              alt=""
-              fill
-              className="object-cover grayscale"
-              sizes="50vw"
-            />
+        <div className="bg-[#F1EEE9] px-3 py-3 sm:px-4 sm:py-4 lg:px-0 lg:py-0">
+          <div className="mx-auto grid max-w-7xl grid-cols-2 gap-3 sm:gap-4 lg:gap-px lg:bg-[#F1EEE9]">
+            <div className="relative aspect-square w-full overflow-hidden bg-[#F1EEE9]">
+              <Image
+                src="/aveda_bild1.png"
+                alt=""
+                fill
+                className="object-cover grayscale"
+                sizes="(min-width: 1024px) 50vw, 100vw"
+              />
+            </div>
+            <div className="relative aspect-square w-full overflow-hidden bg-[#F1EEE9]">
+              <Image
+                src="/footer_bild_1.png"
+                alt=""
+                fill
+                className="object-cover grayscale"
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                quality={100}
+              />
+            </div>
           </div>
         </div>
       </section>
