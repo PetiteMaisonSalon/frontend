@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { startTransition, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "./AuthContext";
 
 /** Hauptnavigation wie Screenshot: nur Leistungen + Kontakt (Salon/Team/Aveda im Submenü auf der Startseite) */
@@ -18,26 +18,52 @@ const homeSubNavItems = [
   { id: "aveda" as const, href: "#aveda", label: "Aveda" },
 ];
 const OPEN_ADMIN_CREATE_EVENT = "admin:create-appointment";
+const ADMIN_PENDING_CREATE_KEY = "pm_admin_pending_create";
 
 export default function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const { user, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const isCmsArea = pathname?.startsWith("/admin");
+  const isAdminUser = user?.role === "admin";
+  /** Admin-eingeloggt: überall reduzierter Header wie im CMS (kein „Petite Maison“, nur Admin-Aktionen). */
+  const useAdminLayout = isCmsArea || isAdminUser;
   const isHome = pathname === "/" && !isCmsArea;
   const containerWidthClass = isCmsArea ? "max-w-[1450px]" : "max-w-7xl";
   const containerPaddingClass = isCmsArea ? "px-3 md:px-3" : "px-3";
   const openAdminCreateModal = () => {
     if (typeof window === "undefined") return;
-    window.dispatchEvent(new CustomEvent(OPEN_ADMIN_CREATE_EVENT));
+    if (pathname?.startsWith("/admin")) {
+      window.dispatchEvent(new CustomEvent(OPEN_ADMIN_CREATE_EVENT));
+    } else {
+      try {
+        sessionStorage.setItem(ADMIN_PENDING_CREATE_KEY, "1");
+      } catch {
+        /* ignore */
+      }
+      router.push("/admin");
+    }
   };
 
-  const navItemsToShow = isCmsArea ? [] : mainNavItems;
+  /** Gleiche Route erneut antippen: pathname ändert sich nicht → Menü manuell schließen. */
+  const closeMobileIfSameRoute = (href: string) => {
+    if (pathname === href) setMenuOpen(false);
+  };
+
+  const navItemsToShow = useAdminLayout ? [] : mainNavItems;
 
   const [homeHeroVisible, setHomeHeroVisible] = useState(true);
   const [homeSectionBg, setHomeSectionBg] = useState<string>("#F1EEE9");
   const [homeSubActiveId, setHomeSubActiveId] = useState<string>("salon");
-  const showHomeSubmenu = isHome && !homeHeroVisible;
+  const showHomeSubmenu = isHome && !homeHeroVisible && !isAdminUser;
+
+  /** Mobile: Menü nach Routenwechsel schließen (vermeidet setState + Navigation im selben Tap-Handler / pushState-Race). */
+  useEffect(() => {
+    startTransition(() => {
+      setMenuOpen(false);
+    });
+  }, [pathname]);
 
   useEffect(() => {
     if (!isHome) return;
@@ -154,7 +180,7 @@ export default function Header() {
     <>
       {user ? (
         <div className="flex items-center gap-4">
-          {!isCmsArea ? (
+          {!useAdminLayout ? (
             <Link
               href="/konto"
               className={
@@ -183,7 +209,7 @@ export default function Header() {
               </button>
             </>
           )}
-          {!isCmsArea && (
+          {!useAdminLayout && (
             <Link
               href="/buchung"
               className={
@@ -233,9 +259,11 @@ export default function Header() {
         className={`mx-auto flex ${containerWidthClass} w-full items-center justify-between gap-4 ${containerPaddingClass} py-2`}
       >
         <div className="flex min-w-0 flex-1 items-center gap-6 lg:gap-10">
-          <Link href="/" className={`shrink-0 whitespace-nowrap ${brandClass}`}>
-            Petite Maison
-          </Link>
+          {!isAdminUser && (
+            <Link href="/" className={`shrink-0 whitespace-nowrap ${brandClass}`}>
+              Petite Maison
+            </Link>
+          )}
           {navItemsToShow.length > 0 && (
             <nav className="hidden items-center gap-8 md:flex lg:gap-10">
               {navItemsToShow.map(({ href, label }) => (
@@ -302,7 +330,7 @@ export default function Header() {
                 <Link
                   key={href}
                   href={href}
-                  onClick={() => setMenuOpen(false)}
+                  onClick={() => closeMobileIfSameRoute(href)}
                   className={`text-copy font-medium transition ${
                     isHomeHero
                       ? `hover:text-white ${pathname === href ? "text-white" : "text-white/90"}`
@@ -329,10 +357,10 @@ export default function Header() {
           >
             {user ? (
               <>
-                {!isCmsArea ? (
+                {!useAdminLayout ? (
                   <Link
                     href="/konto"
-                    onClick={() => setMenuOpen(false)}
+                    onClick={() => closeMobileIfSameRoute("/konto")}
                     className={
                       isHomeHero
                         ? `w-full text-center ${outlineBtnHeroWide}`
@@ -365,10 +393,10 @@ export default function Header() {
                     </button>
                   </>
                 )}
-                {!isCmsArea && (
+                {!useAdminLayout && (
                   <Link
                     href="/buchung"
-                    onClick={() => setMenuOpen(false)}
+                    onClick={() => closeMobileIfSameRoute("/buchung")}
                     className={
                       isHomeHero
                         ? `text-center ${outlineBtnHeroWide}`
@@ -383,7 +411,7 @@ export default function Header() {
               <>
                 <Link
                   href="/login"
-                  onClick={() => setMenuOpen(false)}
+                  onClick={() => closeMobileIfSameRoute("/login")}
                   className={
                     isHomeHero
                       ? "rounded-full px-5 py-3 text-center text-base font-medium text-white hover:text-white/80"
@@ -392,10 +420,10 @@ export default function Header() {
                 >
                   {isHomeHero ? "Login" : "Anmelden"}
                 </Link>
-                {!isCmsArea && (
+                {!useAdminLayout && (
                   <Link
                     href="/buchung"
-                    onClick={() => setMenuOpen(false)}
+                    onClick={() => closeMobileIfSameRoute("/buchung")}
                     className={
                       isHomeHero
                         ? `text-center ${outlineBtnHeroWide}`

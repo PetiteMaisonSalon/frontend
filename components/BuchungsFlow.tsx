@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect, useMemo, useRef } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   getServices,
   getStaff,
@@ -12,22 +12,25 @@ import {
 } from "@/lib/api";
 import { canStaffDoAllServices } from "@/lib/staffCapabilities";
 import Link from "next/link";
+import Image from "next/image";
 import { useAuth } from "./AuthContext";
 
 type Service = { _id: string; name: string; category: string; durationMinutes: number; priceEur: number };
 type Staff = { _id: string; firstName: string; lastName: string; serviceIds: { _id: string }[] };
-type ServiceGroup = { id: string; label: string; matcher: (s: Service) => boolean };
-type GroupedServiceEntry = {
-  key: string;
-  title: string;
-  variants: Service[];
+
+const STAFF_SERVICE_IMAGE_BY_FIRST_NAME: Record<string, string> = {
+  mehtap: "/Mitarbeiter/mehtap_service.jpg",
+  maria: "/Mitarbeiter/maria_service.jpg",
+  sevim: "/Mitarbeiter/sevim_service.jpg",
+  masoud: "/Mitarbeiter/masoud_service.jpg",
+  sarah: "/Mitarbeiter/Sarah_service.jpg",
+  kanj: "/Mitarbeiter/kanj_service.jpg",
 };
 
-const CATEGORIES = [
-  { id: "women", label: "Frauen" },
-  { id: "men", label: "Männer" },
-];
-
+function staffServiceImageSrc(staff: Pick<Staff, "firstName">): string | null {
+  const key = staff.firstName.trim().toLowerCase();
+  return STAFF_SERVICE_IMAGE_BY_FIRST_NAME[key] ?? null;
+}
 const FALLBACK_SERVICES: Service[] = [
   { _id: "fallback-1", name: "Waschen / Schneiden / Föhnen", category: "men", durationMinutes: 45, priceEur: 45 },
   { _id: "fallback-2", name: "Waschen / Schneiden / Föhnen", category: "women", durationMinutes: 60, priceEur: 55 },
@@ -45,25 +48,22 @@ const FALLBACK_STAFF: Staff[] = [
   { _id: "fallback-kanj", firstName: "Kanj", lastName: "", serviceIds: FALLBACK_SERVICES.map((s) => ({ _id: s._id })) },
 ];
 
-type Step = 1 | 2 | 3 | 4 | 5;
+type Step = 2 | 3 | 5;
 
 const BOOKING_STATE_KEY = "pm_booking_state";
-
-function formatDurationLabel(minutes: number) {
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  if (h > 0 && m > 0) return `${h} Std. ${m} Min.`;
-  if (h > 0) return `${h} Std.`;
-  return `${m} Min.`;
-}
 
 function baseServiceTitle(name: string) {
   return name.replace(/\s*\([^)]+\)\s*$/, "").trim();
 }
 
-function variantLabel(name: string) {
-  const match = name.match(/\(([^)]+)\)\s*$/);
-  return match ? match[1].trim() : "Standard";
+/** Kurze Buchungsnr. wie „PM-65810“ aus der Mongo-ObjectId */
+function bookingRefFromMongoId(id: string): string {
+  let n = 0;
+  const s = String(id);
+  for (let i = 0; i < s.length; i++) {
+    n = (Math.imul(31, n) + s.charCodeAt(i)) >>> 0;
+  }
+  return `PM-${String(n % 100000).padStart(5, "0")}`;
 }
 
 function toLocalDateInput(date: Date) {
@@ -73,24 +73,59 @@ function toLocalDateInput(date: Date) {
   return `${year}-${month}-${day}`;
 }
 
+async function mapWithConcurrency<T, R>(
+  items: T[],
+  concurrency: number,
+  mapper: (item: T, index: number) => Promise<R>
+): Promise<R[]> {
+  const results: R[] = new Array(items.length);
+  let nextIndex = 0;
+
+  async function worker() {
+    while (true) {
+      const i = nextIndex;
+      nextIndex += 1;
+      if (i >= items.length) return;
+      results[i] = await mapper(items[i], i);
+    }
+  }
+
+  const n = Math.max(1, Math.min(concurrency, items.length || 1));
+  await Promise.all(Array.from({ length: n }, () => worker()));
+  return results;
+}
+
+function generateDemoSlotsForDate(date: string, durationMin: number) {
+  const dayStart = new Date(date);
+  dayStart.setHours(0, 0, 0, 0);
+  const dayNum = dayStart.getDay();
+  const hours =
+    dayNum === 0 ? null : dayNum === 6 ? { startMin: 9 * 60, endMin: 14 * 60 } : { startMin: 9 * 60, endMin: 20 * 60 };
+  if (!hours) return [];
+  const demo: { start: string; end: string }[] = [];
+  for (let m = hours.startMin; m + durationMin <= hours.endMin; m += 15) {
+    const start = new Date(dayStart);
+    start.setHours(Math.floor(m / 60), m % 60, 0, 0);
+    const end = new Date(start.getTime() + durationMin * 60 * 1000);
+    demo.push({ start: start.toISOString(), end: end.toISOString() });
+  }
+  return demo;
+}
+
 export default function BuchungsFlow() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const { user, loading: authLoading } = useAuth();
   const [rescheduleToken, setRescheduleToken] = useState(searchParams.get("rescheduleToken") || "");
   const preselectedServiceIdsParam = searchParams.get("serviceIds") || "";
   const preselectedServiceName = searchParams.get("service") || "";
   const hasBookingQuery =
-    searchParams.has("booking") ||
-    searchParams.has("serviceIds") ||
-    searchParams.has("rescheduleToken");
+    searchParams.has("booking") || searchParams.has("rescheduleToken");
   const [preselectApplied, setPreselectApplied] = useState(false);
-  const [step, setStep] = useState<Step>(hasBookingQuery ? 2 : 1);
+  const [step, setStep] = useState<Step>(2);
   const [services, setServices] = useState<Service[]>([]);
   const [staff, setStaff] = useState<Staff[]>([]);
-  const [category, setCategory] = useState<string>("");
   const [selectedServices, setSelectedServices] = useState<Service[]>([]);
-  const [activeServiceGroupId, setActiveServiceGroupId] = useState<string>("");
-  const [expandedServiceKeys, setExpandedServiceKeys] = useState<Record<string, boolean>>({});
   const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedSlot, setSelectedSlot] = useState<{ start: string; end: string } | null>(null);
@@ -103,6 +138,11 @@ export default function BuchungsFlow() {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), 1);
   });
+  /** YYYY-MM-DD → ob an diesem Tag mindestens ein Slot existiert (wie Slotliste / Backend) */
+  const [monthDayHasSlots, setMonthDayHasSlots] = useState<Record<string, boolean>>({});
+  const [monthMarkersLoading, setMonthMarkersLoading] = useState(false);
+  const monthPrefetchGen = useRef(0);
+  const [confirmedBookingRef, setConfirmedBookingRef] = useState<string | null>(null);
 
   const [form, setForm] = useState({
     firstName: "",
@@ -133,9 +173,6 @@ export default function BuchungsFlow() {
         if ((s?.services?.length || s?.service) && s?.slot) {
           const restoredServices = s.services || [s.service];
           setSelectedServices(restoredServices);
-          if (restoredServices?.[0]?.category) {
-            setCategory(restoredServices[0].category);
-          }
           setSelectedStaff(s.staff ?? null);
           setSelectedSlot(s.slot);
           if (s.selectedDate) {
@@ -179,16 +216,15 @@ export default function BuchungsFlow() {
   }, [step, selectedServices.length]);
 
   useEffect(() => {
-    // Falls /buchung?booking=1 ohne vorausgewählte Leistung geöffnet wird,
-    // zeigen wir wieder Schritt 1 statt leerem Step-2-Container.
     if (step !== 2 || selectedServices.length > 0) return;
     if (preselectedServiceIdsParam || preselectedServiceName) return;
     if (!hasBookingQuery) return;
-    setStep(1);
+    router.replace("/leistungen");
   }, [
     hasBookingQuery,
     preselectedServiceIdsParam,
     preselectedServiceName,
+    router,
     selectedServices.length,
     step,
   ]);
@@ -234,7 +270,6 @@ export default function BuchungsFlow() {
     }
 
     if (matchedServices.length === 0) return;
-    setCategory(matchedServices[0].category);
     setSelectedServices(matchedServices);
     setSelectedStaff(null);
     setSelectedSlot(null);
@@ -244,89 +279,24 @@ export default function BuchungsFlow() {
     goToStep(2);
   }, [preselectedServiceIdsParam, preselectedServiceName, preselectApplied, services]);
 
-  const filteredServices = category
-    ? services.filter((s) => s.category === category)
-    : [];
+  const selectedServiceIds = useMemo(
+    () => selectedServices.map((s) => s._id),
+    [selectedServices]
+  );
 
-  const serviceGroups: ServiceGroup[] =
-    category === "women"
-      ? [
-          {
-            id: "women-cut-styling",
-            label: "Damen - Haarschnitte & Stylings",
-            matcher: (s) =>
-              s.name.startsWith("Damen -") &&
-              !s.name.includes("Coloration") &&
-              !s.name.includes("Ansatzfarbe") &&
-              !s.name.includes("Foliensträhnen") &&
-              !s.name.includes("Balayage") &&
-              !s.name.includes("Glossing") &&
-              !s.name.includes("Face Frame"),
-          },
-          {
-            id: "women-color-styling",
-            label: "Damen - Colorationen & Styling",
-            matcher: (s) =>
-              !s.name.includes(", Haarschnitt & Styling") &&
-              (s.name.includes("Ansatzfarbe") ||
-                s.name.includes("Soft Coloration") ||
-                s.name.includes("Foliensträhnen") ||
-                s.name.includes("Balayage") ||
-                s.name.includes("Glossing/Milkshake") ||
-                s.name.includes("Face Frame")),
-          },
-          {
-            id: "women-color-cut-style",
-            label: "Damen - Colorationen, Waschen, Schneiden & Stylen",
-            matcher: (s) => s.name.includes(", Haarschnitt & Styling"),
-          },
-        ]
-      : category === "men"
-        ? [
-            {
-              id: "men-cut-styling",
-              label: "Herren - Haarschnitte & Stylings",
-              matcher: () => true,
-            },
-          ]
-        : [];
+  const handleBackToLeistungen = () => {
+    const qs =
+      selectedServiceIds.length > 0
+        ? `?serviceIds=${encodeURIComponent(selectedServiceIds.join(","))}`
+        : "";
+    router.push(`/leistungen${qs}`);
+  };
 
-  const groupedById = useMemo(() => {
-    const result: Record<string, GroupedServiceEntry[]> = {};
-    for (const group of serviceGroups) {
-      const groupServices = filteredServices
-        .filter(group.matcher)
-        .sort((a, b) => a.name.localeCompare(b.name));
-      const map = new Map<string, GroupedServiceEntry>();
-      groupServices.forEach((service) => {
-        const key = baseServiceTitle(service.name);
-        if (!map.has(key)) {
-          map.set(key, { key, title: key, variants: [] });
-        }
-        map.get(key)?.variants.push(service);
-      });
-      result[group.id] = Array.from(map.values()).map((entry) => ({
-        ...entry,
-        variants: entry.variants.sort((a, b) => a.priceEur - b.priceEur),
-      }));
-    }
-    return result;
-  }, [filteredServices, serviceGroups]);
+  const leistungenHref =
+    selectedServiceIds.length > 0
+      ? `/leistungen?serviceIds=${encodeURIComponent(selectedServiceIds.join(","))}`
+      : "/leistungen";
 
-  const activeGroupedServices =
-    activeServiceGroupId && groupedById[activeServiceGroupId]
-      ? groupedById[activeServiceGroupId]
-      : groupedById[serviceGroups[0]?.id] || [];
-
-  useEffect(() => {
-    if (!category || serviceGroups.length === 0) return;
-    const first = serviceGroups[0].id;
-    setActiveServiceGroupId((prev) =>
-      prev && serviceGroups.some((g) => g.id === prev) ? prev : first
-    );
-  }, [category, serviceGroups]);
-
-  const selectedServiceIds = selectedServices.map((s) => s._id);
   const primarySelectedService = selectedServices[0] ?? null;
   const totalDuration = selectedServices.reduce((sum, s) => sum + s.durationMinutes, 0);
   const totalPrice = selectedServices.reduce((sum, s) => sum + s.priceEur, 0);
@@ -360,7 +330,7 @@ export default function BuchungsFlow() {
     return id.startsWith("fallback-") || id.startsWith("offline-");
   });
 
-  const todayDate = toLocalDateInput(new Date());
+  const todayDate = useMemo(() => toLocalDateInput(new Date()), []);
   const weekdayLabels = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
   const monthLabel = calendarMonth.toLocaleDateString("de-DE", {
     month: "long",
@@ -376,6 +346,7 @@ export default function BuchungsFlow() {
     for (let day = 1; day <= daysInMonth; day += 1) cells.push(day);
     return cells;
   }, [calendarMonth]);
+
   const filteredSlots = useMemo(() => {
     if (slotFilter === "all") return slots;
     return slots.filter((slot) => {
@@ -384,21 +355,71 @@ export default function BuchungsFlow() {
     });
   }, [slots, slotFilter]);
 
-  const generateDemoSlots = (date: string, durationMin: number) => {
-    const dayStart = new Date(date);
-    dayStart.setHours(0, 0, 0, 0);
-    const dayNum = dayStart.getDay();
-    const hours = dayNum === 0 ? null : dayNum === 6 ? { startMin: 9 * 60, endMin: 14 * 60 } : { startMin: 9 * 60, endMin: 20 * 60 };
-    if (!hours) return [];
-    const slots: { start: string; end: string }[] = [];
-    for (let m = hours.startMin; m + durationMin <= hours.endMin; m += 15) {
-      const start = new Date(dayStart);
-      start.setHours(Math.floor(m / 60), m % 60, 0, 0);
-      const end = new Date(start.getTime() + durationMin * 60 * 1000);
-      slots.push({ start: start.toISOString(), end: end.toISOString() });
+  useEffect(() => {
+    if (step !== 2 || selectedServiceIds.length === 0) {
+      setMonthDayHasSlots({});
+      setMonthMarkersLoading(false);
+      return;
     }
-    return slots;
-  };
+
+    const gen = monthPrefetchGen.current + 1;
+    monthPrefetchGen.current = gen;
+
+    const year = calendarMonth.getFullYear();
+    const month = calendarMonth.getMonth();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const dateStrings: string[] = [];
+    for (let d = 1; d <= daysInMonth; d += 1) {
+      dateStrings.push(toLocalDateInput(new Date(year, month, d)));
+    }
+
+    let cancelled = false;
+
+    const run = async () => {
+      setMonthMarkersLoading(true);
+
+      const nextRecord: Record<string, boolean> = {};
+
+      if (isFallbackData) {
+        for (const value of dateStrings) {
+          if (value < todayDate) {
+            nextRecord[value] = false;
+            continue;
+          }
+          const demo = generateDemoSlotsForDate(value, totalDuration);
+          nextRecord[value] = demo.length > 0;
+        }
+      } else {
+        const staffId = selectedStaff?._id;
+        await mapWithConcurrency(dateStrings, 8, async (value) => {
+          if (value < todayDate) return { value, hasSlots: false };
+          try {
+            const data = await getAvailableSlots(value, selectedServiceIds, staffId);
+            return { value, hasSlots: Array.isArray(data) && data.length > 0 };
+          } catch {
+            return { value, hasSlots: false };
+          }
+        }).then((rows) => {
+          for (const row of rows) {
+            nextRecord[row.value] = row.hasSlots;
+          }
+        });
+      }
+
+      if (!cancelled && monthPrefetchGen.current === gen) {
+        setMonthDayHasSlots(nextRecord);
+        setMonthMarkersLoading(false);
+      } else if (!cancelled && monthPrefetchGen.current !== gen) {
+        setMonthMarkersLoading(false);
+      }
+    };
+
+    void run();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [step, calendarMonth, selectedServiceIds, selectedStaff?._id, isFallbackData, totalDuration, todayDate]);
 
   const fetchSlots = async (date: string, staffOverride?: Staff | null) => {
     if (selectedServiceIds.length === 0) return;
@@ -406,7 +427,7 @@ export default function BuchungsFlow() {
     setError("");
     try {
       if (isFallbackData) {
-        const demoSlots = generateDemoSlots(date, totalDuration);
+        const demoSlots = generateDemoSlotsForDate(date, totalDuration);
         setSlots(demoSlots);
       } else {
         const effectiveStaff = staffOverride === undefined ? selectedStaff : staffOverride;
@@ -428,17 +449,6 @@ export default function BuchungsFlow() {
   const goToStep = (nextStep: Step) => {
     setStep(nextStep);
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const handleCategorySelect = (cat: string) => {
-    setCategory(cat);
-    setSelectedServices([]);
-    setActiveServiceGroupId("");
-    setExpandedServiceKeys({});
-    setSelectedStaff(null);
-    setSelectedDate("");
-    setSlots([]);
-    goToStep(1);
   };
 
   const handleServiceToggle = (s: Service) => {
@@ -524,11 +534,14 @@ export default function BuchungsFlow() {
           note: form.note.trim() || undefined,
         },
       };
+      let created: { appointment?: { id?: string } } | undefined;
       if (rescheduleToken) {
-        await rescheduleAppointment(rescheduleToken, payload);
+        created = await rescheduleAppointment(rescheduleToken, payload);
       } else {
-        await createAppointment(payload);
+        created = await createAppointment(payload);
       }
+      const aptId = created?.appointment?.id;
+      setConfirmedBookingRef(aptId ? bookingRefFromMongoId(String(aptId)) : null);
       goToStep(5);
     } catch (e: unknown) {
       const message = (e as Error).message || "Buchung fehlgeschlagen.";
@@ -571,6 +584,7 @@ export default function BuchungsFlow() {
           phone: form.phone.trim() || undefined,
         },
       });
+      setConfirmedBookingRef(null);
       goToStep(5);
     } catch (e: unknown) {
       setError((e as Error).message || "Fehler bei der Warteliste.");
@@ -598,26 +612,25 @@ export default function BuchungsFlow() {
     const isBooked = successType === "booked";
     const start = selectedSlot ? new Date(selectedSlot.start) : null;
     const end = selectedSlot ? new Date(selectedSlot.end) : null;
-    const dayLabel = start
-      ? start
-          .toLocaleDateString("de-DE", {
-            weekday: "short",
-            day: "numeric",
-            month: "short",
-          })
-          .replace(",", "")
-      : "Termin wird bestätigt";
-    const timeLabel =
+    const customerDisplayName = `${form.firstName.trim()} ${form.lastName.trim()}`.trim();
+    const timeRangeLabel =
       start && end
-        ? `${start.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} - ${end.toLocaleTimeString("de-DE", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}`
-        : "Wir melden uns mit einem freien Slot.";
+        ? `${start.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} – ${end.toLocaleTimeString(
+            "de-DE",
+            { hour: "2-digit", minute: "2-digit" }
+          )} Uhr`
+        : null;
+    const dateSerifLine =
+      start &&
+      `${start.toLocaleDateString("de-DE", { weekday: "short" })} ${start.toLocaleDateString("de-DE", {
+        day: "numeric",
+        month: "long",
+      })}`;
+    const headlineSerif = dateSerifLine || (!isBooked ? "Warteliste bestätigt" : "");
     const formatGoogleDate = (value: Date) =>
       value.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
     const googleCalendarHref =
-      start && end
+      isBooked && start && end
         ? `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
             "Termin bei Petite Maison"
           )}&dates=${formatGoogleDate(start)}/${formatGoogleDate(end)}&details=${encodeURIComponent(
@@ -626,133 +639,133 @@ export default function BuchungsFlow() {
         : null;
 
     return (
-      <section className="mx-auto max-w-2xl px-4 py-12 sm:px-6 sm:py-16">
-        <div className="relative rounded-2xl border border-[#E8E4DF] bg-white p-5 pt-14 text-center shadow-sm sm:p-8 sm:pt-16">
-          <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2">
-            <div className="grid h-16 w-16 place-items-center rounded-full border-4 border-[#8ED39A] bg-[#4A5D4A] text-3xl text-white shadow-sm">
-              ✓
+      <section className="min-h-screen px-4 py-10 sm:px-6 sm:py-14">
+        <div className="relative mx-auto max-w-lg">
+          <Link
+            href={leistungenHref}
+            prefetch={false}
+            className="absolute right-0 top-0 z-10 rounded-md p-1.5 text-white/75 transition hover:bg-white/10 hover:text-white md:-right-1 md:-top-1"
+            aria-label="Schließen"
+          >
+            <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M6 6L18 18M18 6L6 18" strokeLinecap="round" />
+            </svg>
+          </Link>
+
+          <div className="relative overflow-hidden rounded-[28px] bg-[#F2F0EB] px-6 pb-8 pt-12 shadow-[0_24px_80px_rgba(0,0,0,0.35)] sm:px-10 sm:pb-10 sm:pt-14">
+            <div className="mx-auto mb-6 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#D8F3E6]">
+              <svg className="h-7 w-7 text-[#2E8C58]" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M6 13l4 4 8-10"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
             </div>
-          </div>
 
-          <h2 className="text-h1 text-[#2D2D2D]">
-            {isBooked ? "Buchung bestätigt" : "Warteliste bestätigt"}
-          </h2>
-          <p className="mt-2 text-lg text-[#2D2D2D]/85">
-            {isBooked
-              ? "Wir freuen uns auf deinen Besuch!"
-              : "Du wurdest erfolgreich auf die Warteliste gesetzt."}
-          </p>
+            {isBooked && timeRangeLabel && (
+              <p className="text-center text-[15px] font-medium tracking-tight text-[#2D2D2D]/90">{timeRangeLabel}</p>
+            )}
 
-          <div className="mt-6 rounded-2xl border border-[#E8E4DF] p-5 text-left sm:p-6">
-            <div className="text-center">
-              <p className="text-5xl font-medium leading-none text-[#2D2D2D]">{dayLabel}</p>
-              <div className="mt-4 flex items-center justify-center gap-2 text-2xl text-[#2D2D2D]/90">
-                <span aria-hidden>◷</span>
-                <span className="text-3xl font-medium">{timeLabel}</span>
-              </div>
-              {isBooked && googleCalendarHref && (
+            {headlineSerif ? (
+              <p className="font-display mt-1 text-center text-[2.125rem] leading-[1.1] tracking-[-0.02em] text-[#2D2D2D] sm:text-[2.5rem]">
+                {headlineSerif}
+              </p>
+            ) : null}
+
+            <p className="mx-auto mt-5 max-w-sm text-center text-[15px] leading-relaxed text-[#2D2D2D]/85">
+              {isBooked
+                ? "Termin bestätigt! Du erhältst gleich eine Bestätigung per E-Mail. Wir freuen uns auf dich!"
+                : "Du stehst auf unserer Warteliste. Sobald ein Termin frei wird, melden wir uns per E-Mail."}
+            </p>
+
+            {isBooked && googleCalendarHref && (
+              <div className="mt-6 flex justify-center">
                 <a
                   href={googleCalendarHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-3 inline-block text-sm text-[#4A5D4A] underline-offset-2 hover:underline"
+                  className="inline-flex items-center gap-2 rounded-full border border-[#2D2D2D]/25 bg-transparent px-5 py-2.5 text-sm font-medium text-[#2D2D2D] transition hover:border-[#2D2D2D]/45 hover:bg-black/[0.03]"
                 >
+                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                    <rect x="3.5" y="5.5" width="17" height="15" rx="2" />
+                    <path d="M8 3v4M16 3v4M4 11h16" strokeLinecap="round" />
+                  </svg>
                   Zum Kalender hinzufügen
                 </a>
-              )}
-            </div>
-
-            <div className="mt-6 grid gap-5 sm:grid-cols-2">
-              <div>
-                <p className="text-sm text-[#2D2D2D]/70">Ausgewählte Leistungen</p>
-                <ul className="mt-2 space-y-1">
-                  {selectedServices.map((s) => (
-                    <li key={s._id} className="text-xl text-[#2D2D2D]">
-                      {s.name} <span className="text-[#2D2D2D]/55">{s.durationMinutes} Min.</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
-              <div>
-                <p className="text-sm text-[#2D2D2D]/70">Mitarbeiter</p>
-                <p className="mt-2 text-4xl text-[#2D2D2D]">
-                  {selectedStaff ? selectedStaff.firstName : "Freier Mitarbeiter"}
-                </p>
-              </div>
-            </div>
+            )}
 
-            <div className="mt-6 border-t border-[#E8E4DF] pt-4 text-[#2D2D2D]/85">
-              <div className="flex items-start gap-3">
-                <svg
-                  className="mt-1 h-5 w-5 shrink-0 text-[#2D2D2D]"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M12 21s7-4.35 7-11a7 7 0 10-14 0c0 6.65 7 11 7 11z"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <circle cx="12" cy="10" r="2.5" />
-                </svg>
-                <div>
-                  <p className="text-lg">Petite Maison</p>
-                  <p className="text-lg">Arndtstr. 33</p>
-                  <p className="text-lg">22085 Hamburg</p>
-                  <a
-                    href="https://maps.google.com/?q=Arndtstr.+33,+22085+Hamburg"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-1 inline-block text-[#4A5D4A] underline-offset-2 hover:underline"
-                  >
-                    In Google Maps öffnen
-                  </a>
+            <div className="mt-8 rounded-2xl bg-white p-5 shadow-sm sm:p-6">
+              {confirmedBookingRef && (
+                <div className="mb-4 flex justify-end">
+                  <div className="text-right">
+                    <p className="text-[11px] font-medium uppercase tracking-[0.06em] text-[#2D2D2D]/45">
+                      Buchungsnummer
+                    </p>
+                    <p className="text-sm font-semibold tracking-wide text-[#2D2D2D]">{confirmedBookingRef}</p>
+                  </div>
                 </div>
-              </div>
+              )}
 
-              <div className="mt-5 flex items-center gap-3">
-                <svg
-                  className="h-5 w-5 shrink-0 text-[#2D2D2D]"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M22 16.92v3a2 2 0 01-2.18 2 19.86 19.86 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.86 19.86 0 012.01 4.18 2 2 0 014 2h3a2 2 0 012 1.72c.12.9.33 1.78.62 2.62a2 2 0 01-.45 2.11L8.1 9.9a16 16 0 006 6l1.45-1.08a2 2 0 012.11-.45c.84.29 1.72.5 2.62.62A2 2 0 0122 16.92z"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <p className="text-2xl text-[#2D2D2D]">+49 176 69150964</p>
+              <div className="divide-y divide-[#E8E8E6]">
+                <div className="flex items-start justify-between gap-6 py-3 first:pt-0">
+                  <span className="shrink-0 pt-0.5 text-[13px] text-[#2D2D2D]/55">Name</span>
+                  <span className="text-right text-[15px] font-medium text-[#2D2D2D]">
+                    {customerDisplayName || "—"}
+                  </span>
+                </div>
+
+                <div className="flex gap-6 py-3">
+                  <span className="shrink-0 pt-0.5 text-[13px] text-[#2D2D2D]/55">Leistungen</span>
+                  <div className="min-w-0 flex-1 space-y-1.5 text-right text-[15px] leading-snug text-[#2D2D2D]">
+                    {selectedServices.map((s) => (
+                      <p key={s._id}>
+                        {baseServiceTitle(s.name)} · {s.priceEur}€
+                      </p>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-start justify-between gap-6 py-3">
+                  <span className="shrink-0 pt-0.5 text-[13px] text-[#2D2D2D]/55">Stylistin</span>
+                  <span className="text-right text-[15px] font-medium text-[#2D2D2D]">
+                    {selectedStaff?.firstName ?? "—"}
+                  </span>
+                </div>
+
+                {isBooked ? (
+                  <div className="flex items-end justify-between gap-4 border-t border-[#2D2D2D]/12 pt-5">
+                    <span className="text-[15px] font-medium text-[#2D2D2D]">Vor Ort bezahlen</span>
+                    <span className="font-display text-[2rem] leading-none tracking-tight text-[#2D2D2D]">
+                      {totalPrice} €
+                    </span>
+                  </div>
+                ) : (
+                  <p className="border-t border-[#2D2D2D]/12 pt-5 text-center text-[13px] text-[#2D2D2D]/55">
+                    Sobald wir dir einen Termin anbieten können, gilt der reguläre Preis – keine Zahlung über die Warteliste.
+                  </p>
+                )}
               </div>
             </div>
-          </div>
 
-          <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            <Link
-              href="/konto?tab=bookings"
-              className="inline-flex items-center justify-center rounded-lg bg-[#4A5D4A] px-6 py-3 text-lg font-medium text-white transition hover:bg-[#3A4A3A]"
-            >
-              Gehe zu Buchungen
-            </Link>
-            <Link
-              href="/"
-              className="inline-flex items-center justify-center rounded-lg border-2 border-[#4A5D4A] px-6 py-3 text-lg font-medium text-[#4A5D4A] transition hover:bg-[#4A5D4A]/10"
-            >
-              Zum Salon
-            </Link>
+            <div className="mt-8 grid gap-3 sm:grid-cols-2 sm:gap-4">
+              <Link
+                href="/"
+                className="inline-flex items-center justify-center rounded-full border-2 border-[#1F1A17] bg-transparent px-6 py-3.5 text-center text-sm font-medium text-[#1F1A17] transition hover:bg-black/[0.04]"
+              >
+                Zum Salon
+              </Link>
+              <Link
+                href="/konto?tab=bookings"
+                className="inline-flex items-center justify-center rounded-full bg-[#1F1A17] px-6 py-3.5 text-center text-sm font-medium text-white transition hover:bg-black"
+              >
+                Zu meinen Terminen
+              </Link>
+            </div>
           </div>
-
-          <p className="mt-5 text-sm text-[#2D2D2D]/75">
-            {isBooked
-              ? "Du erhältst in Kürze eine Bestätigungs-E-Mail. Bitte prüfe auch deinen Spam-Ordner, wenn keine Mail im Posteingang erscheint."
-              : "Wir benachrichtigen dich per E-Mail, sobald ein passender Termin verfügbar ist."}
-          </p>
         </div>
       </section>
     );
@@ -760,185 +773,15 @@ export default function BuchungsFlow() {
 
   return (
     <>
-      {step === 1 && (
-        <section className="border-b border-[#E8E4DF] py-12 md:py-16">
-          <div className="mx-auto max-w-2xl px-6 text-center">
-            <h1 className="text-h1 text-[#2D2D2D]">
-              Termin buchen
-            </h1>
-            <p className="mt-4 text-lg text-[#2D2D2D]/85">
-              Wähle deine Leistung, einen passenden Termin und bestätige deine Buchung.
-            </p>
-          </div>
-        </section>
-      )}
       <section
         className={`mx-auto px-4 py-10 sm:px-6 sm:py-12 ${
-          (step === 1 && category) || step === 2 || step === 3 ? "max-w-6xl" : "max-w-2xl"
+          step === 2 || step === 3 ? "max-w-6xl" : "max-w-2xl"
         }`}
       >
      
       {error && (
         <div className="mb-6 rounded-lg bg-[#D4A5A5]/30 px-4 py-3 text-[#5C4033]">
           {error}
-        </div>
-      )}
-
-      {/* Step 1: Kategorie & Service */}
-      {step === 1 && (
-        <div className="space-y-10 pb-24">
-          <div>
-            <h2 className="text-h3 text-[#2D2D2D]">
-              Kategorie
-            </h2>
-            <div className="mt-4 flex flex-wrap gap-3">
-              {CATEGORIES.map((c) => (
-                <button
-                  key={c.id}
-                  onClick={() => handleCategorySelect(c.id)}
-                  className={`rounded-full px-6 py-3 font-medium transition ${
-                    category === c.id
-                      ? "bg-[#4A5D4A] text-white"
-                      : "border-2 border-[#E8E4DF] text-[#2D2D2D] hover:border-[#4A5D4A]"
-                  }`}
-                >
-                  {c.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {category && (
-            <div>
-              <h2 className="text-h3 text-[#2D2D2D]">
-                Leistungen auswählen
-              </h2>
-              <div className="mt-4 grid items-start gap-4 lg:gap-6 lg:grid-cols-[250px_1fr]">
-                <div className="h-fit self-start rounded-xl border border-[#E8E4DF] bg-white p-2">
-                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:block">
-                    {serviceGroups.map((group) => (
-                      <button
-                        key={group.id}
-                        type="button"
-                        onClick={() => setActiveServiceGroupId(group.id)}
-                        className={`w-full whitespace-normal break-words rounded-lg px-3 py-3 text-left text-sm font-medium lg:mb-1 ${
-                          activeServiceGroupId === group.id
-                            ? "border border-[#4A5D4A]/35 bg-[#4A5D4A]/10 text-[#2D2D2D]"
-                            : "border border-[#E8E4DF]/60 text-[#2D2D2D]/90 hover:bg-[#F7F7F9]"
-                        }`}
-                      >
-                        {group.label} ({groupedById[group.id]?.length || 0})
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div className="min-w-0 rounded-2xl border border-[#E8E4DF] bg-white">
-                    {activeGroupedServices.map((entry) => {
-                      const hasVariants = entry.variants.length > 1;
-                      const isExpanded = expandedServiceKeys[entry.key] || false;
-                      const minPrice = Math.min(...entry.variants.map((v) => v.priceEur));
-                      const minDuration = Math.min(...entry.variants.map((v) => v.durationMinutes));
-                      const maxDuration = Math.max(...entry.variants.map((v) => v.durationMinutes));
-                      return (
-                        <div key={entry.key} className="min-w-0 border-b border-[#E8E4DF] p-4 last:border-b-0">
-                          <div className="min-w-0 grid grid-cols-1 items-start gap-3 md:grid-cols-[minmax(0,1fr)_auto] lg:grid-cols-[minmax(0,1fr)_auto_auto]">
-                            <div className="min-w-0">
-                              <p className="break-words font-medium text-[#2D2D2D]">{entry.title}</p>
-                              <p className="mt-1 text-sm text-[#2D2D2D]/70">
-                                {minDuration === maxDuration
-                                  ? formatDurationLabel(minDuration)
-                                  : `${formatDurationLabel(minDuration)} - ${formatDurationLabel(maxDuration)}`}
-                              </p>
-                            </div>
-                            <div className="text-left font-semibold text-[#2D2D2D] md:text-right">
-                              {hasVariants ? `ab ${minPrice} €` : `${minPrice} €`}
-                            </div>
-                            {hasVariants ? (
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  setExpandedServiceKeys((prev) => ({
-                                    ...prev,
-                                    [entry.key]: !prev[entry.key],
-                                  }))
-                                }
-                                className="w-full rounded-full border border-[#E8E4DF] px-4 py-2 text-sm font-medium text-[#2D2D2D] hover:bg-[#F5F2ED] md:w-auto lg:justify-self-end"
-                              >
-                                {isExpanded ? "Varianten ausblenden" : "Varianten anzeigen"}
-                              </button>
-                            ) : (
-                              <button
-                                type="button"
-                                onClick={() => handleServiceToggle(entry.variants[0])}
-                                className={`w-full rounded border px-4 py-2 text-sm font-medium md:w-auto lg:justify-self-end ${
-                                  selectedServices.some((x) => x._id === entry.variants[0]._id)
-                                    ? "border-[#4A5D4A] bg-[#4A5D4A] text-white"
-                                    : "border-[#D4A5A5] text-[#C2787E]"
-                                }`}
-                              >
-                                {selectedServices.some((x) => x._id === entry.variants[0]._id)
-                                  ? "Ausgewählt"
-                                  : "Auswählen"}
-                              </button>
-                            )}
-                          </div>
-                          {hasVariants && isExpanded && (
-                            <div className="mt-3 space-y-2">
-                              {entry.variants.map((variant) => (
-                                <div
-                                  key={variant._id}
-                                  className="min-w-0 grid grid-cols-1 items-center gap-3 rounded-lg border border-[#E8E4DF] bg-[#FAF9F7] p-3 md:grid-cols-[minmax(0,1fr)_auto] lg:grid-cols-[minmax(0,1fr)_auto_auto]"
-                                >
-                                  <div className="min-w-0">
-                                    <p className="text-sm font-medium text-[#2D2D2D]">
-                                      {variantLabel(variant.name)}
-                                    </p>
-                                    <p className="text-sm text-[#2D2D2D]/70">
-                                      {formatDurationLabel(variant.durationMinutes)}
-                                    </p>
-                                  </div>
-                                  <div className="text-left font-semibold text-[#2D2D2D] md:text-right">
-                                    {variant.priceEur} €
-                                  </div>
-                                  <button
-                                    type="button"
-                                    onClick={() => handleServiceToggle(variant)}
-                                    className={`w-full rounded border px-4 py-2 text-sm font-medium md:w-auto lg:justify-self-end ${
-                                      selectedServices.some((x) => x._id === variant._id)
-                                        ? "border-[#4A5D4A] bg-[#4A5D4A] text-white"
-                                        : "border-[#D4A5A5] text-[#C2787E]"
-                                    }`}
-                                  >
-                                    {selectedServices.some((x) => x._id === variant._id)
-                                      ? "Ausgewählt"
-                                      : "Auswählen"}
-                                  </button>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                </div>
-              </div>
-              {selectedServices.length > 0 && (
-                <div className="fixed bottom-0 left-0 right-0 z-50 border-t-2 border-[#4A5D4A]/35 bg-white/95 p-4 shadow-[0_-12px_30px_rgba(45,45,45,0.14)] backdrop-blur">
-                  <div className="mx-auto max-w-6xl">
-                    <p className="mb-2 text-sm text-[#2D2D2D]/85">
-                      {selectedServices.length} Leistung(en) ausgewählt · {totalDuration} min · {totalPrice} €
-                    </p>
-                    <button
-                      onClick={() => goToStep(2)}
-                      className="w-full rounded-full bg-[#4A5D4A] py-3 font-medium text-white transition hover:bg-[#3A4A3A]"
-                    >
-                      Weiter
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
         </div>
       )}
 
@@ -953,13 +796,13 @@ export default function BuchungsFlow() {
               </p>
             </div>
             <Link
-              href="/buchung"
+              href={leistungenHref}
               prefetch={false}
               className="rounded-md p-1 text-[#2D2D2D]/70 transition hover:bg-black/5 hover:text-[#2D2D2D]"
               aria-label="Flow schließen"
             >
               <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M6 6L18 18M18 6L6 18" strokeLinecap="round" />
+                <path d="M6 6L18 18M18 6L6 18" strokeLinecap="round"/>
               </svg>
             </Link>
           </div>
@@ -992,22 +835,9 @@ export default function BuchungsFlow() {
                   Mitarbeiter auswählen
                 </p>
                 <div className="mt-4 flex flex-wrap gap-4">
-                  <button
-                    type="button"
-                    onClick={() => handleStaffSelect(null)}
-                    className="flex w-[72px] flex-col items-center gap-2 text-center"
-                  >
-                    <span
-                      className={`grid h-11 w-11 place-items-center rounded-full border-2 ${
-                        !selectedStaff
-                          ? "border-[#1F1A17] bg-[#EFECE7]"
-                          : "border-[#2D2D2D]/45 bg-transparent"
-                      }`}
-                    />
-                    <span className="text-xs text-[#2D2D2D]">Beliebig</span>
-                  </button>
                   {availableStaff.map((s) => {
                     const initials = `${s.firstName?.[0] || ""}${s.lastName?.[0] || ""}`.toUpperCase();
+                    const portraitSrc = staffServiceImageSrc(s);
                     return (
                       <button
                         key={s._id}
@@ -1016,13 +846,23 @@ export default function BuchungsFlow() {
                         className="flex w-[72px] flex-col items-center gap-2 text-center"
                       >
                         <span
-                          className={`grid h-11 w-11 place-items-center rounded-full border text-xs font-medium ${
+                          className={`relative grid h-11 w-11 place-items-center overflow-hidden rounded-full border text-xs font-medium ${
                             selectedStaff?._id === s._id
-                              ? "border-[#1F1A17] bg-[#1F1A17] text-white"
+                              ? "border-[#1F1A17] border-3 text-white shadow-lg"
                               : "border-[#2D2D2D]/35 bg-[#EBC8B7] text-[#2D2D2D]"
                           }`}
                         >
-                          {initials || "PM"}
+                          {portraitSrc ? (
+                            <Image
+                              src={portraitSrc}
+                              alt=""
+                              fill
+                              className="object-cover"
+                              sizes="44px"
+                            />
+                          ) : (
+                            <span className="relative z-10">{initials || "PM"}</span>
+                          )}
                         </span>
                         <span className="text-xs text-[#2D2D2D]">{s.firstName}</span>
                       </button>
@@ -1080,7 +920,11 @@ export default function BuchungsFlow() {
                     const value = toLocalDateInput(date);
                     const isPast = value < todayDate;
                     const isSelected = selectedDate === value;
-                    const markerClass = day % 4 === 0 ? "bg-[#CF4D4D]" : "bg-[#2E8C58]";
+                    const showAvailabilityDot =
+                      !isPast && selectedServiceIds.length > 0 && !monthMarkersLoading;
+                    const hasSlotsForDay = monthDayHasSlots[value];
+                    const markerClass =
+                      hasSlotsForDay === true ? "bg-[#2E8C58]" : "bg-[#CF4D4D]";
                     return (
                       <div key={value} className="mx-auto flex h-11 w-9 flex-col items-center justify-center">
                         <button
@@ -1097,7 +941,7 @@ export default function BuchungsFlow() {
                         >
                           {day}
                         </button>
-                        {!isPast && (
+                        {showAvailabilityDot && (
                           <span className={`mt-1 h-1.5 w-1.5 rounded-full ${markerClass}`} />
                         )}
                       </div>
@@ -1196,7 +1040,7 @@ export default function BuchungsFlow() {
             <div className="grid gap-3 md:grid-cols-2">
               <button
                 type="button"
-                onClick={() => goToStep(1)}
+                onClick={handleBackToLeistungen}
                 className="rounded-full border border-[#2D2D2D]/70 bg-transparent py-2.5 text-sm font-medium text-[#2D2D2D]"
               >
                 Zurück
@@ -1205,7 +1049,7 @@ export default function BuchungsFlow() {
                 type="button"
                 onClick={() => goToStep(3)}
                 disabled={!selectedSlot}
-                className="rounded-full border border-transparent bg-[#CEC9C2] py-2.5 text-sm font-medium text-[#58534D] transition disabled:cursor-not-allowed disabled:opacity-70"
+                className="rounded-full border border-transparent bg-[#220D01] py-2.5 text-sm font-medium text-[#FFFFFF] transition disabled:cursor-not-allowed disabled:opacity-20"
               >
                 Weiter zur Buchung
               </button>
@@ -1225,7 +1069,7 @@ export default function BuchungsFlow() {
               </p>
             </div>
             <Link
-              href="/buchung"
+              href={leistungenHref}
               prefetch={false}
               className="rounded-md p-1 text-[#2D2D2D]/70 transition hover:bg-black/5 hover:text-[#2D2D2D]"
               aria-label="Flow schließen"

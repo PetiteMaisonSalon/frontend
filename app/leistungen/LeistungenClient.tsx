@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { startTransition, useEffect, useMemo, useRef, useState } from "react";
 import { getServices } from "@/lib/api";
 import BuchungsFlow from "@/components/BuchungsFlow";
 
@@ -80,12 +80,29 @@ export default function LeistungenClient() {
   const [activeGender, setActiveGender] = useState<"women" | "men">("women");
   const [selectedServiceIds, setSelectedServiceIds] = useState<string[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<Record<string, boolean>>({});
+  const urlServiceSelectionApplied = useRef(false);
 
   useEffect(() => {
     getServices()
       .then((data) => setServices(Array.isArray(data) ? data : []))
       .catch(() => setServices([]));
   }, []);
+
+  useEffect(() => {
+    if (searchParams.has("booking") || searchParams.has("rescheduleToken")) {
+      urlServiceSelectionApplied.current = false;
+      return;
+    }
+    if (urlServiceSelectionApplied.current) return;
+    const raw = searchParams.get("serviceIds");
+    if (!raw) return;
+    const ids = raw.split(",").map((s) => s.trim()).filter(Boolean);
+    if (ids.length === 0) return;
+    startTransition(() => {
+      setSelectedServiceIds(ids);
+      urlServiceSelectionApplied.current = true;
+    });
+  }, [searchParams]);
 
   const womenSections = useMemo(() => {
     const women = services
@@ -194,9 +211,7 @@ export default function LeistungenClient() {
   };
 
   const showBookingFlow =
-    searchParams.has("booking") ||
-    searchParams.has("serviceIds") ||
-    searchParams.has("rescheduleToken");
+    searchParams.has("booking") || searchParams.has("rescheduleToken");
 
   if (showBookingFlow) {
     return (

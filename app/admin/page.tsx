@@ -59,6 +59,8 @@ type AdminService = {
 };
 type AdminSectionId = "kalender" | "termine" | "leistungen" | "umsatz" | "kunden";
 const OPEN_ADMIN_CREATE_EVENT = "admin:create-appointment";
+/** gesetzt von Header, wenn „Neuen Termin“ außerhalb von /admin geklickt wird */
+const ADMIN_PENDING_CREATE_KEY = "pm_admin_pending_create";
 const SERVICE_GROUPS = [
   {
     id: "women-cut-styling",
@@ -360,6 +362,18 @@ export default function AdminPage() {
     window.addEventListener(OPEN_ADMIN_CREATE_EVENT, openCreateModal);
     return () => window.removeEventListener(OPEN_ADMIN_CREATE_EVENT, openCreateModal);
   }, []);
+
+  useEffect(() => {
+    if (!isAllowed || typeof window === "undefined") return;
+    try {
+      if (sessionStorage.getItem(ADMIN_PENDING_CREATE_KEY) === "1") {
+        sessionStorage.removeItem(ADMIN_PENDING_CREATE_KEY);
+        setShowCreateModal(true);
+      }
+    } catch {
+      /* ignore */
+    }
+  }, [isAllowed]);
 
   useEffect(() => {
     if (!isAllowed) return;
