@@ -409,6 +409,7 @@ export default function LeistungenClient() {
         </div>
       </section>
 
+
       {selectedServiceIds.length > 0 && (
         <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#2D2D2D]/35 bg-[#EDEBE6]/95 px-4 py-4 backdrop-blur !bg-[#BEA8FF]">
           <div className="mx-auto flex max-w-7xl flex-wrap items-start justify-between gap-4 md:items-center">
