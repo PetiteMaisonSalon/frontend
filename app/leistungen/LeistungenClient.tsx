@@ -66,6 +66,14 @@ function formatPrice(value: number) {
   return `${value}€`;
 }
 
+function selectedServiceTitle(s: Service) {
+  const match = s.name.match(/\(([^)]+)\)\s*$/);
+  const suffix = match ? match[1].trim() : "";
+  const title = baseTitle(s.name);
+
+  return suffix ? `${toDisplayTitle(title)} (${suffix})` : toDisplayTitle(title);
+}
+
 export default function LeistungenClient() {
   const searchParams = useSearchParams();
   const [services, setServices] = useState<Service[]>([]);
@@ -158,10 +166,10 @@ export default function LeistungenClient() {
       }));
   }, [services]);
 
-  const selectedServices = useMemo(
-    () => services.filter((s) => selectedServiceIds.includes(s._id)),
-    [services, selectedServiceIds]
-  );
+  const selectedServices = useMemo(() => {
+    const map = new Map(services.map((s) => [s._id, s] as const));
+    return selectedServiceIds.map((id) => map.get(id)).filter(Boolean) as Service[];
+  }, [services, selectedServiceIds]);
 
   const totalDuration = selectedServices.reduce((sum, s) => sum + s.durationMinutes, 0);
   const totalPrice = selectedServices.reduce((sum, s) => sum + s.priceEur, 0);
@@ -170,6 +178,10 @@ export default function LeistungenClient() {
     setSelectedServiceIds((prev) =>
       prev.includes(serviceId) ? prev.filter((id) => id !== serviceId) : [...prev, serviceId]
     );
+  };
+
+  const removeService = (serviceId: string) => {
+    setSelectedServiceIds((prev) => prev.filter((id) => id !== serviceId));
   };
 
   const bookingHref =
@@ -195,10 +207,15 @@ export default function LeistungenClient() {
   }
 
   return (
-    <main className="bg-[#F1EEE9] pb-36">
+    <main className="bg-[#F1EEE9] pb-36 font-normal [font-family:var(--font-public-sans)]">
       <section>
         <div className="mx-auto max-w-7xl px-6 pb-8 pt-16 md:pt-20">
-          <h1 className="text-h1 text-[#2D2D2D]">Unsere Leistungen</h1>
+          <h1
+            className="text-h1 text-[#2D2D2D]"
+            style={{ fontFamily: "var(--font-public-sans)" }}
+          >
+            Unsere Leistungen
+          </h1>
           <p className="mt-4 max-w-xl text-[13px] leading-relaxed text-[#2D2D2D]/95">
             Wir bieten Haarschnitte, Farb- und Pflegebehandlungen für Frauen und Männer an –immer
             individuell abgestimmt auf dein Haar, deinen Typ und deinen Alltag.
@@ -232,14 +249,14 @@ export default function LeistungenClient() {
 
       <section>
         <div className="mx-auto max-w-7xl px-6">
-          <div className="border-t border-[#2D2D2D]/40">
+          <div className="border-[#2D2D2D]/40">
             {activeGender === "women" ? (
               womenSections.map((section) => (
                 <div key={section.label} className="pt-7 first:pt-0">
                   <p className="text-[11px] font-medium tracking-[0.12em] text-[#2D2D2D]/55">
                     {section.label}
                   </p>
-                  <div className="mt-3 border-t border-[#2D2D2D]/40">
+                  <div className="mt-3 border-[#2D2D2D]/40">
                     {section.entries.map((entry) => {
                       const hasVariants = entry.variants.length > 1;
                       const isExpanded = expandedKeys[entry.key] || false;
@@ -264,12 +281,20 @@ export default function LeistungenClient() {
                                 {durationLabel}
                               </p>
                             </div>
-                            <div className="text-[13px] font-medium text-[#2D2D2D] md:text-right">
-                              {isCallRow
-                                ? "Auf Anfrage (telefonisch)"
-                                : hasVariants
-                                  ? `ab ${formatPrice(minPrice)}`
-                                  : formatPrice(minPrice)}
+                            <div className="md:text-right">
+                              {isCallRow ? (
+                                <span className="text-h3 font-display text-[#2D2D2D]">
+                                  Auf Anfrage (telefonisch)
+                                </span>
+                              ) : hasVariants ? (
+                                <span className="text-h3 font-display text-[#2D2D2D] tabular-nums">
+                                  ab {formatPrice(minPrice)}
+                                </span>
+                              ) : (
+                                <span className="text-h3 font-display text-[#2D2D2D] tabular-nums">
+                                  {formatPrice(minPrice)}
+                                </span>
+                              )}
                             </div>
                             {isCallRow ? (
                               <a
@@ -298,7 +323,11 @@ export default function LeistungenClient() {
                               <button
                                 type="button"
                                 onClick={() => toggleService(entry.variants[0].id)}
-                                className="inline-flex w-full items-center justify-center rounded-full border border-[#2D2D2D]/55 px-4 py-[7px] text-[13px] font-medium text-[#2D2D2D] md:w-auto"
+                                className={`inline-flex w-full items-center justify-center rounded-full border px-4 py-[7px] text-[13px] font-medium md:w-auto transition ${
+                                  selectedServiceIds.includes(entry.variants[0].id)
+                                    ? "border-[#2D2D2D] bg-[#2D2D2D] text-white"
+                                    : "border-[#2D2D2D]/55 bg-transparent text-[#2D2D2D] hover:bg-[#2D2D2D]/5"
+                                }`}
                               >
                                 {selectedServiceIds.includes(entry.variants[0].id) ? "Ausgewählt" : "Auswählen"}
                               </button>
@@ -317,13 +346,19 @@ export default function LeistungenClient() {
                                       {formatDuration(variant.durationMinutes)}
                                     </p>
                                   </div>
-                                  <div className="text-[13px] font-medium text-[#2D2D2D] md:text-right">
-                                    {formatPrice(variant.priceEur)}
+                                  <div className="md:text-right">
+                                    <span className="text-h3 font-display text-[#2D2D2D] tabular-nums">
+                                      {formatPrice(variant.priceEur)}
+                                    </span>
                                   </div>
                                   <button
                                     type="button"
                                     onClick={() => toggleService(variant.id)}
-                                    className="inline-flex w-full items-center justify-center rounded-full border border-[#2D2D2D]/55 px-4 py-[7px] text-[13px] font-medium text-[#2D2D2D] md:w-auto"
+                                    className={`inline-flex w-full items-center justify-center rounded-full border px-4 py-[7px] text-[13px] font-medium md:w-auto transition ${
+                                      selectedServiceIds.includes(variant.id)
+                                        ? "border-[#2D2D2D] bg-[#2D2D2D] text-white"
+                                        : "border-[#2D2D2D]/55 bg-transparent text-[#2D2D2D] hover:bg-[#2D2D2D]/5"
+                                    }`}
                                   >
                                     {selectedServiceIds.includes(variant.id) ? "Ausgewählt" : "Auswählen"}
                                   </button>
@@ -349,13 +384,19 @@ export default function LeistungenClient() {
                           {formatDuration(item.durationMinutes)}
                         </p>
                       </div>
-                      <div className="text-[13px] font-medium text-[#2D2D2D] md:text-right">
-                        {formatPrice(item.priceEur)}
+                      <div className="md:text-right">
+                        <span className="text-h3 font-display text-[#2D2D2D] tabular-nums">
+                          {formatPrice(item.priceEur)}
+                        </span>
                       </div>
                       <button
                         type="button"
                         onClick={() => toggleService(item.id)}
-                        className="inline-flex w-full items-center justify-center rounded-full border border-[#2D2D2D]/55 px-4 py-[7px] text-[13px] font-medium text-[#2D2D2D] md:w-auto"
+                        className={`inline-flex w-full items-center justify-center rounded-full border px-4 py-[7px] text-[13px] font-medium md:w-auto transition ${
+                          selectedServiceIds.includes(item.id)
+                            ? "border-[#2D2D2D] bg-[#2D2D2D] text-white"
+                            : "border-[#2D2D2D]/55 bg-transparent text-[#2D2D2D] hover:bg-[#2D2D2D]/5"
+                        }`}
                       >
                         {selectedServiceIds.includes(item.id) ? "Ausgewählt" : "Auswählen"}
                       </button>
@@ -369,13 +410,29 @@ export default function LeistungenClient() {
       </section>
 
       {selectedServiceIds.length > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#2D2D2D]/35 bg-[#EDEBE6]/95 px-4 py-4 backdrop-blur">
-          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4">
-            <div>
+        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#2D2D2D]/35 bg-[#EDEBE6]/95 px-4 py-4 backdrop-blur !bg-[#BEA8FF]">
+          <div className="mx-auto flex max-w-7xl flex-wrap items-start justify-between gap-4 md:items-center">
+            <div className="min-w-0 flex-1">
               <p className="text-sm font-medium text-[#2D2D2D]">
                 {selectedServiceIds.length} Leistung(en) ausgewählt
               </p>
-              <p className="text-[12px] text-[#2D2D2D]/80">
+              <div className="mt-3 flex flex-wrap gap-2">
+                {selectedServices.map((s) => (
+                  <button
+                    key={s._id}
+                    type="button"
+                    onClick={() => removeService(s._id)}
+                    className="inline-flex max-w-full items-center gap-2 rounded-full border border-[#2D2D2D]/55 bg-[#BEA8FF]/60 px-3 py-1 text-left text-[12px] font-medium text-[#2D2D2D] transition hover:bg-[#BEA8FF]"
+                    title="Entfernen"
+                  >
+                    <span className="min-w-0 truncate">{selectedServiceTitle(s)}</span>
+                    <span aria-hidden className="shrink-0 text-[#2D2D2D]/70">
+                      ×
+                    </span>
+                  </button>
+                ))}
+              </div>
+              <p className="mt-3 text-[12px] text-[#2D2D2D]/80">
                 Gesamt: {totalDuration} Min. · {totalPrice}€
               </p>
             </div>
@@ -383,7 +440,7 @@ export default function LeistungenClient() {
               href={bookingHref}
               className="inline-flex w-full items-center justify-center rounded-full border border-[#2D2D2D] bg-[#2D2D2D] px-6 py-3 text-center text-sm font-medium text-white sm:w-auto"
             >
-              Weiter zur Mitarbeiterauswahl
+              Zur Terminauswahl
             </Link>
           </div>
         </div>

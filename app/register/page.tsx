@@ -1,12 +1,11 @@
 "use client";
 
 import { useState, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { register } from "@/lib/api";
 
 function RegisterForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/buchung";
 
@@ -63,7 +62,7 @@ function RegisterForm() {
               </p>
             )}
             <Link
-              href="/login"
+              href={`/login?redirect=${encodeURIComponent(redirect)}`}
               className="mt-8 inline-block rounded-full bg-[#4A5D4A] px-6 py-3 font-medium text-white transition hover:bg-[#3A4A3A]"
             >
               Zum Login

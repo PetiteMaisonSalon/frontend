@@ -2,16 +2,17 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type SectionTheme = {
-  id: "salon" | "team" | "aveda";
+  id: "salon" | "team" | "gallerie"| "aveda" ;
   bg: string;
 };
 
 const HOME_SECTIONS: SectionTheme[] = [
   { id: "salon", bg: "#F1EEE9" },
   { id: "team", bg: "#F1EEE9" },
+  { id: "gallerie", bg: "#F1EEE9" },
   { id: "aveda", bg: "#BEA8FF" },
 ];
 
@@ -23,12 +24,45 @@ function dispatch(name: string, detail?: unknown) {
 export default function HomeMain() {
   const heroRef = useRef<HTMLElement | null>(null);
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
+  const galerieRef = useRef<HTMLDivElement | null>(null);
+  const [galerieIndex, setGalerieIndex] = useState(0);
+  const mainLeftRef = useRef<HTMLDivElement | null>(null);
+  const [mainLeftIndex, setMainLeftIndex] = useState(0);
+  const galerieImages = useMemo(
+    () => [
+      "/gallerie/galerie_bild1.png",
+      "/gallerie/galerie_bild2.png",
+      "/gallerie/galerie_bild3.png",
+      "/gallerie/galerie_bild4.png",
+      "/gallerie/galerie_bild5.png",
+      "/gallerie/galerie_bild6.png",
+      "/gallerie/galerie_bild7.png",
+      "/gallerie/galerie_bild8.png",
+      "/gallerie/galerie_bild9.png",
+      "/gallerie/galerie_bild10.png",
+      "/gallerie/galerie_bild11.png",
+      "/gallerie/galerie_bild12.png",
+    ],
+    []
+  );
+  const galerieSlides = useMemo(() => Math.ceil(galerieImages.length / 3), [galerieImages.length]);
 
   const sectionById = useMemo(() => {
     const map = new Map<string, SectionTheme>();
     for (const s of HOME_SECTIONS) map.set(s.id, s);
     return map;
   }, []);
+
+  const mainLeftImages = useMemo(
+    () => [
+      "/main_leftbild1_1.png",
+      "/main_leftbild1_2.jpg",
+      "/main_leftbild1_3.jpg",
+      "/main_leftbild1_4.avif",
+    ],
+    []
+  );
+  const mainLeftSlides = useMemo(() => mainLeftImages.length, [mainLeftImages.length]);
 
   useEffect(() => {
     const heroEl = heroRef.current;
@@ -113,15 +147,109 @@ export default function HomeMain() {
         }}
         className="pm-home-section bg-[#F1EEE9] px-6 py-20 md:py-24"
       >
-        <div className="mx-auto grid max-w-7xl items-start gap-12 md:gap-16 lg:grid-cols-2 lg:gap-20">
-          <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#E8E4DF]">
-            <Image
-              src="/main_left_bild.png"
-              alt=""
-              fill
-              className="object-cover"
-              sizes="(min-width: 1024px) 50vw, 100vw"
-            />
+        <div className="mx-auto grid max-w-7xl items-start gap-2 md:gap-16 lg:grid-cols-2 lg:gap-2">
+          <div className="w-full">
+            <div className="relative aspect-[15/12] w-full overflow-hidden bg-[#E8E4DF]">
+              <div
+                ref={mainLeftRef}
+                className="no-scrollbar absolute inset-0 overflow-x-auto scroll-smooth snap-x snap-mandatory"
+                onScroll={() => {
+                  const el = mainLeftRef.current;
+                  if (!el) return;
+                  const idx = Math.round(el.scrollLeft / el.clientWidth);
+                  if (idx !== mainLeftIndex) setMainLeftIndex(idx);
+                }}
+              >
+                <div className="flex h-full w-full">
+                  {mainLeftImages.map((src) => (
+                    <div key={src} className="relative h-full w-full flex-none snap-start">
+                      <Image
+                        src={src}
+                        alt=""
+                        fill
+                        className="object-cover"
+                        sizes="(min-width: 1024px) 50vw, 100vw"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Indicators + Buttons (unter dem Bild) */}
+            <div className="mt-3 flex items-center justify-between">
+              <div className="flex items-center gap-2" aria-hidden>
+                {mainLeftImages.map((_, i) => (
+                  <div
+                    key={i}
+                    className={`h-px w-8 ${i === mainLeftIndex ? "bg-[#2D2D2D]/60" : "bg-[#2D2D2D]/20"}`}
+                  />
+                ))}
+              </div>
+
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  aria-label="Zurück"
+                  className="grid h-10 w-16 place-items-center text-[#2D2D2D] transition hover:opacity-70 disabled:opacity-30"
+                  onClick={() => {
+                    const el = mainLeftRef.current;
+                    if (!el) return;
+                    const next = Math.max(0, mainLeftIndex - 1);
+                    el.scrollTo({ left: next * el.clientWidth, behavior: "smooth" });
+                    setMainLeftIndex(next);
+                  }}
+                  disabled={mainLeftIndex === 0}
+                >
+                  <svg
+                    width="64"
+                    height="16"
+                    viewBox="0 0 64 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden
+                  >
+                    <path
+                      d="M12 2L2 8l10 6M4 8h58"
+                      stroke="currentColor"
+                      strokeWidth="1.25"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  aria-label="Weiter"
+                  className="grid h-10 w-16 place-items-center text-[#2D2D2D] transition hover:opacity-70 disabled:opacity-30"
+                  onClick={() => {
+                    const el = mainLeftRef.current;
+                    if (!el) return;
+                    const next = Math.min(mainLeftSlides - 1, mainLeftIndex + 1);
+                    el.scrollTo({ left: next * el.clientWidth, behavior: "smooth" });
+                    setMainLeftIndex(next);
+                  }}
+                  disabled={mainLeftIndex >= mainLeftSlides - 1}
+                >
+                  <svg
+                    width="64"
+                    height="16"
+                    viewBox="0 0 64 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden
+                  >
+                    <path
+                      d="M52 2l10 6-10 6M2 8h58"
+                      stroke="currentColor"
+                      strokeWidth="1.25"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
           <div className="max-w-xl">
             <p className="text-h2 text-[#2D2D2D]">
@@ -134,9 +262,9 @@ export default function HomeMain() {
       </section>
 
       {/* Zwischen-Section (Teil der Salon-Story, nicht der #team Anchor) */}
-      <section id="salon-info" className="bg-[#F1EEE9] px-6 pb-24">
-        <div className="mx-auto grid max-w-7xl items-end gap-12 md:gap-16 lg:grid-cols-2 lg:gap-20">
-          <div className="max-w-xl">
+      <section id="salon-info" className="bg-[#F1EEE9] px-6 py-24 md:py-28">
+        <div className="mx-auto grid max-w-7xl items-end gap-14 md:gap-16 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-28">
+          <div className="max-w-[520px]">
             <p className="text-copy leading-relaxed text-[#2D2D2D]/85">
               Uns ist wichtig, dass du dich bei uns gut aufgehoben fühlst. Wir nehmen
               uns Zeit, stellen Fragen und beraten individuell. Jeder Termin ist bewusst
@@ -150,12 +278,12 @@ export default function HomeMain() {
               Jetzt Termin buchen
             </Link>
           </div>
-          <div className="relative aspect-square w-full overflow-hidden bg-[#E8E4DF]">
+          <div className="relative aspect-square w-full max-w-[420px] justify-self-end overflow-hidden bg-[#F1EEE9]">
             <Image
-              src="/main_right_bild.png"
+              src="/main_rightbild.png"
               alt=""
               fill
-              className="object-cover"
+              className="object-contain"
               sizes="(min-width: 1024px) 50vw, 100vw"
             />
           </div>
@@ -164,23 +292,27 @@ export default function HomeMain() {
 
       {/* Unsere Leistungen (wie Screenshot: Bild oben + zentrierter Text) */}
       <section className="pm-home-section bg-[#F1EEE9]" aria-labelledby="home-services-heading">
-      
-        <div className="px-6 py-20 text-center md:py-24">
-          <p className="text-overline text-[#2D2D2D]/70">Unsere Leistungen</p>
-          <h2 id="home-services-heading" className="text-h2 mx-auto mt-6 max-w-3xl text-[#2D2D2D]">
+        <div className="px-6 py-32 text-center md:py-40">
+          <p className="text-copy-sm font-medium tracking-[0.04em] text-[#2D2D2D]/70">
+            Unsere Leistungen
+          </p>
+          <h2
+            id="home-services-heading"
+            className="text-h1 mx-auto mt-6 max-w-[760px] text-[#2D2D2D]"
+          >
             Wir bieten Haarschnitte, Farb- und Pflegebehandlungen für Frauen und Männer an —
             immer individuell abgestimmt auf dein Haar, deinen Typ und deinen Alltag.
           </h2>
-          <div className="text-copy mt-10 flex items-center justify-center gap-6">
+          <div className="mt-10 flex items-center justify-center gap-8 text-copy-sm">
             <Link
               href="/buchung"
-              className="font-medium text-[#2D2D2D] underline underline-offset-4 transition hover:opacity-80"
+              className="font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
             >
               Jetzt buchen
             </Link>
             <Link
               href="/leistungen"
-              className="font-medium text-[#2D2D2D] underline underline-offset-4 transition hover:opacity-80"
+              className="font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
             >
               Zur Leistungsübersicht
             </Link>
@@ -214,7 +346,7 @@ export default function HomeMain() {
               key={card.title}
               className="flex flex-col items-center rounded-[28px] bg-white px-8 py-10 text-center shadow-sm transition-colors duration-300 ease-out hover:bg-[#BEA8FF]"
             >
-              <div className="relative h-28 w-28">
+              <div className="relative h-58 w-28">
                 <Image
                   src={card.icon}
                   alt=""
@@ -237,10 +369,12 @@ export default function HomeMain() {
         </div>
       </section>
 
-      <section className="pm-home-section bg-[#F1EEE9] px-6 pb-24 pt-4 md:pb-28 md:pt-6">
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="text-overline text-[#1a1a1a]/85">Unser Team</p>
-          <p className="text-h2 mt-10 text-[#1a1a1a]">
+      <section className="pm-home-section bg-[#F1EEE9] px-6 py-32 md:py-40">
+        <div className="mx-auto max-w-[445px] text-center">
+          <p className="text-copy font-medium tracking-[0.04em] text-[#1a1a1a]/85">
+            Unser Team
+          </p>
+          <p className="text-h2 mt-6 text-[#1a1a1a]">
             Was uns verbindet, ist die Freude am Handwerk, ein ruhiger Arbeitsstil und der
             Wunsch, eine Atmosphäre zu schaffen, in der man sich wohl und ernst genommen
             fühlt.
@@ -262,113 +396,304 @@ export default function HomeMain() {
           Team
         </h2>
 
-        <div className="mx-auto max-w-7xl space-y-24 md:space-y-32">
-          {[
-            {
-              name: "Mehtap",
-              image: { src: "/mehtap.avif", alt: "Mehtap" },
-              text: [
-                "Ich bin Mehtap, Friseurmeisterin und Inhaberin von Petite Maison. Seit vielen Jahren arbeite ich in diesem Beruf und habe früh gemerkt, dass mir der persönliche Umgang mit Menschen genauso wichtig ist wie das Handwerk selbst.",
-                "Für mich bedeutet Friseurhandwerk, Verantwortung zu übernehmen — für Entscheidungen, für Wünsche und für das Vertrauen, das mir entgegengebracht wird. Diese Haltung prägt meine tägliche Arbeit und den Salon als Ganzes.",
-              ],
-              layout: { img: "lg:col-span-7", body: "lg:col-span-5" },
-              aspect: "aspect-[4/3]",
-              offset: "",
-            },
-            {
-              name: "Maria",
-              image: { src: "/maria.avif", alt: "Maria", grayscale: true },
-              text: [
-                "Maria ist unsere Schnittspezialistin! Sie ist seit 35 Jahren Friseurin mit Leidenschaft und hat 31 Jahre für den Starfriseur Jaques Le Coz gearbeitet. Maria isst gerne Tapas und tanzt leidenschaftlich Rumba. Seit Anfang 2022 gehört sie zum Team dazu.",
-              ],
-              layout: { img: "lg:col-span-4 lg:col-start-6", body: "lg:col-span-3 lg:col-start-10" },
-              aspect: "aspect-[4/3]",
-              offset: "lg:pt-24",
-            },
-            {
-              name: "Sevim",
-              image: { src: "/sevim.avif", alt: "Sevim" },
-              text: [
-                "Sevim ist unsere Farbspezialistin! Sie liebt es, mit Haaren zu experimentieren, einschließlich ihren Haaren. Zwölf Jahre lang hat sie beim Starfriseur Jaques Le Coz gearbeitet und ist seit Anfang 2022 bei Petite Maison.",
-              ],
-              layout: { img: "lg:col-span-4", body: "lg:col-span-4 lg:col-start-6" },
-              aspect: "aspect-[5/4]",
-              offset: "",
-            },
-            {
-              name: "Masoud",
-              image: { src: "/masoud.avif", alt: "Masoud", grayscale: true },
-              text: [
-                "Masoud ist spezialisiert auf präzise Schnitte und Farbtechniken. Geboren im Iran, ausgebildet auf zwei Kontinenten, ist er seit über 20 Jahren Friseur und seit Ende 2025 bei Petite Maison. Als zertifizierter Aveda-Spezialist schwört er auf natürliche, nachhaltige Produkte.",
-              ],
-              layout: { img: "lg:col-span-4 lg:col-start-6", body: "lg:col-span-3 lg:col-start-10" },
-              aspect: "aspect-[5/4]",
-              offset: "lg:pt-8",
-            },
-            {
-              name: "Sarah",
-              image: { src: "/sarah.avif", alt: "Sarah" },
-              text: [
-                "Sarah ist spezialisiert auf Haarschnitte, Styling und natürliche Färbungen. Seit über 15 Jahren arbeitet sie mit Aveda-Produkten, 2022 hat sie ihren Meister gemacht — unter anderem lebte und arbeitete sie in Wien. Seit November 2024 ist sie bei Petite Maison. Ihr Hund Cooper gehört im Salon quasi zum Team.",
-              ],
-              layout: { img: "lg:col-span-4", body: "lg:col-span-4 lg:col-start-5" },
-              aspect: "aspect-[5/4]",
-              offset: "lg:pt-10",
-            },
-            {
-              name: "Kanj",
-              image: { src: "/kanj.avif", alt: "Kanj", grayscale: true },
-              text: [
-                "Kanj ist spezialisiert auf Strähnen, Balayage und Schnitte. Er hat 2016 in Libanon seine Ausbildung gemacht und ist seit August 2025 fester Bestandteil des Teams. Nebenbei spielt er libanesische Flöte, tritt mit seiner eigenen Band bei Festivals und Hochzeiten auf und war bereits im libanesischen Fernsehen zu sehen.",
-              ],
-              layout: { img: "lg:col-span-4 lg:col-start-6", body: "lg:col-span-3 lg:col-start-10" },
-              aspect: "aspect-[5/4]",
-              offset: "lg:pt-6",
-            },
-            {
-              name: "Cooper",
-              image: { src: "/cooper.avif", alt: "Cooper" },
-              text: [
-                "Cooper ist spezialisiert auf gute Laune und ist als Sarahs treuer Begleiter fester Bestandteil des Salons.",
-              ],
-              layout: { img: "lg:col-span-6", body: "lg:col-span-4 lg:col-start-7" },
-              aspect: "aspect-[4/3]",
-              offset: "lg:pt-10",
-            },
-          ].map((p) => (
-            <article key={p.name} className={`grid items-start gap-10 lg:grid-cols-12 lg:gap-20 ${p.offset}`}>
-              <div className={p.layout.img}>
-                <div className={`relative w-full overflow-hidden bg-white/70 ${p.aspect}`}>
-                  <Image
-                    src={p.image.src}
-                    alt={p.image.alt}
-                    fill
-                    className={`object-cover ${p.image.grayscale ? "grayscale" : ""}`}
-                    sizes="(min-width: 1024px) 60vw, 100vw"
-                  />
-                </div>
+        <div className="mx-auto max-w-7xl space-y-24 md:space-y-32 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-x-28 lg:gap-y-28">
+          {/* Mehtap: Bild links, Text rechts (gleiche Zeile, kleinerer Abstand) */}
+          <div className="lg:col-span-3 lg:row-start-1 lg:grid lg:grid-cols-[minmax(0,820px)_72px_minmax(0,520px)] lg:items-start">
+            <article>
+              <div className="relative aspect-[16/15] w-full overflow-hidden bg-transparent">
+                <Image src="/mehtap.png" alt="Mehtap" fill className="object-cover" sizes="820px" />
               </div>
-              <div className={p.layout.body}>
-                <h3 className="text-h3 text-[#2D2D2D]">
-                  {p.name}
-                </h3>
-                {p.text.map((t) => (
-                  <p
-                    key={t.slice(0, 18)}
-                    className="text-copy mt-5 leading-relaxed text-[#2D2D2D]/85"
-                  >
-                    {t}
-                  </p>
-                ))}
+            </article>
+            <div aria-hidden className="hidden lg:block" />
+            <article className="lg:pt-2">
+              <h3 className="text-h2 text-[#2D2D2D]">Mehtap</h3>
+              <p className="text-copy-sm mt-4 max-w-[340px] font-medium leading-relaxed text-[#2D2D2D]/85">
+                Ich bin Mehtap, Friseurmeisterin und Inhaberin von Petite Maison. Seit vielen Jahren arbeite ich
+                in diesem Beruf und habe früh gemerkt, dass mir der persönliche Umgang mit Menschen genauso
+                wichtig ist wie das Handwerk selbst.
+              </p>
+              <p className="text-copy-sm mt-5 max-w-[340px] font-medium leading-relaxed text-[#2D2D2D]/85">
+                Für mich bedeutet Friseurhandwerk, Verantwortung zu übernehmen — für Entscheidungen, für Wünsche
+                und für das Vertrauen, das mir entgegengebracht wird. Diese Haltung prägt meine tägliche Arbeit
+                und den Salon als Ganzes.
+              </p>
+              <Link
+                href="/buchung"
+                className="text-copy-sm mt-6 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
+              >
+                Jetzt buchen
+              </Link>
+            </article>
+          </div>
+
+          
+          <article className="lg:col-start-3 lg:row-start-2 lg:pt-24">
+            <div className="grid items-start gap-8 lg:grid-cols-[280px_240px] lg:gap-10">
+              <div className="relative aspect-square w-full overflow-hidden bg-transparent lg:w-[280px]">
+                <Image src="/maria.png" alt="Maria" fill className="object-cover grayscale" sizes="280px" />
+              </div>
+              <div>
+                <h3 className="text-h2 text-[#2D2D2D]">Maria</h3>
+                <p className="text-copy-sm mt-4 max-w-[240px] leading-relaxed text-[#2D2D2D]/85">
+                  Maria ist unsere Schnittspezialistin! Sie ist seit 35 Jahren Friseurin mit Leidenschaft und hat
+                  31 Jahre für den Starfriseur Jaques Le Coz gearbeitet. Maria isst gerne Tapas und tanzt
+                  leidenschaftlich Rumba. Seit Anfang 2022 gehört sie zum Team dazu.
+                </p>
                 <Link
                   href="/buchung"
-                  className="text-copy mt-6 inline-block font-medium text-[#2D2D2D] underline underline-offset-4 transition hover:opacity-80"
+                  className="text-copy-sm mt-5 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
                 >
                   Jetzt buchen
                 </Link>
               </div>
-            </article>
-          ))}
+            </div>
+          </article>
+
+          {/* Sevim (links) */}
+          <article className="lg:col-start-1 lg:row-start-3 lg:pt-24">
+            <div className="grid items-start gap-8 lg:grid-cols-[280px_240px] lg:gap-10">
+              <div className="relative aspect-square w-full overflow-hidden bg-transparent lg:w-[280px]">
+                <Image src="/sevim.png" alt="Sevim" fill className="object-cover" sizes="280px" />
+              </div>
+              <div>
+                <h3 className="text-h2 text-[#2D2D2D]">Sevim</h3>
+                <p className="text-copy-sm mt-4 max-w-[240px] leading-relaxed text-[#2D2D2D]/85">
+                  Sevim ist unsere Farbspezialistin! Sie liebt es, mit Haaren zu experimentieren, einschließlich
+                  ihren Haaren. Zwölf Jahre lang hat sie beim Starfriseur Jaques Le Coz gearbeitet und ist seit
+                  Anfang 2022 bei Petite Maison.
+                </p>
+                <Link
+                  href="/buchung"
+                  className="text-copy-sm mt-5 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
+                >
+                  Jetzt buchen
+                </Link>
+              </div>
+            </div>
+          </article>
+
+          {/* Masoud (rechts) */}
+          <article className="lg:col-start-3 lg:row-start-4 lg:pt-20">
+            <div className="grid items-start gap-8 lg:grid-cols-[280px_240px] lg:gap-10">
+              <div className="relative aspect-square w-full overflow-hidden bg-transparent lg:w-[280px]">
+                <Image src="/masoud.png" alt="Masoud" fill className="object-cover grayscale" sizes="280px" />
+              </div>
+              <div>
+                <h3 className="text-h2 text-[#2D2D2D]">Masoud</h3>
+                <p className="text-copy-sm mt-4 max-w-[240px] leading-relaxed text-[#2D2D2D]/85">
+                  Masoud ist spezialisiert auf präzise Schnitte und Farbtechniken. Geboren im Iran, ausgebildet
+                  auf zwei Kontinenten, ist er seit über 20 Jahren Friseur und seit Ende 2025 bei Petite Maison.
+                  Als zertifizierter Aveda-Spezialist schwört er auf natürliche, nachhaltige Produkte.
+                </p>
+                <Link
+                  href="/buchung"
+                  className="text-copy-sm mt-5 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
+                >
+                  Jetzt buchen
+                </Link>
+              </div>
+            </div>
+          </article>
+
+          {/* Sarah (links) */}
+          <article className="lg:col-start-1 lg:row-start-5 lg:pt-24">
+            <div className="grid items-start gap-8 lg:grid-cols-[280px_240px] lg:gap-10">
+              <div className="relative aspect-square w-full overflow-hidden bg-transparent lg:w-[280px]">
+                <Image src="/sarah.png" alt="Sarah" fill className="object-cover" sizes="280px" />
+              </div>
+              <div>
+                <h3 className="text-h2 text-[#2D2D2D]">Sarah</h3>
+                <p className="text-copy-sm mt-4 max-w-[240px] leading-relaxed text-[#2D2D2D]/85">
+                  Sarah ist spezialisiert auf Haarschnitte, Styling und natürliche Färbungen. Seit über 15 Jahren
+                  arbeitet sie mit Aveda-Produkten, 2022 hat sie ihren Meister gemacht — unter anderem lebte und
+                  arbeitete sie in Wien. Seit November 2024 ist sie bei Petite Maison. Ihr Hund Cooper gehört im
+                  Salon quasi zum Team.
+                </p>
+                <Link
+                  href="/buchung"
+                  className="text-copy-sm mt-5 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
+                >
+                  Jetzt buchen
+                </Link>
+              </div>
+            </div>
+          </article>
+
+          {/* Kanj (rechts) */}
+          <article className="lg:col-start-3 lg:row-start-6 lg:pt-20">
+            <div className="grid items-start gap-8 lg:grid-cols-[280px_240px] lg:gap-10">
+              <div className="relative aspect-square w-full overflow-hidden bg-transparent lg:w-[280px]">
+                <Image src="/kanj.png" alt="Kanj" fill className="object-cover grayscale" sizes="280px" />
+              </div>
+              <div>
+                <h3 className="text-h2 text-[#2D2D2D]">Kanj</h3>
+                <p className="text-copy-sm mt-4 max-w-[240px] leading-relaxed text-[#2D2D2D]/85">
+                  Kanj ist spezialisiert auf Strähnen, Balayage und Schnitte. Er hat 2016 im Libanon seine
+                  Ausbildung gemacht und ist seit August 2025 fester Bestandteil des Teams. Nebenbei spielt er
+                  libanesische Flöte, tritt mit seiner eigenen Band bei Festivals und Hochzeiten auf und war
+                  bereits im libanesischen Fernsehen zu sehen.
+                </p>
+                <Link
+                  href="/buchung"
+                  className="text-copy-sm mt-5 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
+                >
+                  Jetzt buchen
+                </Link>
+              </div>
+            </div>
+          </article>
+
+          {/* Cooper (links) */}
+          <article className="lg:col-start-1 lg:row-start-7 lg:pt-24">
+            <div className="grid items-start gap-8 lg:grid-cols-[280px_240px] lg:gap-10">
+              <div className="relative aspect-square w-full overflow-hidden bg-transparent lg:w-[280px]">
+                <Image src="/cooper.png" alt="Cooper" fill className="object-cover" sizes="280px" />
+              </div>
+              <div>
+                <h3 className="text-h2 text-[#2D2D2D]">Cooper</h3>
+                <p className="text-copy-sm mt-4 max-w-[240px] leading-relaxed text-[#2D2D2D]/85">
+                  Cooper ist spezialisiert auf gute Laune und ist als Sarahs treuer Begleiter fester Bestandteil
+                  des Salons.
+                </p>
+                <Link
+                  href="/buchung"
+                  className="text-copy-sm mt-5 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
+                >
+                  Jetzt buchen
+                </Link>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      {/* GALLERIE (Carousel wie Screenshot) */}
+      <section
+        id="gallerie"
+        data-section-id="gallerie"
+        ref={(el) => {
+          sectionRefs.current.gallerie = el;
+        }}
+        className="pm-home-section bg-[#F1EEE9] pb-0 pt-6"
+        aria-label="Galerie"
+      >
+        <div className="w-full">
+          <div className="flex items-center justify-end gap-3 px-6 pb-4 md:pb-6">
+            <button
+              type="button"
+              aria-label="Zurück"
+              className="grid h-10 w-16 place-items-center text-[#2D2D2D] transition hover:opacity-70 disabled:opacity-30"
+              onClick={() => {
+                const el = galerieRef.current;
+                if (!el) return;
+                const next = Math.max(0, galerieIndex - 1);
+                el.scrollTo({ left: next * el.clientWidth, behavior: "smooth" });
+                setGalerieIndex(next);
+              }}
+              disabled={galerieIndex === 0}
+            >
+              <svg
+                width="64"
+                height="16"
+                viewBox="0 0 64 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden
+              >
+                <path
+                  d="M12 2L2 8l10 6M4 8h58"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+            <button
+              type="button"
+              aria-label="Weiter"
+              className="grid h-10 w-16 place-items-center text-[#2D2D2D] transition hover:opacity-70 disabled:opacity-30"
+              onClick={() => {
+                const el = galerieRef.current;
+                if (!el) return;
+                const next = Math.min(galerieSlides - 1, galerieIndex + 1);
+                el.scrollTo({ left: next * el.clientWidth, behavior: "smooth" });
+                setGalerieIndex(next);
+              }}
+              disabled={galerieIndex >= galerieSlides - 1}
+            >
+              <svg
+                width="64"
+                height="16"
+                viewBox="0 0 64 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden
+              >
+                <path
+                  d="M52 2l10 6-10 6M2 8h58"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+
+          <div
+            ref={galerieRef}
+            className="no-scrollbar overflow-x-auto scroll-smooth snap-x snap-mandatory"
+            onScroll={() => {
+              const el = galerieRef.current;
+              if (!el) return;
+              const idx = Math.round(el.scrollLeft / el.clientWidth);
+              if (idx !== galerieIndex) setGalerieIndex(idx);
+            }}
+          >
+            <div className="flex w-full">
+              {galerieImages
+                .reduce<string[][]>((acc, src, i) => {
+                  const groupIndex = Math.floor(i / 3);
+                  if (!acc[groupIndex]) acc[groupIndex] = [];
+                  acc[groupIndex].push(src);
+                  return acc;
+                }, [])
+                .map((group, groupIdx) => (
+                  <div
+                    key={group.join("|")}
+                    className="w-full flex-none snap-start"
+                    aria-label={`Galerie Seite ${groupIdx + 1}`}
+                  >
+                    <div className="grid gap-4 px-6 md:grid-cols-2 md:gap-6 md:px-6 lg:grid-cols-3 lg:gap-0 lg:px-0">
+                      {group.map((src) => (
+                        <div
+                          key={src}
+                          className="relative h-72 w-full overflow-hidden bg-[#F1EEE9] sm:h-80 md:h-[420px] lg:h-[520px]"
+                        >
+                          <Image
+                            src={src}
+                            alt=""
+                            fill
+                            className="object-cover"
+                            sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                          />
+                        </div>
+                      ))}
+                      {/* Fülle auf 3 Slots auf Desktop auf, damit Breiten immer gleich bleiben */}
+                      {group.length < 3 &&
+                        Array.from({ length: 3 - group.length }).map((_, idx) => (
+                          <div
+                            key={`empty-${groupIdx}-${idx}`}
+                            className="hidden lg:block h-[520px] w-full bg-[#F1EEE9]"
+                            aria-hidden
+                          />
+                        ))}
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -443,7 +768,7 @@ export default function HomeMain() {
 
       {/* Bildstreifen + 2er-Grid (wie Screenshot, vor Footer) */}
       <section className="bg-[#F1EEE9]" aria-label="Impressionen">
-        <div className="relative h-64 w-full overflow-hidden sm:h-72 md:h-96 lg:h-[520px]">
+        <div className="relative h-92 w-full overflow-hidden sm:h-80 md:h-[460px] lg:h-[820px]">
           <Image
             src="/salon.png"
             alt=""
@@ -452,8 +777,8 @@ export default function HomeMain() {
             sizes="100vw"
           />
         </div>
-        <div className="bg-[#F1EEE9] px-3 py-3 sm:px-4 sm:py-4 lg:px-0 lg:py-0">
-          <div className="mx-auto grid max-w-7xl grid-cols-2 gap-3 sm:gap-4 lg:gap-px lg:bg-[#F1EEE9]">
+        <div className="bg-[#F1EEE9] p-0">
+          <div className="grid w-full grid-cols-2 gap-0">
             <div className="relative aspect-square w-full overflow-hidden bg-[#F1EEE9]">
               <Image
                 src="/aveda_bild1.png"

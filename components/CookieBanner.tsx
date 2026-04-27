@@ -44,7 +44,7 @@ export default function CookieBanner() {
 
   return (
     <div
-      className="fixed bottom-5 right-5 z-[60] max-w-[min(100vw-2.5rem,26rem)] rounded-[18px] bg-[#BEA8FF] px-6 py-5 shadow-lg"
+      className="fixed bottom-5 right-5 z-[60] max-w-[min(100vw-2.5rem,26rem)] rounded-[18px] bg-[#BEA8FF] px-6 py-2 shadow-lg"
       role="dialog"
       aria-label="Cookie Einstellungen"
     >

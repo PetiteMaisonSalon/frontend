@@ -14,6 +14,7 @@ const mainNavItems = [
 const homeSubNavItems = [
   { id: "salon" as const, href: "#salon", label: "Salon" },
   { id: "team" as const, href: "#team", label: "Team" },
+  { id: "gallerie" as const, href: "#gallerie", label: "Gallerie" },
   { id: "aveda" as const, href: "#aveda", label: "Aveda" },
 ];
 const OPEN_ADMIN_CREATE_EVENT = "admin:create-appointment";
@@ -25,7 +26,7 @@ export default function Header() {
   const isCmsArea = pathname?.startsWith("/admin");
   const isHome = pathname === "/" && !isCmsArea;
   const containerWidthClass = isCmsArea ? "max-w-[1450px]" : "max-w-7xl";
-  const containerPaddingClass = isCmsArea ? "px-3 md:px-2" : "px-2";
+  const containerPaddingClass = isCmsArea ? "px-3 md:px-3" : "px-3";
   const openAdminCreateModal = () => {
     if (typeof window === "undefined") return;
     window.dispatchEvent(new CustomEvent(OPEN_ADMIN_CREATE_EVENT));
@@ -229,7 +230,7 @@ export default function Header() {
   return (
     <header className={`${headerShell} ${headerChromeClass}`} style={headerStyle}>
       <div
-        className={`mx-auto flex ${containerWidthClass} w-full items-center justify-between gap-4 ${containerPaddingClass} py-5`}
+        className={`mx-auto flex ${containerWidthClass} w-full items-center justify-between gap-4 ${containerPaddingClass} py-2`}
       >
         <div className="flex min-w-0 flex-1 items-center gap-6 lg:gap-10">
           <Link href="/" className={`shrink-0 whitespace-nowrap ${brandClass}`}>

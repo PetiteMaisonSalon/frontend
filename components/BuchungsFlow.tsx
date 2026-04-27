@@ -66,14 +66,25 @@ function variantLabel(name: string) {
   return match ? match[1].trim() : "Standard";
 }
 
+function toLocalDateInput(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 export default function BuchungsFlow() {
   const searchParams = useSearchParams();
   const { user, loading: authLoading } = useAuth();
   const [rescheduleToken, setRescheduleToken] = useState(searchParams.get("rescheduleToken") || "");
   const preselectedServiceIdsParam = searchParams.get("serviceIds") || "";
   const preselectedServiceName = searchParams.get("service") || "";
+  const hasBookingQuery =
+    searchParams.has("booking") ||
+    searchParams.has("serviceIds") ||
+    searchParams.has("rescheduleToken");
   const [preselectApplied, setPreselectApplied] = useState(false);
-  const [step, setStep] = useState<Step>(1);
+  const [step, setStep] = useState<Step>(hasBookingQuery ? 2 : 1);
   const [services, setServices] = useState<Service[]>([]);
   const [staff, setStaff] = useState<Staff[]>([]);
   const [category, setCategory] = useState<string>("");
@@ -99,7 +110,7 @@ export default function BuchungsFlow() {
     email: "",
     phone: "",
     note: "",
-    privacy: false,
+    privacy: true,
   });
 
   useEffect(() => {
@@ -120,10 +131,20 @@ export default function BuchungsFlow() {
       try {
         const s = JSON.parse(saved);
         if ((s?.services?.length || s?.service) && s?.slot) {
-          setSelectedServices(s.services || [s.service]);
+          const restoredServices = s.services || [s.service];
+          setSelectedServices(restoredServices);
+          if (restoredServices?.[0]?.category) {
+            setCategory(restoredServices[0].category);
+          }
           setSelectedStaff(s.staff ?? null);
           setSelectedSlot(s.slot);
+          if (s.selectedDate) {
+            setSelectedDate(s.selectedDate);
+          } else if (s.slot?.start) {
+            setSelectedDate(toLocalDateInput(new Date(s.slot.start)));
+          }
           setRescheduleToken(s.rescheduleToken || "");
+          setPreselectApplied(true);
           setStep(3);
         }
         sessionStorage.removeItem(BOOKING_STATE_KEY);
@@ -156,6 +177,21 @@ export default function BuchungsFlow() {
     init();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step, selectedServices.length]);
+
+  useEffect(() => {
+    // Falls /buchung?booking=1 ohne vorausgewählte Leistung geöffnet wird,
+    // zeigen wir wieder Schritt 1 statt leerem Step-2-Container.
+    if (step !== 2 || selectedServices.length > 0) return;
+    if (preselectedServiceIdsParam || preselectedServiceName) return;
+    if (!hasBookingQuery) return;
+    setStep(1);
+  }, [
+    hasBookingQuery,
+    preselectedServiceIdsParam,
+    preselectedServiceName,
+    selectedServices.length,
+    step,
+  ]);
 
   useEffect(() => {
     if (!selectedDate) return;
@@ -206,7 +242,6 @@ export default function BuchungsFlow() {
     setSlots([]);
     setPreselectApplied(true);
     goToStep(2);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [preselectedServiceIdsParam, preselectedServiceName, preselectApplied, services]);
 
   const filteredServices = category
@@ -295,19 +330,35 @@ export default function BuchungsFlow() {
   const primarySelectedService = selectedServices[0] ?? null;
   const totalDuration = selectedServices.reduce((sum, s) => sum + s.durationMinutes, 0);
   const totalPrice = selectedServices.reduce((sum, s) => sum + s.priceEur, 0);
+  const bookingRedirect = (() => {
+    const params = new URLSearchParams();
+    params.set("booking", "1");
+    if (selectedServiceIds.length > 0) params.set("serviceIds", selectedServiceIds.join(","));
+    if (rescheduleToken) params.set("rescheduleToken", rescheduleToken);
+    return `/buchung?${params.toString()}`;
+  })();
+  const persistBookingState = () => {
+    if (typeof window === "undefined") return;
+    sessionStorage.setItem(
+      BOOKING_STATE_KEY,
+      JSON.stringify({
+        services: selectedServices,
+        staff: selectedStaff,
+        slot: selectedSlot,
+        selectedDate,
+        rescheduleToken,
+      })
+    );
+  };
 
   const availableStaff = selectedServices.length > 0
     ? staff.filter((s) => canStaffDoAllServices(s, selectedServices))
     : [];
 
-  const isFallbackData = selectedServices.some((s) => s._id?.toString().startsWith("fallback-"));
-
-  const toLocalDateInput = (date: Date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
+  const isFallbackData = selectedServices.some((s) => {
+    const id = String(s._id || "");
+    return id.startsWith("fallback-") || id.startsWith("offline-");
+  });
 
   const todayDate = toLocalDateInput(new Date());
   const weekdayLabels = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
@@ -366,7 +417,7 @@ export default function BuchungsFlow() {
         );
         setSlots(data);
       }
-    } catch (e) {
+    } catch {
       setError("Verfügbarkeit konnte nicht geladen werden.");
       setSlots([]);
     } finally {
@@ -447,7 +498,7 @@ export default function BuchungsFlow() {
   };
 
   const handleSubmit = async () => {
-    if (selectedServices.length === 0 || !selectedStaff || !selectedSlot || !form.privacy) return;
+    if (selectedServices.length === 0 || !selectedStaff || !selectedSlot) return;
     if (!form.firstName.trim() || !form.lastName.trim() || !form.email.trim()) {
       setError("Bitte fülle alle Pflichtfelder aus.");
       return;
@@ -527,6 +578,21 @@ export default function BuchungsFlow() {
       setLoading(false);
     }
   };
+
+  const selectedSlotStart = selectedSlot ? new Date(selectedSlot.start) : null;
+  const selectedDateLabelLong = selectedSlotStart
+    ? selectedSlotStart.toLocaleDateString("de-DE", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      })
+    : "Noch offen";
+  const selectedTimeLabel = selectedSlotStart
+    ? selectedSlotStart.toLocaleTimeString("de-DE", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : "Noch offen";
 
   if (step === 5) {
     const isBooked = successType === "booked";
@@ -694,33 +760,24 @@ export default function BuchungsFlow() {
 
   return (
     <>
-      <section className="border-b border-[#E8E4DF] py-12 md:py-16">
-        <div className="mx-auto max-w-2xl px-6 text-center">
-          <h1 className="text-h1 text-[#2D2D2D]">
-            Termin buchen
-          </h1>
-          <p className="mt-4 text-lg text-[#2D2D2D]/85">
-            Wähle deine Leistung, einen passenden Termin und bestätige deine Buchung.
-          </p>
-        </div>
-      </section>
+      {step === 1 && (
+        <section className="border-b border-[#E8E4DF] py-12 md:py-16">
+          <div className="mx-auto max-w-2xl px-6 text-center">
+            <h1 className="text-h1 text-[#2D2D2D]">
+              Termin buchen
+            </h1>
+            <p className="mt-4 text-lg text-[#2D2D2D]/85">
+              Wähle deine Leistung, einen passenden Termin und bestätige deine Buchung.
+            </p>
+          </div>
+        </section>
+      )}
       <section
         className={`mx-auto px-4 py-10 sm:px-6 sm:py-12 ${
           (step === 1 && category) || step === 2 || step === 3 ? "max-w-6xl" : "max-w-2xl"
         }`}
       >
-      {/* Fortschritt */}
-      <div className="mb-12 flex gap-2">
-        {[1, 2, 3, 4].map((s) => (
-          <div
-            key={s}
-            className={`h-1 flex-1 rounded-full ${
-              step >= s ? "bg-[#4A5D4A]" : "bg-[#E8E4DF]"
-            }`}
-          />
-        ))}
-      </div>
-
+     
       {error && (
         <div className="mb-6 rounded-lg bg-[#D4A5A5]/30 px-4 py-3 text-[#5C4033]">
           {error}
@@ -887,75 +944,100 @@ export default function BuchungsFlow() {
 
       {/* Step 2: Mitarbeiter & Termin */}
       {step === 2 && primarySelectedService && (
-        <div className="space-y-8 pb-24">
-          <button
-            onClick={() => goToStep(1)}
-            className="text-sm text-[#2D2D2D]/75 hover:text-[#2D2D2D]"
-          >
-            ← Zurück
-          </button>
-          <div className="grid gap-8 lg:grid-cols-[1fr_1.2fr] lg:items-start">
+        <div className="overflow-hidden rounded-[26px] border border-[#D5D0C8] bg-[#F1EEE9] shadow-[0_20px_60px_rgba(0,0,0,0.12)]">
+          <div className="flex items-start justify-between gap-4 px-5 pb-4 pt-5 md:px-7 md:pb-6 md:pt-6">
             <div>
-              <h2 className="text-h2 text-[#2D2D2D]">
-                Mitarbeiter wählen
-              </h2>
-              <div className="mt-5 flex flex-wrap gap-3">
-                <button
-                  onClick={() => handleStaffSelect(null)}
-                  className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-base transition ${
-                    !selectedStaff
-                      ? "border-[#4A5D4A] bg-[#4A5D4A] text-white"
-                      : "border-[#D8D8D8] bg-[#F7F7F7] text-[#2D2D2D] hover:border-[#4A5D4A]/40"
-                  }`}
-                >
-                  <span
-                    aria-hidden
-                    className={`inline-flex h-5 w-5 items-center justify-center rounded-full text-[11px] ${
-                      !selectedStaff ? "bg-white/30 text-white" : "bg-[#E6E6E6] text-[#8F8F8F]"
-                    }`}
-                  >
-                    ✓
-                  </span>
-                  Freier Mitarbeiter
-                </button>
-                {availableStaff.map((s) => (
-                  <button
-                    key={s._id}
-                    onClick={() => handleStaffSelect(s)}
-                    className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-base transition ${
-                      selectedStaff?._id === s._id
-                        ? "border-[#4A5D4A] bg-[#4A5D4A] text-white"
-                        : "border-[#D8D8D8] bg-[#F7F7F7] text-[#2D2D2D] hover:border-[#4A5D4A]/40"
-                    }`}
-                  >
-                    <span
-                      aria-hidden
-                      className={`inline-flex h-5 w-5 items-center justify-center rounded-full text-[11px] ${
-                        selectedStaff?._id === s._id
-                          ? "bg-white/30 text-white"
-                          : "bg-[#E6E6E6] text-[#8F8F8F]"
-                      }`}
+              <h2 className="text-h1 text-[#2D2D2D]">Termin & Stylist</h2>
+              <p className="mt-1 text-sm text-[#2D2D2D]/85">
+                Wähle deine Stylistin und einen freien Termin.
+              </p>
+            </div>
+            <Link
+              href="/buchung"
+              prefetch={false}
+              className="rounded-md p-1 text-[#2D2D2D]/70 transition hover:bg-black/5 hover:text-[#2D2D2D]"
+              aria-label="Flow schließen"
+            >
+              <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M6 6L18 18M18 6L6 18" strokeLinecap="round" />
+              </svg>
+            </Link>
+          </div>
+
+          <div className="grid gap-8 px-5 pb-6 md:px-7 lg:grid-cols-[1fr_1.08fr]">
+            <div className="space-y-8">
+              <div>
+                <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#2D2D2D]/50">
+                  {selectedServices.length} Leistungen ausgewählt
+                </p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {selectedServices.map((service) => (
+                    <button
+                      key={service._id}
+                      type="button"
+                      onClick={() => handleServiceToggle(service)}
+                      className="inline-flex items-center gap-2 rounded-full border border-[#2D2D2D]/45 bg-[#F5F2ED] px-3 py-1.5 text-sm text-[#2D2D2D]"
                     >
-                      ✓
-                    </span>
-                    {s.firstName}
-                  </button>
-                ))}
+                      <span>
+                        {baseServiceTitle(service.name)} · {service.priceEur}€
+                      </span>
+                      <span aria-hidden className="text-[#2D2D2D]/70">×</span>
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              <div className="mt-6 rounded-xl border border-[#4A5D4A]/35 bg-[#4A5D4A]/5 p-4">
-                <p className="text-sm text-[#2D2D2D]/70">Ausgewählte Leistungen</p>
-                <p className="mt-1 text-[#2D2D2D]">{selectedServices.map((s) => s.name).join(" + ")}</p>
-                <p className="mt-1 text-sm text-[#2D2D2D]/75">{totalDuration} min · {totalPrice} €</p>
+              <div>
+                <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#2D2D2D]/50">
+                  Mitarbeiter auswählen
+                </p>
+                <div className="mt-4 flex flex-wrap gap-4">
+                  <button
+                    type="button"
+                    onClick={() => handleStaffSelect(null)}
+                    className="flex w-[72px] flex-col items-center gap-2 text-center"
+                  >
+                    <span
+                      className={`grid h-11 w-11 place-items-center rounded-full border-2 ${
+                        !selectedStaff
+                          ? "border-[#1F1A17] bg-[#EFECE7]"
+                          : "border-[#2D2D2D]/45 bg-transparent"
+                      }`}
+                    />
+                    <span className="text-xs text-[#2D2D2D]">Beliebig</span>
+                  </button>
+                  {availableStaff.map((s) => {
+                    const initials = `${s.firstName?.[0] || ""}${s.lastName?.[0] || ""}`.toUpperCase();
+                    return (
+                      <button
+                        key={s._id}
+                        type="button"
+                        onClick={() => handleStaffSelect(s)}
+                        className="flex w-[72px] flex-col items-center gap-2 text-center"
+                      >
+                        <span
+                          className={`grid h-11 w-11 place-items-center rounded-full border text-xs font-medium ${
+                            selectedStaff?._id === s._id
+                              ? "border-[#1F1A17] bg-[#1F1A17] text-white"
+                              : "border-[#2D2D2D]/35 bg-[#EBC8B7] text-[#2D2D2D]"
+                          }`}
+                        >
+                          {initials || "PM"}
+                        </span>
+                        <span className="text-xs text-[#2D2D2D]">{s.firstName}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
 
-            <div className="rounded-2xl border border-[#E9E9E9] bg-white p-4 shadow-sm">
-              <h2 className="text-h2 text-[#2D2D2D]">
-                Datum und Uhrzeit auswählen
-              </h2>
+            <div>
+              <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#2D2D2D]/50">
+                Datum & Uhrzeit auswählen
+              </p>
 
-              <div className="mt-4 rounded-xl border border-[#F0F0F0] bg-[#FCFCFC] p-4">
+              <div className="mt-4">
                 <div className="mb-3 flex items-center justify-between">
                   <button
                     type="button"
@@ -964,12 +1046,12 @@ export default function BuchungsFlow() {
                         (prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1)
                       )
                     }
-                    className="rounded-md px-2 py-1 text-[#9A9A9A] hover:bg-[#F2F2F2]"
+                    className="rounded-md px-2 py-1 text-[#7F7A72] hover:bg-black/5"
                     aria-label="Vorheriger Monat"
                   >
                     ‹
                   </button>
-                  <p className="text-sm font-medium capitalize text-[#595959]">{monthLabel}</p>
+                  <p className="text-xl text-[#2D2D2D] capitalize">{monthLabel}</p>
                   <button
                     type="button"
                     onClick={() =>
@@ -977,13 +1059,14 @@ export default function BuchungsFlow() {
                         (prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1)
                       )
                     }
-                    className="rounded-md px-2 py-1 text-[#9A9A9A] hover:bg-[#F2F2F2]"
+                    className="rounded-md px-2 py-1 text-[#7F7A72] hover:bg-black/5"
                     aria-label="Nächster Monat"
                   >
                     ›
                   </button>
                 </div>
-                <div className="grid grid-cols-7 gap-y-2 text-center text-xs text-[#9A9A9A]">
+
+                <div className="grid grid-cols-7 gap-y-2 text-center text-xs text-[#2D2D2D]/75">
                   {weekdayLabels.map((weekday) => (
                     <div key={weekday}>{weekday}</div>
                   ))}
@@ -997,35 +1080,40 @@ export default function BuchungsFlow() {
                     const value = toLocalDateInput(date);
                     const isPast = value < todayDate;
                     const isSelected = selectedDate === value;
+                    const markerClass = day % 4 === 0 ? "bg-[#CF4D4D]" : "bg-[#2E8C58]";
                     return (
-                      <button
-                        key={value}
-                        type="button"
-                        disabled={isPast}
-                        onClick={() => handleDateSelect(value)}
-                        className={`mx-auto h-8 w-8 rounded-md text-sm transition ${
-                          isSelected
-                            ? "bg-[#4A9B68] text-white"
-                            : isPast
-                              ? "cursor-not-allowed text-[#C9C9C9]"
-                              : "text-[#2D2D2D] hover:bg-[#EAF5EE]"
-                        }`}
-                      >
-                        {day}
-                      </button>
+                      <div key={value} className="mx-auto flex h-11 w-9 flex-col items-center justify-center">
+                        <button
+                          type="button"
+                          disabled={isPast}
+                          onClick={() => handleDateSelect(value)}
+                          className={`grid h-8 w-8 place-items-center rounded-full text-sm transition ${
+                            isSelected
+                              ? "bg-[#1F1A17] text-white"
+                              : isPast
+                                ? "cursor-not-allowed text-[#C4BFB8]"
+                                : "text-[#2D2D2D] hover:bg-black/5"
+                          }`}
+                        >
+                          {day}
+                        </button>
+                        {!isPast && (
+                          <span className={`mt-1 h-1.5 w-1.5 rounded-full ${markerClass}`} />
+                        )}
+                      </div>
                     );
                   })}
                 </div>
               </div>
 
-              <div className="mt-4 grid grid-cols-3 gap-2">
+              <div className="mt-5 flex flex-wrap gap-2">
                 <button
                   type="button"
                   onClick={() => setSlotFilter("all")}
-                  className={`rounded-md border px-3 py-2 text-sm font-medium ${
+                  className={`rounded-full border px-4 py-1.5 text-sm ${
                     slotFilter === "all"
                       ? "border-[#1D1D1D] bg-[#1D1D1D] text-white"
-                      : "border-[#7D7D7D] bg-white text-[#2D2D2D]"
+                      : "border-[#7D7D7D] bg-transparent text-[#2D2D2D]"
                   }`}
                 >
                   Alle
@@ -1033,10 +1121,10 @@ export default function BuchungsFlow() {
                 <button
                   type="button"
                   onClick={() => setSlotFilter("morning")}
-                  className={`rounded-md border px-3 py-2 text-sm font-medium ${
+                  className={`rounded-full border px-4 py-1.5 text-sm ${
                     slotFilter === "morning"
                       ? "border-[#1D1D1D] bg-[#1D1D1D] text-white"
-                      : "border-[#7D7D7D] bg-white text-[#2D2D2D]"
+                      : "border-[#7D7D7D] bg-transparent text-[#2D2D2D]"
                   }`}
                 >
                   Vormittags
@@ -1044,10 +1132,10 @@ export default function BuchungsFlow() {
                 <button
                   type="button"
                   onClick={() => setSlotFilter("afternoon")}
-                  className={`rounded-md border px-3 py-2 text-sm font-medium ${
+                  className={`rounded-full border px-4 py-1.5 text-sm ${
                     slotFilter === "afternoon"
                       ? "border-[#1D1D1D] bg-[#1D1D1D] text-white"
-                      : "border-[#7D7D7D] bg-white text-[#2D2D2D]"
+                      : "border-[#7D7D7D] bg-transparent text-[#2D2D2D]"
                   }`}
                 >
                   Nachmittags
@@ -1056,21 +1144,21 @@ export default function BuchungsFlow() {
 
               {loading && (
                 <div className="mt-3 flex items-center gap-2 text-sm text-[#2D2D2D]/70">
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#4A5D4A]/30 border-t-[#4A5D4A]" />
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#2D2D2D]/30 border-t-[#2D2D2D]" />
                   <span>Zeiten werden geladen…</span>
                 </div>
               )}
 
               {filteredSlots.length > 0 && (
-                <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-5">
+                <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6">
                   {filteredSlots.map((slot) => (
                     <button
                       key={slot.start}
                       onClick={() => handleSlotSelect(slot)}
-                      className={`rounded-md px-3 py-2 text-sm font-medium ${
+                      className={`rounded-lg border px-3 py-1.5 text-sm ${
                         selectedSlot?.start === slot.start
-                          ? "border border-[#4A9B68] bg-[#4A9B68] text-white"
-                          : "bg-[#DDF0E2] text-[#3B7A57] hover:bg-[#CFE8D8]"
+                          ? "border-[#1D1D1D] bg-[#1D1D1D] text-white"
+                          : "border-[#D5D0C8] bg-[#ECE9E3] text-[#2D2D2D] hover:bg-[#E4E0DA]"
                       }`}
                     >
                       {new Date(slot.start).toLocaleTimeString("de-DE", {
@@ -1084,13 +1172,13 @@ export default function BuchungsFlow() {
 
               {slots.length === 0 && !loading && selectedDate && (
                 <p className="mt-4 text-sm text-[#2D2D2D]/70">
-                  Für dieses Datum sind keine freien Zeiten verfügbar. Wähle ein anderes Datum
-                  oder{" "}
+                  Für dieses Datum sind keine freien Zeiten verfügbar.{" "}
                   <button
+                    type="button"
                     onClick={() => goToStep(3)}
-                    className="text-[#4A5D4A] hover:underline"
+                    className="underline underline-offset-2"
                   >
-                    Warteliste
+                    Zur Warteliste
                   </button>
                   .
                 </p>
@@ -1104,14 +1192,22 @@ export default function BuchungsFlow() {
             </div>
           </div>
 
-          <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-[#E8E4DF] bg-white/95 p-4 backdrop-blur">
-            <div className="mx-auto max-w-6xl">
+          <div className="border-t border-[#DDD8D0] bg-[#E7E3DE] px-5 py-3 md:px-7">
+            <div className="grid gap-3 md:grid-cols-2">
               <button
+                type="button"
+                onClick={() => goToStep(1)}
+                className="rounded-full border border-[#2D2D2D]/70 bg-transparent py-2.5 text-sm font-medium text-[#2D2D2D]"
+              >
+                Zurück
+              </button>
+              <button
+                type="button"
                 onClick={() => goToStep(3)}
                 disabled={!selectedSlot}
-                className="w-full rounded-full bg-[#4A5D4A] py-3 font-medium text-white transition hover:bg-[#3A4A3A] disabled:cursor-not-allowed disabled:bg-[#4A5D4A]/40"
+                className="rounded-full border border-transparent bg-[#CEC9C2] py-2.5 text-sm font-medium text-[#58534D] transition disabled:cursor-not-allowed disabled:opacity-70"
               >
-                Weiter
+                Weiter zur Buchung
               </button>
             </div>
           </div>
@@ -1120,276 +1216,199 @@ export default function BuchungsFlow() {
 
       {/* Step 3: Kontaktdaten */}
       {step === 3 && primarySelectedService && (
-        <div className="space-y-8">
-          {!authLoading && !user && (
-            <div className="rounded-xl border-2 border-[#4A5D4A]/50 bg-[#F5F2ED] p-6 text-center">
-              <h3 className="text-h3 text-[#2D2D2D]">
-                Anmeldung erforderlich
-              </h3>
-              <p className="mt-2 text-[#2D2D2D]/85">
-                Du kannst nur mit einem bestätigten Konto einen Termin buchen.
+        <div className="overflow-hidden rounded-[26px] border border-[#D5D0C8] bg-[#F1EEE9] shadow-[0_20px_60px_rgba(0,0,0,0.12)]">
+          <div className="flex items-start justify-between gap-4 px-5 pb-4 pt-5 md:px-7 md:pb-5 md:pt-6">
+            <div>
+              <h2 className="text-h1 text-[#2D2D2D]">Fast geschafft!</h2>
+              <p className="mt-1 text-sm text-[#2D2D2D]/85">
+                Kontaktdaten prüfen und Buchung abschließen.
               </p>
-              <div className="mt-6 flex flex-wrap justify-center gap-4">
-                <Link
-                  href={`/login?redirect=${encodeURIComponent("/buchung")}`}
-                  onClick={() => {
-                    sessionStorage.setItem(
-                      BOOKING_STATE_KEY,
-                      JSON.stringify({
-                        services: selectedServices,
-                        staff: selectedStaff,
-                        slot: selectedSlot,
-                        rescheduleToken,
-                      })
-                    );
-                  }}
-                  className="rounded-full bg-[#4A5D4A] px-6 py-3 font-medium text-white transition hover:bg-[#3A4A3A]"
+            </div>
+            <Link
+              href="/buchung"
+              prefetch={false}
+              className="rounded-md p-1 text-[#2D2D2D]/70 transition hover:bg-black/5 hover:text-[#2D2D2D]"
+              aria-label="Flow schließen"
+            >
+              <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M6 6L18 18M18 6L6 18" strokeLinecap="round" />
+              </svg>
+            </Link>
+          </div>
+
+          {!authLoading && !user && (
+            <div className="px-5 pb-7 md:px-7">
+              <div className="rounded-xl border border-[#CFC8BD] bg-[#ECE8E2] p-6 text-center">
+                <h3 className="text-h3 text-[#2D2D2D]">Anmeldung erforderlich</h3>
+                <p className="mt-2 text-[#2D2D2D]/85">
+                  Du kannst nur mit einem bestätigten Konto einen Termin verbindlich buchen.
+                </p>
+                <div className="mt-6 flex flex-wrap justify-center gap-3">
+                  <Link
+                    href={`/login?redirect=${encodeURIComponent(bookingRedirect)}`}
+                    onClick={persistBookingState}
+                    className="rounded-full bg-[#1F1A17] px-6 py-2.5 text-sm font-medium text-white"
+                  >
+                    Anmelden
+                  </Link>
+                  <Link
+                    href={`/register?redirect=${encodeURIComponent(bookingRedirect)}`}
+                    onClick={persistBookingState}
+                    className="rounded-full border border-[#2D2D2D]/70 px-6 py-2.5 text-sm font-medium text-[#2D2D2D]"
+                  >
+                    Registrieren
+                  </Link>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => goToStep(2)}
+                  className="mt-5 text-sm text-[#2D2D2D]/75 underline underline-offset-2"
                 >
-                  Anmelden
-                </Link>
-                <Link
-                  href={`/register?redirect=${encodeURIComponent("/buchung")}`}
-                  onClick={() => {
-                    sessionStorage.setItem(
-                      BOOKING_STATE_KEY,
-                      JSON.stringify({
-                        services: selectedServices,
-                        staff: selectedStaff,
-                        slot: selectedSlot,
-                        rescheduleToken,
-                      })
-                    );
-                  }}
-                  className="rounded-full border-2 border-[#4A5D4A] px-6 py-3 font-medium text-[#4A5D4A] transition hover:bg-[#4A5D4A]/10"
-                >
-                  Registrieren
-                </Link>
+                  Zurück zur Terminauswahl
+                </button>
               </div>
-              <button
-                onClick={() => goToStep(2)}
-                className="mt-4 block w-full text-[#2D2D2D]/70 hover:underline"
-              >
-                ← Zurück zur Terminauswahl
-              </button>
             </div>
           )}
 
           {user && (
-            <>
-              <button
-                onClick={() => goToStep(2)}
-                className="text-[#4A5D4A] hover:underline"
-              >
-                ← Zurück
-              </button>
-
-              <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
-                <div className="space-y-6">
-                  <div>
-                    <h2 className="text-h2 text-[#2D2D2D]">
-                      Kontaktdaten
-                    </h2>
-                    <div className="mt-4 rounded-2xl border border-[#E8E4DF] bg-white p-4 sm:p-5">
-                      <div className="grid gap-4 sm:grid-cols-2">
-                        <div>
-                          <label className="block text-sm font-medium text-[#2D2D2D]">
-                            Vorname *
-                          </label>
-                          <input
-                            type="text"
-                            value={form.firstName}
-                            onChange={(e) => setForm({ ...form, firstName: e.target.value })}
-                            className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-4 py-3"
-                            required
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-[#2D2D2D]">
-                            Nachname *
-                          </label>
-                          <input
-                            type="text"
-                            value={form.lastName}
-                            onChange={(e) => setForm({ ...form, lastName: e.target.value })}
-                            className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-4 py-3"
-                            required
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-[#2D2D2D]">
-                            E-Mail *
-                          </label>
-                          <input
-                            type="email"
-                            value={form.email}
-                            onChange={(e) => setForm({ ...form, email: e.target.value })}
-                            className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-4 py-3"
-                            required
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-[#2D2D2D]">
-                            Telefon
-                          </label>
-                          <input
-                            type="tel"
-                            value={form.phone}
-                            onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                            className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-4 py-3"
-                          />
-                        </div>
-                      </div>
-                      <div className="mt-4">
-                        <label className="block text-sm font-medium text-[#2D2D2D]">
-                          Notiz
-                        </label>
-                        <textarea
-                          value={form.note}
-                          onChange={(e) => setForm({ ...form, note: e.target.value })}
-                          rows={6}
-                          className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-4 py-3"
-                        />
-                      </div>
+            <div className="grid gap-8 px-5 pb-7 md:px-7 lg:grid-cols-[1fr_360px]">
+              <div className="space-y-8">
+                <div>
+                  <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#2D2D2D]/45">
+                    Kontaktdaten
+                  </p>
+                  <div className="mt-4 grid gap-5 sm:grid-cols-2">
+                    <div>
+                      <label className="text-sm text-[#2D2D2D]/85">Name</label>
+                      <input
+                        type="text"
+                        value={form.firstName}
+                        onChange={(e) => setForm({ ...form, firstName: e.target.value })}
+                        className="mt-2 w-full border-b border-[#7D7870] bg-transparent pb-1.5 text-[29px] text-[#2D2D2D] outline-none"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm text-[#2D2D2D]/85">Nachname</label>
+                      <input
+                        type="text"
+                        value={form.lastName}
+                        onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+                        className="mt-2 w-full border-b border-[#7D7870] bg-transparent pb-1.5 text-[29px] text-[#2D2D2D] outline-none"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm text-[#2D2D2D]/85">E-Mail</label>
+                      <input
+                        type="email"
+                        value={form.email}
+                        onChange={(e) => setForm({ ...form, email: e.target.value })}
+                        className="mt-2 w-full border-b border-[#7D7870] bg-transparent pb-1.5 text-[29px] text-[#2D2D2D] outline-none"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm text-[#2D2D2D]/85">Telefon</label>
+                      <input
+                        type="tel"
+                        value={form.phone}
+                        onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                        className="mt-2 w-full border-b border-[#7D7870] bg-transparent pb-1.5 text-[29px] text-[#2D2D2D] outline-none"
+                      />
                     </div>
                   </div>
-
-                  <div>
-                    <h3 className="text-h2 text-[#2D2D2D]">
-                      Buchungsbedingungen
-                    </h3>
-                    <div className="mt-4 rounded-2xl border border-[#E8E4DF] bg-white p-4 sm:p-5">
-                      <p className="text-[#2D2D2D]/85">
-                        Wenn sich deine Pläne ändern, kannst du deinen Termin bis 24 Stunden
-                        vorher kostenlos umbuchen oder stornieren.
-                      </p>
-                      <p className="mt-4 text-[#2D2D2D]/80">
-                        Bitte gib uns möglichst früh Bescheid, damit wir den Termin neu vergeben
-                        können. Bei kurzfristigen Absagen oder Nichterscheinen behalten wir uns
-                        vor, den Termin in Rechnung zu stellen.
-                      </p>
-                    </div>
+                  <div className="mt-5">
+                    <label className="text-sm text-[#2D2D2D]/85">Anmerkung (Optional)</label>
+                    <textarea
+                      value={form.note}
+                      onChange={(e) => setForm({ ...form, note: e.target.value })}
+                      rows={3}
+                      className="mt-2 w-full border-b border-[#7D7870] bg-transparent pb-1.5 text-sm text-[#2D2D2D] outline-none"
+                    />
                   </div>
                 </div>
 
-                <aside className="rounded-2xl border border-[#E8E4DF] bg-white p-5 shadow-sm lg:sticky lg:top-24">
-                  <h3 className="text-h2 text-[#2D2D2D]">
-                    Dein Termin
-                  </h3>
-
-                  {selectedSlot ? (
-                    <>
-                      <p className="mt-4 text-4xl font-medium text-[#2D2D2D]">
-                        {new Date(selectedSlot.start)
-                          .toLocaleDateString("de-DE", {
-                            weekday: "short",
-                            day: "numeric",
-                            month: "short",
-                          })
-                          .replace(",", "")}
-                      </p>
-                      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-                        <div className="rounded-lg bg-[#F5F2ED] p-3">
-                          <p className="text-xs text-[#2D2D2D]/60">Uhrzeit</p>
-                          <p className="font-medium text-[#2D2D2D]">
-                            {new Date(selectedSlot.start).toLocaleTimeString("de-DE", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}{" "}
-                            -{" "}
-                            {new Date(selectedSlot.end).toLocaleTimeString("de-DE", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </p>
-                          <button
-                            type="button"
-                            onClick={() => goToStep(2)}
-                            className="mt-1 text-xs text-[#4A5D4A] hover:underline"
-                          >
-                            Uhrzeit ändern
-                          </button>
-                        </div>
-                        <div className="rounded-lg bg-[#F5F2ED] p-3">
-                          <p className="text-xs text-[#2D2D2D]/60">Mitarbeiter</p>
-                          <p className="font-medium text-[#2D2D2D]">
-                            {selectedStaff ? selectedStaff.firstName : "Freier Mitarbeiter"}
-                          </p>
-                          <button
-                            type="button"
-                            onClick={() => goToStep(2)}
-                            className="mt-1 text-xs text-[#4A5D4A] hover:underline"
-                          >
-                            Mitarbeiter ändern
-                          </button>
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <p className="mt-4 text-sm text-[#2D2D2D]/75">
-                      Noch kein Zeitslot ausgewählt.
-                    </p>
-                  )}
-
-                  <div className="mt-5 border-t border-[#E8E4DF] pt-4">
-                    <p className="text-sm text-[#2D2D2D]/70">Ausgewählte Leistungen</p>
-                    <div className="mt-3 space-y-2">
-                      {selectedServices.map((s) => (
-                        <div key={s._id} className="flex items-start justify-between gap-3">
-                          <p className="text-sm text-[#2D2D2D]/85">{s.name}</p>
-                          <p className="shrink-0 text-sm font-medium text-[#2D2D2D]">
-                            {s.priceEur} €
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="mt-4 flex items-center justify-between border-t border-[#E8E4DF] pt-3">
-                      <p className="font-medium text-[#2D2D2D]">Vor Ort bezahlen</p>
-                      <p className="font-semibold text-[#2D2D2D]">{totalPrice} €</p>
-                    </div>
-                    <p className="mt-1 text-xs text-[#2D2D2D]/65">
-                      Termin bis 24h vorher kostenlos stornierbar
-                    </p>
-                  </div>
-
-                  <div className="mt-5 space-y-3">
-                    {selectedSlot ? (
-                      <button
-                        onClick={handleSubmit}
-                        disabled={loading || !form.privacy}
-                        className="w-full rounded-lg bg-[#4A5D4A] py-3 font-medium text-white transition hover:bg-[#3A4A3A] disabled:opacity-50"
-                      >
-                        {loading ? "Buchen…" : "Buchung abschließen"}
-                      </button>
-                    ) : (
-                      <button
-                        onClick={handleWaitlist}
-                        disabled={loading}
-                        className="w-full rounded-lg border-2 border-[#4A5D4A] py-3 font-medium text-[#4A5D4A] transition hover:bg-[#4A5D4A]/10 disabled:opacity-50"
-                      >
-                        {loading ? "Wird gesendet…" : "Auf Warteliste"}
-                      </button>
-                    )}
-
-                    <div className="flex items-start gap-3">
-                      <input
-                        type="checkbox"
-                        id="privacy"
-                        checked={form.privacy}
-                        onChange={(e) => setForm({ ...form, privacy: e.target.checked })}
-                        className="mt-1 h-4 w-4 rounded border-[#E8E4DF]"
-                      />
-                      <label htmlFor="privacy" className="text-sm text-[#2D2D2D]/85">
-                        Ich habe die{" "}
-                        <Link href="/datenschutz" className="text-[#4A5D4A] hover:underline">
-                          Datenschutzerklärung
-                        </Link>{" "}
-                        gelesen und akzeptiere die Verarbeitung meiner Daten. *
-                      </label>
-                    </div>
-                  </div>
-                </aside>
+                <div>
+                  <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#2D2D2D]/45">
+                    Buchungsbedingungen
+                  </p>
+                  <p className="mt-4 text-[#2D2D2D]/90">
+                    Wenn sich deine Pläne ändern, kannst du deinen Termin bis 24 Stunden vorher
+                    kostenlos umbuchen oder stornieren.
+                  </p>
+                  <p className="mt-4 text-[#2D2D2D]/85">
+                    Bitte gib uns möglichst früh Bescheid, damit wir den Termin neu vergeben können.
+                    Bei kurzfristigen Absagen oder Nichterscheinen behalten wir uns vor, den Termin in
+                    Rechnung zu stellen.
+                  </p>
+                </div>
               </div>
-            </>
+
+              <aside className="space-y-4">
+                <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#2D2D2D]/45">
+                  Übersicht
+                </p>
+                <div className="overflow-hidden rounded-xl border border-[#DBD4CB] bg-[#F7F5F1]">
+                  <div className="flex items-center justify-between border-b border-[#DDD7CE] px-4 py-3 text-sm text-[#2D2D2D]">
+                    <span>Stylistin</span>
+                    <span>{selectedStaff ? selectedStaff.firstName : "Beliebig"}</span>
+                  </div>
+                  <div className="flex items-center justify-between border-b border-[#DDD7CE] px-4 py-3 text-sm text-[#2D2D2D]">
+                    <span>Datum</span>
+                    <span>{selectedDateLabelLong}</span>
+                  </div>
+                  <div className="flex items-center justify-between border-b border-[#DDD7CE] px-4 py-3 text-sm text-[#2D2D2D]">
+                    <span>Uhrzeit</span>
+                    <span>{selectedTimeLabel}</span>
+                  </div>
+                  {selectedServices.map((s) => (
+                    <div key={s._id} className="flex items-center justify-between border-b border-[#DDD7CE] px-4 py-3 text-sm text-[#2D2D2D]">
+                      <span>{baseServiceTitle(s.name)}</span>
+                      <span>{s.priceEur} €</span>
+                    </div>
+                  ))}
+                  <div className="flex items-center justify-between px-4 py-3 text-[#2D2D2D]">
+                    <span className="text-sm">Vor Ort bezahlen</span>
+                    <span className="text-[33px] leading-none">{totalPrice} €</span>
+                  </div>
+                </div>
+                <p className="text-sm text-[#2D2D2D]/70">
+                  Mit der Bestätigung deiner Buchung stimmst du unseren{" "}
+                  <Link href="/datenschutz" className="underline underline-offset-2">
+                    Buchungsbedingungen
+                  </Link>{" "}
+                  zu.
+                </p>
+
+                {selectedSlot ? (
+                  <button
+                    type="button"
+                    onClick={handleSubmit}
+                    disabled={loading}
+                    className="w-full rounded-full bg-[#1F1A17] py-3 text-sm font-medium text-white transition hover:bg-black disabled:opacity-60"
+                  >
+                    {loading ? "Buchen…" : "Termin verbindlich buchen"}
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleWaitlist}
+                    disabled={loading}
+                    className="w-full rounded-full border border-[#2D2D2D]/70 bg-transparent py-3 text-sm font-medium text-[#2D2D2D] transition hover:bg-black/5 disabled:opacity-60"
+                  >
+                    {loading ? "Wird gesendet…" : "Zur Warteliste"}
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => goToStep(2)}
+                  className="w-full rounded-full border border-[#2D2D2D]/70 bg-transparent py-3 text-sm font-medium text-[#2D2D2D] transition hover:bg-black/5"
+                >
+                  Zurück
+                </button>
+              </aside>
+            </div>
           )}
         </div>
       )}

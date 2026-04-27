@@ -130,5 +130,5 @@ body {
 
 /* Anchor-Offsets für fixed Header + Submenü (Startseite) */
 .pm-home-section {
-  scroll-margin-top: 140px;
+  scroll-margin-top: 100px;
 }
