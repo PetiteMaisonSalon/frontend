@@ -189,7 +189,7 @@ export default function Header() {
                   : `whitespace-nowrap ${outlineBtnLight}`
               }
             >
-              Mein Profil
+              Dein Profil
             </Link>
           ) : (
             <>
@@ -367,7 +367,7 @@ export default function Header() {
                         : `w-full text-center ${outlineBtnLightWide}`
                     }
                   >
-                    Mein Profil
+                    Dein Profil
                   </Link>
                 ) : (
                   <>
