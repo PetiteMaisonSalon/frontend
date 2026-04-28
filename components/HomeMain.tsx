@@ -681,7 +681,7 @@ export default function HomeMain() {
                       {group.map((src) => (
                         <div
                           key={src}
-                          className="relative h-72 w-full overflow-hidden bg-[#F1EEE9] sm:h-80 md:h-[420px] lg:h-[520px]"
+                          className="relative aspect-[3/4] w-full overflow-hidden bg-[#F1EEE9]"
                         >
                           <Image
                             src={src}
@@ -697,7 +697,7 @@ export default function HomeMain() {
                         Array.from({ length: 3 - group.length }).map((_, idx) => (
                           <div
                             key={`empty-${groupIdx}-${idx}`}
-                            className="hidden lg:block h-[520px] w-full bg-[#F1EEE9]"
+                            className="hidden aspect-[3/4] w-full bg-[#F1EEE9] lg:block"
                             aria-hidden
                           />
                         ))}
