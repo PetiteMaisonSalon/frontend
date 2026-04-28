@@ -46,9 +46,9 @@ export default function Header() {
     }
   };
 
-  /** Gleiche Route erneut antippen: pathname ändert sich nicht → Menü manuell schließen. */
-  const closeMobileIfSameRoute = (href: string) => {
-    if (pathname === href) setMenuOpen(false);
+  /** Mobile: jedes Nav-Ziel schließt das Burger-Menü sofort, auch bei gleicher Route oder Hash-Link. */
+  const closeMobileMenu = () => {
+    setMenuOpen(false);
   };
 
   const navItemsToShow = useAdminLayout ? [] : mainNavItems;
@@ -102,6 +102,9 @@ export default function Header() {
     if (homeHeroVisible) return { backgroundColor: "transparent" };
     return { backgroundColor: homeSectionBg };
   }, [homeHeroVisible, homeSectionBg, isHome]);
+
+  const currentHomeBg = isHome && !homeHeroVisible ? homeSectionBg : undefined;
+  const mobileMenuIsOnHomeSection = Boolean(currentHomeBg);
 
   const headerShell =
     "fixed inset-x-0 top-0 z-50 w-full";
@@ -260,7 +263,7 @@ export default function Header() {
       >
         <div className="flex min-w-0 flex-1 items-center gap-6 lg:gap-10">
           {!isAdminUser && (
-            <Link href="/" className={`shrink-0 whitespace-nowrap ${brandClass}`}>
+            <Link href="/" onClick={closeMobileMenu} className={`shrink-0 whitespace-nowrap ${brandClass}`}>
               Petite Maison
             </Link>
           )}
@@ -302,6 +305,7 @@ export default function Header() {
               <a
                 key={id}
                 href={href}
+                onClick={closeMobileMenu}
                 className={`font-medium transition hover:opacity-80 ${
                   homeSubActiveId === id
                     ? "text-[#2D2D2D]"
@@ -321,7 +325,14 @@ export default function Header() {
           className={
             isHomeHero
               ? "border-t border-white/20 bg-black/75 px-6 py-6 backdrop-blur-sm md:hidden"
-              : "border-t border-black/10 bg-[#F5F2ED]/95 px-6 py-6 md:hidden"
+              : "border-t border-black/10 px-6 py-6 md:hidden"
+          }
+          style={
+            isHomeHero
+              ? undefined
+              : mobileMenuIsOnHomeSection
+              ? { backgroundColor: currentHomeBg }
+              : { backgroundColor: "rgba(245, 242, 237, 0.96)" }
           }
         >
           {navItemsToShow.length > 0 && (
@@ -330,7 +341,7 @@ export default function Header() {
                 <Link
                   key={href}
                   href={href}
-                  onClick={() => closeMobileIfSameRoute(href)}
+                  onClick={closeMobileMenu}
                   className={`text-copy font-medium transition ${
                     isHomeHero
                       ? `hover:text-white ${pathname === href ? "text-white" : "text-white/90"}`
@@ -360,7 +371,7 @@ export default function Header() {
                 {!useAdminLayout ? (
                   <Link
                     href="/konto"
-                    onClick={() => closeMobileIfSameRoute("/konto")}
+                    onClick={closeMobileMenu}
                     className={
                       isHomeHero
                         ? `w-full text-center ${outlineBtnHeroWide}`
@@ -396,7 +407,7 @@ export default function Header() {
                 {!useAdminLayout && (
                   <Link
                     href="/buchung"
-                    onClick={() => closeMobileIfSameRoute("/buchung")}
+                    onClick={closeMobileMenu}
                     className={
                       isHomeHero
                         ? `text-center ${outlineBtnHeroWide}`
@@ -411,7 +422,7 @@ export default function Header() {
               <>
                 <Link
                   href="/login"
-                  onClick={() => closeMobileIfSameRoute("/login")}
+                  onClick={closeMobileMenu}
                   className={
                     isHomeHero
                       ? "rounded-full px-5 py-3 text-center text-base font-medium text-white hover:text-white/80"
@@ -423,7 +434,7 @@ export default function Header() {
                 {!useAdminLayout && (
                   <Link
                     href="/buchung"
-                    onClick={() => closeMobileIfSameRoute("/buchung")}
+                    onClick={closeMobileMenu}
                     className={
                       isHomeHero
                         ? `text-center ${outlineBtnHeroWide}`
