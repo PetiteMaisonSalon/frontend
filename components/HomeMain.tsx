@@ -77,30 +77,42 @@ export default function HomeMain() {
     heroObserver.observe(heroEl);
 
     const sectionEls = Object.values(sectionRefs.current).filter(Boolean) as HTMLElement[];
-    const sectionObserver = new IntersectionObserver(
-      (entries) => {
-        // Nimm die Section mit der größten Sichtbarkeit.
-        const best = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => (b.intersectionRatio ?? 0) - (a.intersectionRatio ?? 0))[0];
-        if (!best?.target) return;
-        const id = (best.target as HTMLElement).dataset.sectionId;
-        if (!id) return;
+    let rafId = 0;
+    const syncActiveSection = () => {
+      rafId = 0;
+      const markerY = Math.min(180, window.innerHeight * 0.35);
+      const current =
+        sectionEls.find((el) => {
+          const rect = el.getBoundingClientRect();
+          return rect.top <= markerY && rect.bottom > markerY;
+        }) ||
+        sectionEls
+          .map((el) => ({ el, distance: Math.abs(el.getBoundingClientRect().top - markerY) }))
+          .sort((a, b) => a.distance - b.distance)[0]?.el;
+
+      const id = current?.dataset.sectionId;
+      if (!id) return;
         const theme = sectionById.get(id);
         if (!theme) return;
         dispatch("pm:home:section", { id: theme.id, bg: theme.bg });
-      },
-      { threshold: [0.25, 0.4, 0.6] }
-    );
+    };
+    const scheduleActiveSectionSync = () => {
+      if (rafId) return;
+      rafId = window.requestAnimationFrame(syncActiveSection);
+    };
 
-    for (const el of sectionEls) sectionObserver.observe(el);
+    syncActiveSection();
+    window.addEventListener("scroll", scheduleActiveSectionSync, { passive: true });
+    window.addEventListener("resize", scheduleActiveSectionSync);
 
     // Initialzustand: Hero sichtbar, damit Header korrekt startet.
     dispatch("pm:home:hero", { visible: true });
 
     return () => {
       heroObserver.disconnect();
-      sectionObserver.disconnect();
+      if (rafId) window.cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", scheduleActiveSectionSync);
+      window.removeEventListener("resize", scheduleActiveSectionSync);
     };
   }, [sectionById]);
 

@@ -17,6 +17,12 @@ const homeSubNavItems = [
   { id: "gallerie" as const, href: "#gallerie", label: "Gallerie" },
   { id: "aveda" as const, href: "#aveda", label: "Aveda" },
 ];
+const homeSubNavBgById: Record<(typeof homeSubNavItems)[number]["id"], string> = {
+  salon: "#F1EEE9",
+  team: "#F1EEE9",
+  gallerie: "#F1EEE9",
+  aveda: "#BEA8FF",
+};
 const OPEN_ADMIN_CREATE_EVENT = "admin:create-appointment";
 const ADMIN_PENDING_CREATE_KEY = "pm_admin_pending_create";
 
@@ -90,12 +96,21 @@ export default function Header() {
     if (!isHome || typeof window === "undefined") return;
     const syncHash = () => {
       const h = window.location.hash.replace("#", "");
-      if (h === "salon" || h === "team" || h === "aveda") setHomeSubActiveId(h);
+      if (h === "salon" || h === "team" || h === "gallerie" || h === "aveda") {
+        setHomeSubActiveId(h);
+        setHomeSectionBg(homeSubNavBgById[h]);
+      }
     };
     syncHash();
     window.addEventListener("hashchange", syncHash);
     return () => window.removeEventListener("hashchange", syncHash);
   }, [isHome]);
+
+  const handleHomeSubNavClick = (id: (typeof homeSubNavItems)[number]["id"]) => {
+    setHomeSubActiveId(id);
+    setHomeSectionBg(homeSubNavBgById[id]);
+    closeMobileMenu();
+  };
 
   const headerStyle = useMemo(() => {
     if (!isHome) return undefined;
@@ -305,7 +320,7 @@ export default function Header() {
               <a
                 key={id}
                 href={href}
-                onClick={closeMobileMenu}
+                onClick={() => handleHomeSubNavClick(id)}
                 className={`font-medium transition hover:opacity-80 ${
                   homeSubActiveId === id
                     ? "text-[#2D2D2D]"
