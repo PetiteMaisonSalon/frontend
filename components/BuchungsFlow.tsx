@@ -18,13 +18,14 @@ import { useAuth } from "./AuthContext";
 type Service = { _id: string; name: string; category: string; durationMinutes: number; priceEur: number };
 type Staff = { _id: string; firstName: string; lastName: string; serviceIds: { _id: string }[] };
 
+/** Pfade exakt wie Ordner unter public/ (Linux/Produktion unterscheidet Groß-/Kleinschreibung) */
 const STAFF_SERVICE_IMAGE_BY_FIRST_NAME: Record<string, string> = {
-  mehtap: "/Mitarbeiter/mehtap_service.jpg",
-  maria: "/Mitarbeiter/maria_service.jpg",
-  sevim: "/Mitarbeiter/sevim_service.jpg",
-  masoud: "/Mitarbeiter/masoud_service.jpg",
-  sarah: "/Mitarbeiter/Sarah_service.jpg",
-  kanj: "/Mitarbeiter/kanj_service.jpg",
+  mehtap: "/mitarbeiter/mehtap_service.jpg",
+  maria: "/mitarbeiter/maria_service.jpg",
+  sevim: "/mitarbeiter/sevim_service.jpg",
+  masoud: "/mitarbeiter/masoud_service.jpg",
+  sarah: "/mitarbeiter/Sarah_service.jpg",
+  kanj: "/mitarbeiter/kanj_service.jpg",
 };
 
 function staffServiceImageSrc(staff: Pick<Staff, "firstName">): string | null {
