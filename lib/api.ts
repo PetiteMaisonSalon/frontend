@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 function getAuthHeaders(): Record<string, string> {
   if (typeof window === "undefined") return {};
@@ -109,6 +109,11 @@ export function logout() {
   if (typeof window !== "undefined") {
     localStorage.removeItem("pm_token");
   }
+}
+
+export function getGoogleAuthUrl(redirect = "/konto") {
+  const params = new URLSearchParams({ redirect });
+  return `${API_URL}/api/auth/google?${params.toString()}`;
 }
 
 export async function getServices(category?: string) {

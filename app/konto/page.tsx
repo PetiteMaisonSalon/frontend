@@ -597,14 +597,16 @@ function AccountPageContent() {
                             </div>
 
                             <div className="mt-10 flex flex-wrap items-center justify-end gap-8">
-                              <a
-                                href={googleReviewWriteUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={textLinkUnderline}
-                              >
-                                Bewertung schreiben
-                              </a>
+                              {a.status !== "cancelled" && (
+                                <a
+                                  href={googleReviewWriteUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className={textLinkUnderline}
+                                >
+                                  Bewertung schreiben
+                                </a>
+                              )}
                               <Link
                                 href={`/buchung${getAppointmentServiceIds(a).length > 0 ? `?serviceIds=${encodeURIComponent(getAppointmentServiceIds(a).join(","))}` : ""}`}
                                 className={outlineBtnClass}

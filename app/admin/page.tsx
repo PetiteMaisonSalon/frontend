@@ -706,7 +706,6 @@ export default function AdminPage() {
     { id: "termine", label: "Termine" },
     { id: "leistungen", label: "Leistungen" },
     { id: "umsatz", label: "Umsatz" },
-    { id: "kunden", label: "Kunden" },
   ];
   const sidebarIcon = (id: AdminSectionId) => {
     if (id === "kalender") {

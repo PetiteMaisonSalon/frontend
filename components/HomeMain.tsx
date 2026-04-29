@@ -417,7 +417,7 @@ export default function HomeMain() {
               </div>
             </article>
             <div aria-hidden className="hidden lg:block" />
-            <article className="lg:pt-2">
+            <article className="pt-6 lg:pt-2">
               <h3 className="text-h2 text-[#2D2D2D]">Mehtap</h3>
               <p className="text-copy-sm mt-4 max-w-[340px] font-medium leading-relaxed text-[#2D2D2D]/85">
                 Ich bin Mehtap, Friseurmeisterin und Inhaberin von Petite Maison. Seit vielen Jahren arbeite ich

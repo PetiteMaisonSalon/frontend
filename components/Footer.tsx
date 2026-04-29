@@ -21,7 +21,6 @@ export default function Footer() {
         <div className="max-w-[560px]">
           <h2 className="text-h1 text-[#2D2D2D]">
             Wir freuen uns darauf, dich
-            <br />
             bei uns begrüßen zu dürfen.
           </h2>
           <p className="text-copy-sm mt-5 max-w-[520px] leading-relaxed text-[#2D2D2D]/90">
