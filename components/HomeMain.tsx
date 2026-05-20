@@ -63,6 +63,9 @@ export default function HomeMain() {
     []
   );
   const mainLeftSlides = useMemo(() => mainLeftImages.length, [mainLeftImages.length]);
+  const blockImageDownloadInteraction = (event: React.SyntheticEvent) => {
+    event.preventDefault();
+  };
 
   useEffect(() => {
     const heroEl = heroRef.current;
@@ -682,6 +685,8 @@ export default function HomeMain() {
                         <div
                           key={src}
                           className="relative aspect-[3/4] w-full overflow-hidden bg-[#F1EEE9]"
+                          onContextMenu={blockImageDownloadInteraction}
+                          onDragStart={blockImageDownloadInteraction}
                         >
                           <Image
                             src={src}
@@ -689,6 +694,9 @@ export default function HomeMain() {
                             fill
                             className="object-cover"
                             sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                            draggable={false}
+                            onContextMenu={blockImageDownloadInteraction}
+                            onDragStart={blockImageDownloadInteraction}
                           />
                         </div>
                       ))}
