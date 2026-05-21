@@ -416,7 +416,16 @@ export default function HomeMain() {
           <div className="lg:col-span-3 lg:row-start-1 lg:grid lg:grid-cols-[minmax(0,820px)_72px_minmax(0,520px)] lg:items-start">
             <article>
               <div className="relative aspect-[16/15] w-full overflow-hidden bg-transparent">
-                <Image src="/mehtap.png" alt="Mehtap" fill className="object-cover" sizes="820px" />
+                <Image
+                  src="/mehtap.png"
+                  alt="Mehtap"
+                  fill
+                  className="object-cover"
+                  sizes="820px"
+                  draggable={false}
+                  onContextMenu={blockImageDownloadInteraction}
+                  onDragStart={blockImageDownloadInteraction}
+                />
               </div>
             </article>
             <div aria-hidden className="hidden lg:block" />
@@ -445,7 +454,16 @@ export default function HomeMain() {
           <article className="lg:col-start-3 lg:row-start-2 lg:pt-24">
             <div className="grid items-start gap-8 lg:grid-cols-[280px_240px] lg:gap-10">
               <div className="relative aspect-square w-full overflow-hidden bg-transparent lg:w-[280px]">
-                <Image src="/maria.png" alt="Maria" fill className="object-cover grayscale" sizes="280px" />
+                <Image
+                  src="/maria.png"
+                  alt="Maria"
+                  fill
+                  className="object-cover grayscale"
+                  sizes="280px"
+                  draggable={false}
+                  onContextMenu={blockImageDownloadInteraction}
+                  onDragStart={blockImageDownloadInteraction}
+                />
               </div>
               <div>
                 <h3 className="text-h2 text-[#2D2D2D]">Maria</h3>
@@ -468,7 +486,16 @@ export default function HomeMain() {
           <article className="lg:col-start-1 lg:row-start-3 lg:pt-24">
             <div className="grid items-start gap-8 lg:grid-cols-[280px_240px] lg:gap-10">
               <div className="relative aspect-square w-full overflow-hidden bg-transparent lg:w-[280px]">
-                <Image src="/sevim.png" alt="Sevim" fill className="object-cover" sizes="280px" />
+                <Image
+                  src="/sevim.png"
+                  alt="Sevim"
+                  fill
+                  className="object-cover"
+                  sizes="280px"
+                  draggable={false}
+                  onContextMenu={blockImageDownloadInteraction}
+                  onDragStart={blockImageDownloadInteraction}
+                />
               </div>
               <div>
                 <h3 className="text-h2 text-[#2D2D2D]">Sevim</h3>
@@ -491,7 +518,16 @@ export default function HomeMain() {
           <article className="lg:col-start-3 lg:row-start-4 lg:pt-20">
             <div className="grid items-start gap-8 lg:grid-cols-[280px_240px] lg:gap-10">
               <div className="relative aspect-square w-full overflow-hidden bg-transparent lg:w-[280px]">
-                <Image src="/masoud.png" alt="Masoud" fill className="object-cover grayscale" sizes="280px" />
+                <Image
+                  src="/masoud.png"
+                  alt="Masoud"
+                  fill
+                  className="object-cover grayscale"
+                  sizes="280px"
+                  draggable={false}
+                  onContextMenu={blockImageDownloadInteraction}
+                  onDragStart={blockImageDownloadInteraction}
+                />
               </div>
               <div>
                 <h3 className="text-h2 text-[#2D2D2D]">Masoud</h3>
@@ -514,7 +550,16 @@ export default function HomeMain() {
           <article className="lg:col-start-1 lg:row-start-5 lg:pt-24">
             <div className="grid items-start gap-8 lg:grid-cols-[280px_240px] lg:gap-10">
               <div className="relative aspect-square w-full overflow-hidden bg-transparent lg:w-[280px]">
-                <Image src="/sarah.png" alt="Sarah" fill className="object-cover" sizes="280px" />
+                <Image
+                  src="/sarah.png"
+                  alt="Sarah"
+                  fill
+                  className="object-cover"
+                  sizes="280px"
+                  draggable={false}
+                  onContextMenu={blockImageDownloadInteraction}
+                  onDragStart={blockImageDownloadInteraction}
+                />
               </div>
               <div>
                 <h3 className="text-h2 text-[#2D2D2D]">Sarah</h3>
@@ -538,7 +583,16 @@ export default function HomeMain() {
           <article className="lg:col-start-3 lg:row-start-6 lg:pt-20">
             <div className="grid items-start gap-8 lg:grid-cols-[280px_240px] lg:gap-10">
               <div className="relative aspect-square w-full overflow-hidden bg-transparent lg:w-[280px]">
-                <Image src="/kanj.png" alt="Kanj" fill className="object-cover grayscale" sizes="280px" />
+                <Image
+                  src="/kanj.png"
+                  alt="Kanj"
+                  fill
+                  className="object-cover grayscale"
+                  sizes="280px"
+                  draggable={false}
+                  onContextMenu={blockImageDownloadInteraction}
+                  onDragStart={blockImageDownloadInteraction}
+                />
               </div>
               <div>
                 <h3 className="text-h2 text-[#2D2D2D]">Kanj</h3>
@@ -562,7 +616,16 @@ export default function HomeMain() {
           <article className="lg:col-start-1 lg:row-start-7 lg:pt-24">
             <div className="grid items-start gap-8 lg:grid-cols-[280px_240px] lg:gap-10">
               <div className="relative aspect-square w-full overflow-hidden bg-transparent lg:w-[280px]">
-                <Image src="/cooper.png" alt="Cooper" fill className="object-cover" sizes="280px" />
+                <Image
+                  src="/cooper.png"
+                  alt="Cooper"
+                  fill
+                  className="object-cover"
+                  sizes="280px"
+                  draggable={false}
+                  onContextMenu={blockImageDownloadInteraction}
+                  onDragStart={blockImageDownloadInteraction}
+                />
               </div>
               <div>
                 <h3 className="text-h2 text-[#2D2D2D]">Cooper</h3>
