@@ -12,7 +12,6 @@ export default function KontaktPage() {
   return (
     <main className="bg-[#F2F0EB]">
       <section className="mx-auto max-w-[min(100%,2000px)] px-6 pb-32 pt-12 sm:px-10 sm:pt-16 md:px-16 md:pb-40 lg:px-20 lg:pb-48 lg:pt-20 xl:px-28 xl:pt-24">
-        {/* ~1/3 Text links · Kontakt weit rechts, mit Abstand von oben (Mitte des linken Textes) */}
         <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12">
           <div className="font-display text-[#2D2D2D] lg:col-span-4 xl:max-w-[28rem]">
             <p className="text-[clamp(1.5rem,3.2vw,2.5rem)] leading-[1.12] tracking-[-0.02em]">
