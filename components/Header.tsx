@@ -170,24 +170,20 @@ export default function Header() {
       onClick={() => setMenuOpen(!menuOpen)}
       className={
         isHomeHero
-          ? "flex h-10 w-10 shrink-0 flex-col items-center justify-center gap-1.5 rounded-lg border border-white/60 bg-black/20 md:hidden"
-          : "flex h-10 w-10 shrink-0 flex-col items-center justify-center gap-1.5 rounded-lg border border-[#2D2D2D]/15 bg-white/60 md:hidden"
+          ? "flex h-10 w-10 shrink-0 flex-col items-center justify-center gap-1.5 rounded-lg md:hidden"
+          : "flex h-10 w-10 shrink-0 flex-col items-center justify-center gap-1.5 rounded-lg md:hidden"
       }
       aria-label="Menü öffnen"
       aria-expanded={menuOpen}
     >
       <span
-        className={`block h-0.5 w-5 transition-all ${
+        className={`block h-0.5 w-10 transition-all ${
           isHomeHero ? "bg-white" : "bg-[#2D2D2D]"
-        } ${menuOpen ? "translate-y-2 rotate-45" : ""}`}
+        } ${menuOpen ? "translate-y-0 rotate-45" : ""}`}
       />
+
       <span
-        className={`block h-0.5 w-5 transition-all ${
-          isHomeHero ? "bg-white" : "bg-[#2D2D2D]"
-        } ${menuOpen ? "opacity-0" : ""}`}
-      />
-      <span
-        className={`block h-0.5 w-5 transition-all ${
+        className={`block h-0.5 w-10 transition-all ${
           isHomeHero ? "bg-white" : "bg-[#2D2D2D]"
         } ${menuOpen ? "-translate-y-2 -rotate-45" : ""}`}
       />
@@ -274,7 +270,7 @@ export default function Header() {
   return (
     <header className={`${headerShell} ${headerChromeClass}`} style={headerStyle}>
       <div
-        className={`mx-auto flex ${containerWidthClass} w-full items-center justify-between gap-4 ${containerPaddingClass} py-2`}
+        className={`mx-auto flex w-full items-center justify-between gap-4 ${containerPaddingClass} py-2`}
       >
         <div className="flex min-w-0 flex-1 items-center gap-6 lg:gap-10">
           {!isAdminUser && (
@@ -314,7 +310,7 @@ export default function Header() {
       {showHomeSubmenu && (
         <div className="border-t border-black/10">
           <div
-            className={`mx-auto flex ${containerWidthClass} items-center justify-center gap-10 md:gap-14 ${containerPaddingClass} py-3 text-copy`}
+            className={`mx-auto flex  ${containerWidthClass} items-center justify-center gap-10 md:gap-14 ${containerPaddingClass} py-3 text-copy`}
           >
             {homeSubNavItems.map(({ id, href, label }) => (
               <a

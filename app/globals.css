@@ -2,6 +2,17 @@
 
 /* Petite Maison – Design System */
 
+/* Scrollbar für Chrome, Safari und Opera verstecken */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Scrollbar für IE, Edge und Firefox verstecken */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE und Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -123,7 +134,7 @@ body {
 }
 
 .text-copy-sm {
-  font-size: 0.75rem;
+  font-size: 0.88rem;
   line-height: 1.7;
   letter-spacing: 0.01em;
 }

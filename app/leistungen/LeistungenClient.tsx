@@ -227,7 +227,7 @@ export default function LeistungenClient() {
         <div className="mx-auto max-w-7xl px-6 pb-8 pt-16 md:pt-20">
           <h1
             className="text-h1 text-[#2D2D2D]"
-            style={{ fontFamily: "var(--font-public-sans)" }}
+            style={{ fontFamily: "var(--font-heading)" }}
           >
             Unsere Leistungen
           </h1>
