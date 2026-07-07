@@ -345,15 +345,15 @@ export default function HomeMain() {
         <div className="mx-auto grid max-w-7xl gap-6 md:grid-cols-3 md:gap-8">
           {[
             {
-              icon: "/schere.png",
+              icon: "/schere_new.png",
               title: "Haarschnitt & Styling",
             },
             {
-              icon: "/farbe.png",
+              icon: "/farbe_new.png",
               title: "Farbe & Highlights",
             },
             {
-              icon: "/hand.png",
+              icon: "/hand_new.png",
               title: "Pflege & individuelle Beratung",
             },
           ].map((card) => (

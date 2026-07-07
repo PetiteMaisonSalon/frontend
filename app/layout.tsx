@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   title: "Petite Maison | Friseursalon Hamburg",
   description: "Verbindlich, herzlich, professionell – Deine Haare sind Vertrauenssache. Individuelle Beratung in ruhiger Atmosphäre auf der Uhlenhorst.",
   icons: {
-    icon: "/logo.svg",
+    icon: "/social_logo.png",
   },
 };
 
