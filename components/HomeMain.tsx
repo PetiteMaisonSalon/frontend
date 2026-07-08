@@ -308,12 +308,12 @@ export default function HomeMain() {
       {/* Unsere Leistungen */}
       <section className="pm-home-section bg-[#F1EEE9]" aria-labelledby="home-services-heading">
         <div className="px-4 py-32 text-center md:py-40">
-          <p className="text-copy-sm font-medium tracking-[0.04em] text-[#2D2D2D]/70">
+          <p className="text-copy-sm font-medium tracking-[0.04em] text-[#2D2D2D]/100">
             Unsere Leistungen
           </p>
           <h2
             id="home-services-heading"
-            className="text-intro mx-auto mt-6 max-w-[760px] text-[#2D2D2D]"
+            className="text-intro mx-auto mt-6 max-w-[420px] text-[#2D2D2D]"
           >
             Wir bieten Haarschnitte, Farb- und Pflegebehandlungen für Frauen und Männer an —
             immer individuell abgestimmt auf dein Haar, deinen Typ und deinen Alltag.
@@ -336,32 +336,38 @@ export default function HomeMain() {
       </section>
 
       <section
-        className="pm-home-section bg-[#F1EEE9] px-4 py-16 md:py-20"
+        className="pm-home-section bg-[#F1EEE9] px-4 py-20 md:py-28"
         aria-labelledby="home-services-cards-heading"
       >
         <h2 id="home-services-cards-heading" className="sr-only">
           Leistungen im Überblick
         </h2>
-        <div className="grid w-full gap-4 md:grid-cols-3 md:gap-4 lg:gap-6">
+        <div className="mx-auto grid max-w-[68rem] gap-5 md:grid-cols-3 md:gap-5 lg:gap-6">
           {[
             {
               icon: "/schere_new.png",
               title: "Haarschnitt & Styling",
+              description:
+                "Präzise Schnitte für jeden Typ – vom klassischen Look bis zum modernen Statement.",
             },
             {
               icon: "/farbe_new.png",
               title: "Farbe & Highlights",
+              description:
+                "Natürlich oder ausdrucksstark: Wir finden den Farbton, der wirklich zu dir passt.",
             },
             {
               icon: "/hand_new.png",
               title: "Pflege & individuelle Beratung",
+              description:
+                "Wir schauen genau hin, was dein Haar braucht und beraten dich ehrlich und ohne Umwege.",
             },
           ].map((card) => (
             <div
               key={card.title}
-              className="flex flex-col items-center rounded-[28px] bg-white px-8 py-10 text-center shadow-sm transition-colors duration-300 ease-out hover:bg-[#BEA8FF]"
+              className="flex flex-col items-center rounded-[28px] bg-white px-7 py-12 text-center transition-colors duration-300 ease-out hover:bg-[#BEA8FF] md:px-8 md:py-14"
             >
-              <div className="relative h-58 w-28">
+              <div className="relative h-24 w-28 shrink-0">
                 <Image
                   src={card.icon}
                   alt=""
@@ -370,23 +376,18 @@ export default function HomeMain() {
                   sizes="112px"
                 />
               </div>
-              <h3 className="text-h3 mt-8 text-[#1a1a1a]">
-                {card.title}
-              </h3>
-              <Link
-                href="/buchung"
-                className="text-copy mt-6 font-medium text-[#1a1a1a] underline underline-offset-4 transition hover:opacity-80"
-              >
-                Jetzt buchen
-              </Link>
+              <h3 className="text-h3 mt-8 text-[#2D2D2D]">{card.title}</h3>
+              <p className="text-copy-sm mt-5 max-w-[15rem] leading-relaxed text-[#2D2D2D]/75">
+                {card.description}
+              </p>
             </div>
           ))}
         </div>
       </section>
 
       <section className="pm-home-section bg-[#F1EEE9] px-4 py-32 md:py-40">
-        <div className="mx-auto max-w-[28rem] text-center lg:max-w-[32rem]">
-          <p className="text-copy font-medium tracking-[0.04em] text-[#1a1a1a]/85">
+        <div className="mx-auto max-w-[28rem] text-center lg:max-w-[35rem]">
+          <p className="text-copy font-medium tracking-[0.04em] text-[#1a1a1a]/100">
             Unser Team
           </p>
           <p className="text-intro mt-6 text-[#1a1a1a]">
@@ -775,62 +776,98 @@ export default function HomeMain() {
         className="pm-home-section bg-[#BEA8FF] px-4 pb-28 pt-24 md:pb-36 md:pt-28"
         aria-labelledby="home-aveda-heading"
       >
-        <div className="w-full">
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="text-overline text-[#2D2D2D]/70">Aveda</p>
-            <h2
-              id="home-aveda-heading"
-              className="text-intro mt-6 text-[#2D2D2D]"
-            >
-              Als Aveda-Salon arbeiten wir mit Produkten, die nicht nur deinem Haar guttun,
-              sondern auch der Umwelt.
-            </h2>
+        <div className="mx-auto w-full max-w-[32rem] text-center min-[1400px]:max-w-[38rem]">
+          <p className="text-copy-sm font-bold text-[#2D2D2D]">Aveda</p>
+          <h2 id="home-aveda-heading" className="text-intro mt-4 text-[#2D2D2D]">
+            Als Aveda-Salon arbeiten wir mit
+            <br className="hidden lg:inline" />
+            Produkten, die nicht nur deinem Haar
+            <br className="hidden lg:inline" />
+            guttun, sondern auch der Umwelt.
+          </h2>
+        </div>
+
+        {/* Mobile / Tablet */}
+        <div className="mt-16 flex flex-col gap-14 lg:hidden">
+          <div className="relative aspect-square w-full max-w-[20rem] overflow-hidden bg-white/30">
+            <Image
+              src="/aveda_bild1.png"
+              alt=""
+              fill
+              className="object-cover grayscale"
+              sizes="100vw"
+            />
+          </div>
+          <p className="text-intro text-[#2D2D2D]">
+            Aveda wurde mit der Vision gegründet, Schönheit und Nachhaltigkeit zu verbinden.
+            Die Marke setzt auf pflanzliche Inhaltsstoffe, recycelbare Verpackungen und einen
+            respektvollen Umgang mit der Natur.
+          </p>
+          <p className="text-copy leading-relaxed text-[#2D2D2D]/85">
+            Diese Haltung passt zu unserer Arbeit: verantwortungsvoll, achtsam und mit echtem
+            Anspruch an Qualität. Wir sind stolz darauf, dir Produkte anbieten zu können, die genau
+            das widerspiegeln – und freuen uns, diese Werte gemeinsam mit unseren Kunden zu leben.
+            Unsere Aveda-Produkte kannst du übrigens nicht nur bei uns erleben, sondern auch direkt
+            im Salon erwerben.
+          </p>
+          <div className="relative ml-auto aspect-square w-full max-w-[18rem] overflow-hidden bg-white/30">
+            <Image
+              src="/aveda_bild2.png"
+              alt=""
+              fill
+              className="object-cover"
+              sizes="100vw"
+            />
+          </div>
+        </div>
+
+        {/* Desktop — 2×2 Grid, keine Überlappung */}
+        <div className="mt-24 hidden lg:grid lg:grid-cols-2 lg:gap-x-8 lg:gap-y-40 xl:gap-y-48">
+          <figure className="relative aspect-square w-[20rem] justify-self-start overflow-hidden bg-white/30">
+            <Image
+              src="/aveda_bild1.png"
+              alt=""
+              fill
+              className="object-cover grayscale"
+              sizes="20rem"
+            />
+          </figure>
+
+          <div className="w-[28rem] justify-self-end min-[1400px]:w-[28rem]">
+            <p className="text-intro text-[#2D2D2D]">
+              Aveda wurde mit der Vision gegründet,{" "}
+              Schönheit und Nachhaltigkeit zu
+              verbinden. Die Marke setzt auf
+              pflanzliche Inhaltsstoffe, recycelbare{" "}
+              Verpackungen und einen respektvollen
+              <br className="hidden lg:inline" />
+              Umgang mit der Natur.
+            </p>
           </div>
 
-          <div className="mt-20 flex flex-col gap-14 lg:flex-row lg:items-start lg:justify-between">
-            <div className="shrink-0 lg:w-[min(48vw,540px)]">
-              <div className="relative aspect-square w-full overflow-hidden bg-white/30">
-                <Image
-                  src="/aveda_bild1.png"
-                  alt=""
-                  fill
-                  className="object-cover grayscale"
-                  sizes="(min-width: 1024px) 48vw, 100vw"
-                />
-              </div>
-            </div>
-            <div className="shrink-0 lg:max-w-[min(38vw,28rem)] lg:pt-4">
-              <p className="text-overline text-[#2D2D2D]/70">Aveda Philosophie</p>
-              <p className="text-intro mt-4 text-[#2D2D2D]">
-                Aveda wurde mit der Vision gegründet, Schönheit und Nachhaltigkeit zu verbinden.
-                Die Marke setzt auf pflanzliche Inhaltsstoffe, recycelbare Verpackungen und einen
-                respektvollen Umgang mit der Natur.
-              </p>
-            </div>
+          <div className="max-w-[32rem] justify-self-start self-end">
+            <p className="text-copy leading-relaxed text-[#2D2D2D]/85">
+              Diese Haltung passt zu unserer Arbeit: verantwortungsvoll, achtsam und mit{" "}
+              <br />
+              echtem Anspruch an Qualität. Wir sind stolz darauf, dir Produkte anbieten zu{" "}
+              <br />
+              können, die genau das widerspiegeln – und freuen uns, diese Werte{" "}
+              <br />
+              gemeinsam mit unseren Kunden zu leben. Unsere Aveda-Produkte kannst du{" "}
+              <br />
+              übrigens nicht nur bei uns erleben, sondern auch direkt im Salon erwerben.
+            </p>
           </div>
 
-          <div className="mt-24 flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
-            <div className="shrink-0 lg:max-w-[34rem]">
-              <p className="text-copy leading-relaxed text-[#2D2D2D]/85">
-                Diese Haltung passt zu unserer Arbeit: verantwortungsvoll, achtsam und mit echtem
-                Anspruch an Qualität. Wir sind stolz darauf, Produkte anbieten zu können, die genau
-                das widerspiegeln — und freuen uns, diese Werte gemeinsam mit unseren Kunden zu
-                leben. Unsere Aveda-Produkte kannst du übrigens nicht nur bei uns erleben, sondern
-                auch direkt im Salon erwerben.
-              </p>
-            </div>
-            <div className="shrink-0 lg:w-[min(32vw,26rem)]">
-              <div className="relative aspect-square w-full overflow-hidden bg-white/30">
-                <Image
-                  src="/aveda_bild2.png"
-                  alt=""
-                  fill
-                  className="object-cover"
-                  sizes="(min-width: 1024px) 32vw, 100vw"
-                />
-              </div>
-            </div>
-          </div>
+          <figure className="relative aspect-square w-[18rem] justify-self-end self-end overflow-hidden bg-white/30">
+            <Image
+              src="/aveda_bild2.png"
+              alt=""
+              fill
+              className="object-cover"
+              sizes="18rem"
+            />
+          </figure>
         </div>
       </section>
 

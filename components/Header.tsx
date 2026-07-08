@@ -118,9 +118,6 @@ export default function Header() {
     return { backgroundColor: homeSectionBg };
   }, [homeHeroVisible, homeSectionBg, isHome]);
 
-  const currentHomeBg = isHome && !homeHeroVisible ? homeSectionBg : undefined;
-  const mobileMenuIsOnHomeSection = Boolean(currentHomeBg);
-
   const headerShell =
     "fixed inset-x-0 top-0 z-50 w-full";
 
@@ -146,21 +143,44 @@ export default function Header() {
 
   const outlineBtnHero =
     "text-copy rounded-full border border-white bg-transparent px-5 py-2.5 font-medium text-white transition hover:bg-white/10";
-  const outlineBtnHeroWide = `${outlineBtnHero} px-6 py-3`;
 
   const outlineBtnLight =
     "text-copy rounded-full border border-[#2D2D2D] bg-transparent px-5 py-2.5 font-medium text-[#2D2D2D] transition hover:bg-[#2D2D2D]/5";
-  const outlineBtnLightWide = `${outlineBtnLight} px-6 py-3`;
 
   const brandClass = isHomeHero
     ? `${heroNavText} ${isHome ? heroBrandUnderline : ""}`
     : `${lightNavText} ${isHome ? lightBrandUnderline : ""}`;
   const mainNavLinkClass = isHomeHero ? heroNavText : lightNavText;
 
+  /** Mobile: Scroll sperren wenn Vollbild-Menü offen */
+  useEffect(() => {
+    if (!menuOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [menuOpen]);
+
+  const mobileNavItems = [
+    { href: "/#salon", label: "Über uns" },
+    { href: "/leistungen", label: "Leistungen" },
+    { href: "/kontakt", label: "Kontakt" },
+  ];
+
   const isNavActive = (href: string) => {
     if (!pathname) return false;
     // „Leistungen“ soll auch auf /buchung als aktiv gelten (weil Buchung im gleichen Flow läuft).
     if (href === "/leistungen") return pathname.startsWith("/leistungen") || pathname.startsWith("/buchung");
+    return pathname === href;
+  };
+
+  const isMobileNavActive = (href: string) => {
+    if (!pathname) return false;
+    if (href === "/#salon") return pathname === "/";
+    if (href === "/leistungen") {
+      return pathname.startsWith("/leistungen") || pathname.startsWith("/buchung");
+    }
     return pathname === href;
   };
 
@@ -173,7 +193,7 @@ export default function Header() {
           ? "flex h-10 w-10 shrink-0 flex-col items-center justify-center gap-1.5 rounded-lg md:hidden"
           : "flex h-10 w-10 shrink-0 flex-col items-center justify-center gap-1.5 rounded-lg md:hidden"
       }
-      aria-label="Menü öffnen"
+      aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
       aria-expanded={menuOpen}
     >
       <span
@@ -185,7 +205,7 @@ export default function Header() {
       <span
         className={`block h-0.5 w-10 transition-all ${
           isHomeHero ? "bg-white" : "bg-[#2D2D2D]"
-        } ${menuOpen ? "-translate-y-2 -rotate-45" : ""}`}
+        } ${menuOpen ? "-translate-y-2 -rotate-45 opacity-0" : ""}`}
       />
     </button>
   );
@@ -330,133 +350,87 @@ export default function Header() {
         </div>
       )}
 
-      {/* Mobile Menu – Dropdown */}
-      {menuOpen && (
-        <div
-          className={
-            isHomeHero
-              ? "border-t border-white/20 bg-black/75 px-6 py-6 backdrop-blur-sm md:hidden"
-              : "border-t border-black/10 px-6 py-6 md:hidden"
-          }
-          style={
-            isHomeHero
-              ? undefined
-              : mobileMenuIsOnHomeSection
-              ? { backgroundColor: currentHomeBg }
-              : { backgroundColor: "rgba(245, 242, 237, 0.96)" }
-          }
-        >
-          {navItemsToShow.length > 0 && (
-            <nav className="flex flex-col gap-4">
-              {navItemsToShow.map(({ href, label }) => (
+      {/* Mobile — Vollbild-Menü wie Screenshot */}
+      {menuOpen && !useAdminLayout && (
+        <div className="fixed inset-0 z-[100] flex min-h-[100dvh] flex-col bg-[#BEA8FF] md:hidden">
+          <div className="flex items-center justify-between px-4 py-3">
+            <Link
+              href="/"
+              onClick={closeMobileMenu}
+              className="text-copy border-b border-[#2D2D2D] pb-px font-medium text-[#2D2D2D]"
+            >
+              Petite Maison
+            </Link>
+            <button
+              type="button"
+              onClick={closeMobileMenu}
+              className="flex h-10 w-10 items-center justify-center text-[#2D2D2D]"
+              aria-label="Menü schließen"
+            >
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden>
+                <path
+                  d="M6 6l16 16M22 6L6 22"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
+          </div>
+
+          <div className="flex flex-1 flex-col items-end justify-end px-4 pb-10 pt-8">
+            <nav className="flex flex-col items-end gap-7">
+              {mobileNavItems.map(({ href, label }) => (
                 <Link
                   key={href}
                   href={href}
                   onClick={closeMobileMenu}
-                  className={`text-copy font-medium transition ${
-                    isHomeHero
-                      ? `hover:text-white ${pathname === href ? "text-white" : "text-white/90"}`
-                      : `hover:opacity-80 ${
-                          pathname === href
-                            ? "font-semibold text-[#2D2D2D]"
-                            : "text-[#2D2D2D]/80"
-                        }`
+                  className={`font-display text-[2rem] leading-[1.1] text-[#2D2D2D] transition hover:opacity-80 ${
+                    isMobileNavActive(href) ? "opacity-100" : "opacity-90"
                   }`}
                 >
                   {label}
                 </Link>
               ))}
             </nav>
-          )}
-          <div
-            className={`flex flex-col gap-3 ${
-              navItemsToShow.length > 0
-                ? isHomeHero
-                  ? "mt-6 border-t border-white/20 pt-6"
-                  : "mt-6 border-t border-[#E8E4DF] pt-6"
-                : ""
-            }`}
-          >
-            {user ? (
-              <>
-                {!useAdminLayout ? (
-                  <Link
-                    href="/konto"
-                    onClick={closeMobileMenu}
-                    className={
-                      isHomeHero
-                        ? `w-full text-center ${outlineBtnHeroWide}`
-                        : `w-full text-center ${outlineBtnLightWide}`
-                    }
-                  >
-                    Dein Profil
-                  </Link>
-                ) : (
-                  <>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        openAdminCreateModal();
-                        setMenuOpen(false);
-                      }}
-                      className="w-full rounded-full bg-[#4A5D4A] px-5 py-3 text-center font-medium text-white hover:bg-[#3A4A3A]"
-                    >
-                      Neuen Termin eintragen
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        logout();
-                        setMenuOpen(false);
-                      }}
-                      className="w-full rounded-full border border-[#D4A5A5] px-5 py-3 text-left text-sm font-semibold text-[#5C4033] hover:bg-[#D4A5A5]/20"
-                    >
-                      Abmelden
-                    </button>
-                  </>
-                )}
-                {!useAdminLayout && (
-                  <Link
-                    href="/buchung"
-                    onClick={closeMobileMenu}
-                    className={
-                      isHomeHero
-                        ? `text-center ${outlineBtnHeroWide}`
-                        : `text-center ${outlineBtnLightWide}`
-                    }
-                  >
-                    Jetzt buchen
-                  </Link>
-                )}
-              </>
-            ) : (
-              <>
-                <Link
-                  href="/login"
-                  onClick={closeMobileMenu}
-                  className={
-                    isHomeHero
-                      ? "rounded-full px-5 py-3 text-center text-base font-medium text-white hover:text-white/80"
-                      : "px-5 py-3 text-center text-copy font-medium text-[#2D2D2D] hover:opacity-80"
-                  }
-                >
-                  {isHomeHero ? "Login" : "Anmelden"}
-                </Link>
-                {!useAdminLayout && (
-                  <Link
-                    href="/buchung"
-                    onClick={closeMobileMenu}
-                    className={
-                      isHomeHero
-                        ? `text-center ${outlineBtnHeroWide}`
-                        : `text-center ${outlineBtnLightWide}`
-                    }
-                  >
-                    Jetzt buchen
-                  </Link>
-                )}
-              </>
-            )}
+
+            <div className="mt-16">
+              <Link
+                href="/buchung"
+                onClick={closeMobileMenu}
+                className="text-copy font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
+              >
+                Jetzt buchen
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Menu — Admin */}
+      {menuOpen && useAdminLayout && (
+        <div className="border-t border-black/10 bg-[#F5F2ED] px-6 py-6 md:hidden">
+          <div className="flex flex-col gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                openAdminCreateModal();
+                setMenuOpen(false);
+              }}
+              className="w-full rounded-full bg-[#4A5D4A] px-5 py-3 text-center font-medium text-white hover:bg-[#3A4A3A]"
+            >
+              Neuen Termin eintragen
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                logout();
+                setMenuOpen(false);
+              }}
+              className="w-full rounded-full border border-[#D4A5A5] px-5 py-3 text-left text-sm font-semibold text-[#5C4033] hover:bg-[#D4A5A5]/20"
+            >
+              Abmelden
+            </button>
           </div>
         </div>
       )}
