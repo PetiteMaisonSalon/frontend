@@ -55,7 +55,7 @@ export default function HomeMain() {
 
   const mainLeftImages = useMemo(
     () => [
-      "/main_leftbild1_1.png",
+      "/mehtap_arbeit.png",
       "/main_leftbild1_2.jpg",
       "/main_leftbild1_3.jpg",
       "/main_leftbild1_4.avif",
@@ -153,17 +153,17 @@ export default function HomeMain() {
         </div>
       </section>
 
-      {/* MAIN (Viewport 2+) — wie Screenshot: viel Weißraum, Bild + Text */}
+      {/* MAIN (Viewport 2+) — Bild links · Intro rechts, am Rand */}
       <section
         id="salon"
         data-section-id="salon"
         ref={(el) => {
           sectionRefs.current.salon = el;
         }}
-        className="pm-home-section bg-[#F1EEE9] px-6 py-20 md:py-24"
+        className="pm-home-section bg-[#F1EEE9] px-4 py-20 md:py-24"
       >
-        <div className="mx-auto grid max-w-7xl items-start gap-2 md:gap-16 lg:grid-cols-2 lg:gap-2">
-          <div className="w-full">
+        <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
+          <div className="w-full shrink-0 lg:w-[min(48vw,540px)]">
             <div className="relative aspect-[15/12] w-full overflow-hidden bg-[#E8E4DF]">
               <div
                 ref={mainLeftRef}
@@ -266,8 +266,8 @@ export default function HomeMain() {
               </div>
             </div>
           </div>
-          <div className="max-w-xl">
-            <p className="text-h2 text-[#2D2D2D]">
+          <div className="shrink-0 lg:max-w-[min(42vw,32rem)]">
+            <p className="text-intro text-[#2D2D2D]">
               Petite Maison ist ein Salon, in dem man sich Zeit füreinander nimmt.
               Für Gespräche, für Beratung und für eine Arbeit, mit Liebe zum Detail,
               die nicht zwischen Tür und Angel entsteht.
@@ -276,10 +276,10 @@ export default function HomeMain() {
         </div>
       </section>
 
-      {/* Zwischen-Section (Teil der Salon-Story, nicht der #team Anchor) */}
-      <section id="salon-info" className="bg-[#F1EEE9] px-6 py-24 md:py-28">
-        <div className="mx-auto grid max-w-7xl items-end gap-14 md:gap-16 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-28">
-          <div className="max-w-[520px]">
+      {/* Salon-Story unten: Text links · Bild rechts */}
+      <section id="salon-info" className="bg-[#F1EEE9] px-4 pb-24 pt-8 md:pb-32 md:pt-12">
+        <div className="flex flex-col gap-14 lg:flex-row lg:items-end lg:justify-between">
+          <div className="shrink-0 lg:max-w-[34rem]">
             <p className="text-copy leading-relaxed text-[#2D2D2D]/85">
               Uns ist wichtig, dass du dich bei uns gut aufgehoben fühlst. Wir nehmen
               uns Zeit, stellen Fragen und beraten individuell. Jeder Termin ist bewusst
@@ -293,27 +293,27 @@ export default function HomeMain() {
               Jetzt Termin buchen
             </Link>
           </div>
-          <div className="relative aspect-square w-full max-w-[420px] justify-self-end overflow-hidden bg-[#F1EEE9]">
+          <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-[#F1EEE9] lg:w-[min(32vw,26rem)]">
             <Image
               src="/main_rightbild.png"
               alt=""
               fill
               className="object-contain"
-              sizes="(min-width: 1024px) 50vw, 100vw"
+              sizes="(min-width: 1024px) 32vw, 100vw"
             />
           </div>
         </div>
       </section>
 
-      {/* Unsere Leistungen (wie Screenshot: Bild oben + zentrierter Text) */}
+      {/* Unsere Leistungen */}
       <section className="pm-home-section bg-[#F1EEE9]" aria-labelledby="home-services-heading">
-        <div className="px-6 py-32 text-center md:py-40">
+        <div className="px-4 py-32 text-center md:py-40">
           <p className="text-copy-sm font-medium tracking-[0.04em] text-[#2D2D2D]/70">
             Unsere Leistungen
           </p>
           <h2
             id="home-services-heading"
-            className="text-h1 mx-auto mt-6 max-w-[760px] text-[#2D2D2D]"
+            className="text-intro mx-auto mt-6 max-w-[760px] text-[#2D2D2D]"
           >
             Wir bieten Haarschnitte, Farb- und Pflegebehandlungen für Frauen und Männer an —
             immer individuell abgestimmt auf dein Haar, deinen Typ und deinen Alltag.
@@ -336,13 +336,13 @@ export default function HomeMain() {
       </section>
 
       <section
-        className="pm-home-section bg-[#F1EEE9] px-6 py-16 md:py-20"
+        className="pm-home-section bg-[#F1EEE9] px-4 py-16 md:py-20"
         aria-labelledby="home-services-cards-heading"
       >
         <h2 id="home-services-cards-heading" className="sr-only">
           Leistungen im Überblick
         </h2>
-        <div className="mx-auto grid max-w-7xl gap-6 md:grid-cols-3 md:gap-8">
+        <div className="grid w-full gap-4 md:grid-cols-3 md:gap-4 lg:gap-6">
           {[
             {
               icon: "/schere_new.png",
@@ -384,12 +384,12 @@ export default function HomeMain() {
         </div>
       </section>
 
-      <section className="pm-home-section bg-[#F1EEE9] px-6 py-32 md:py-40">
-        <div className="mx-auto max-w-[445px] text-center">
+      <section className="pm-home-section bg-[#F1EEE9] px-4 py-32 md:py-40">
+        <div className="mx-auto max-w-[28rem] text-center lg:max-w-[32rem]">
           <p className="text-copy font-medium tracking-[0.04em] text-[#1a1a1a]/85">
             Unser Team
           </p>
-          <p className="text-h2 mt-6 text-[#1a1a1a]">
+          <p className="text-intro mt-6 text-[#1a1a1a]">
             Was uns verbindet, ist die Freude am Handwerk, ein ruhiger Arbeitsstil und der
             Wunsch, eine Atmosphäre zu schaffen, in der man sich wohl und ernst genommen
             fühlt.
@@ -404,39 +404,36 @@ export default function HomeMain() {
         ref={(el) => {
           sectionRefs.current.team = el;
         }}
-        className="pm-home-section bg-[#F1EEE9] px-6 pb-28 pt-6 md:pb-36"
+        className="pm-home-section bg-[#F1EEE9] px-4 pb-28 pt-6 md:pb-36"
         aria-labelledby="home-team-heading"
       >
         <h2 id="home-team-heading" className="sr-only">
           Team
         </h2>
 
-        <div className="mx-auto max-w-7xl space-y-24 md:space-y-32 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-x-28 lg:gap-y-28">
-          {/* Mehtap: Bild links, Text rechts (gleiche Zeile, kleinerer Abstand) */}
-          <div className="lg:col-span-3 lg:row-start-1 lg:grid lg:grid-cols-[minmax(0,820px)_72px_minmax(0,520px)] lg:items-start">
-            <article>
-              <div className="relative aspect-[16/15] w-full overflow-hidden bg-transparent">
-                <Image
-                  src="/mehtap.png"
-                  alt="Mehtap"
-                  fill
-                  className="object-cover"
-                  sizes="820px"
-                  draggable={false}
-                  onContextMenu={blockImageDownloadInteraction}
-                  onDragStart={blockImageDownloadInteraction}
-                />
-              </div>
-            </article>
-            <div aria-hidden className="hidden lg:block" />
-            <article className="pt-6 lg:pt-2">
+        <div className="flex flex-col gap-24 md:gap-32 lg:gap-40">
+          {/* Mehtap — links */}
+          <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-start">
+            <div className="relative aspect-[16/15] w-full shrink-0 overflow-hidden bg-transparent lg:w-[min(48vw,560px)]">
+              <Image
+                src="/mehtap.png"
+                alt="Mehtap"
+                fill
+                className="object-cover"
+                sizes="(min-width: 1024px) 48vw, 100vw"
+                draggable={false}
+                onContextMenu={blockImageDownloadInteraction}
+                onDragStart={blockImageDownloadInteraction}
+              />
+            </div>
+            <div className="lg:max-w-[340px] lg:pt-2">
               <h3 className="text-h2 text-[#2D2D2D]">Mehtap</h3>
-              <p className="text-copy-sm mt-4 max-w-[340px] font-medium leading-relaxed text-[#2D2D2D]/85">
+              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D]/85">
                 Ich bin Mehtap, Friseurmeisterin und Inhaberin von Petite Maison. Seit vielen Jahren arbeite ich
                 in diesem Beruf und habe früh gemerkt, dass mir der persönliche Umgang mit Menschen genauso
                 wichtig ist wie das Handwerk selbst.
               </p>
-              <p className="text-copy-sm mt-5 max-w-[340px] font-medium leading-relaxed text-[#2D2D2D]/85">
+              <p className="text-copy-sm mt-5 font-medium leading-relaxed text-[#2D2D2D]/85">
                 Für mich bedeutet Friseurhandwerk, Verantwortung zu übernehmen — für Entscheidungen, für Wünsche
                 und für das Vertrauen, das mir entgegengebracht wird. Diese Haltung prägt meine tägliche Arbeit
                 und den Salon als Ganzes.
@@ -447,199 +444,187 @@ export default function HomeMain() {
               >
                 Jetzt buchen
               </Link>
-            </article>
-          </div>
-
-          
-          <article className="lg:col-start-3 lg:row-start-2 lg:pt-24">
-            <div className="grid items-start gap-8 lg:grid-cols-[280px_240px] lg:gap-10">
-              <div className="relative aspect-square w-full overflow-hidden bg-transparent lg:w-[280px]">
-                <Image
-                  src="/maria.png"
-                  alt="Maria"
-                  fill
-                  className="object-cover grayscale"
-                  sizes="280px"
-                  draggable={false}
-                  onContextMenu={blockImageDownloadInteraction}
-                  onDragStart={blockImageDownloadInteraction}
-                />
-              </div>
-              <div>
-                <h3 className="text-h2 text-[#2D2D2D]">Maria</h3>
-                <p className="text-copy-sm mt-4 max-w-[240px] leading-relaxed text-[#2D2D2D]/85">
-                  Maria ist unsere Schnittspezialistin! Sie ist seit 35 Jahren Friseurin mit Leidenschaft und hat
-                  31 Jahre für den Starfriseur Jaques Le Coz gearbeitet. Maria isst gerne Tapas und tanzt
-                  leidenschaftlich Rumba. Seit Anfang 2022 gehört sie zum Team dazu.
-                </p>
-                <Link
-                  href="/buchung"
-                  className="text-copy-sm mt-5 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
-                >
-                  Jetzt buchen
-                </Link>
-              </div>
             </div>
           </article>
 
-          {/* Sevim (links) */}
-          <article className="lg:col-start-1 lg:row-start-3 lg:pt-24">
-            <div className="grid items-start gap-8 lg:grid-cols-[280px_240px] lg:gap-10">
-              <div className="relative aspect-square w-full overflow-hidden bg-transparent lg:w-[280px]">
-                <Image
-                  src="/sevim.png"
-                  alt="Sevim"
-                  fill
-                  className="object-cover"
-                  sizes="280px"
-                  draggable={false}
-                  onContextMenu={blockImageDownloadInteraction}
-                  onDragStart={blockImageDownloadInteraction}
-                />
-              </div>
-              <div>
-                <h3 className="text-h2 text-[#2D2D2D]">Sevim</h3>
-                <p className="text-copy-sm mt-4 max-w-[240px] leading-relaxed text-[#2D2D2D]/85">
-                  Sevim ist unsere Farbspezialistin! Sie liebt es, mit Haaren zu experimentieren, einschließlich
-                  ihren Haaren. Zwölf Jahre lang hat sie beim Starfriseur Jaques Le Coz gearbeitet und ist seit
-                  Anfang 2022 bei Petite Maison.
-                </p>
-                <Link
-                  href="/buchung"
-                  className="text-copy-sm mt-5 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
-                >
-                  Jetzt buchen
-                </Link>
-              </div>
+          {/* Maria — rechts */}
+          <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-end">
+            <div className="lg:max-w-[340px] lg:pt-2">
+              <h3 className="text-h2 text-[#2D2D2D]">Maria</h3>
+              <p className="text-copy-sm mt-4 leading-relaxed text-[#2D2D2D]/85">
+                Maria ist unsere Schnittspezialistin! Sie ist seit 35 Jahren Friseurin mit Leidenschaft und hat
+                31 Jahre für den Starfriseur Jaques Le Coz gearbeitet. Maria isst gerne Tapas und tanzt
+                leidenschaftlich Rumba. Seit Anfang 2022 gehört sie zum Team dazu.
+              </p>
+              <Link
+                href="/buchung"
+                className="text-copy-sm mt-5 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
+              >
+                Jetzt buchen
+              </Link>
+            </div>
+            <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-[17.5rem]">
+              <Image
+                src="/maria.png"
+                alt="Maria"
+                fill
+                className="object-cover grayscale"
+                sizes="280px"
+                draggable={false}
+                onContextMenu={blockImageDownloadInteraction}
+                onDragStart={blockImageDownloadInteraction}
+              />
             </div>
           </article>
 
-          {/* Masoud (rechts) */}
-          <article className="lg:col-start-3 lg:row-start-4 lg:pt-20">
-            <div className="grid items-start gap-8 lg:grid-cols-[280px_240px] lg:gap-10">
-              <div className="relative aspect-square w-full overflow-hidden bg-transparent lg:w-[280px]">
-                <Image
-                  src="/masoud.png"
-                  alt="Masoud"
-                  fill
-                  className="object-cover grayscale"
-                  sizes="280px"
-                  draggable={false}
-                  onContextMenu={blockImageDownloadInteraction}
-                  onDragStart={blockImageDownloadInteraction}
-                />
-              </div>
-              <div>
-                <h3 className="text-h2 text-[#2D2D2D]">Masoud</h3>
-                <p className="text-copy-sm mt-4 max-w-[240px] leading-relaxed text-[#2D2D2D]/85">
-                  Masoud ist spezialisiert auf präzise Schnitte und Farbtechniken. Geboren im Iran, ausgebildet
-                  auf zwei Kontinenten, ist er seit über 20 Jahren Friseur und seit Ende 2025 bei Petite Maison.
-                  Als zertifizierter Aveda-Spezialist schwört er auf natürliche, nachhaltige Produkte.
-                </p>
-                <Link
-                  href="/buchung"
-                  className="text-copy-sm mt-5 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
-                >
-                  Jetzt buchen
-                </Link>
-              </div>
+          {/* Sevim — links */}
+          <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-start">
+            <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-[17.5rem]">
+              <Image
+                src="/sevim.png"
+                alt="Sevim"
+                fill
+                className="object-cover"
+                sizes="280px"
+                draggable={false}
+                onContextMenu={blockImageDownloadInteraction}
+                onDragStart={blockImageDownloadInteraction}
+              />
+            </div>
+            <div className="lg:max-w-[340px] lg:pt-2">
+              <h3 className="text-h2 text-[#2D2D2D]">Sevim</h3>
+              <p className="text-copy-sm mt-4 leading-relaxed text-[#2D2D2D]/85">
+                Sevim ist unsere Farbspezialistin! Sie liebt es, mit Haaren zu experimentieren, einschließlich
+                ihren Haaren. Zwölf Jahre lang hat sie beim Starfriseur Jaques Le Coz gearbeitet und ist seit
+                Anfang 2022 bei Petite Maison.
+              </p>
+              <Link
+                href="/buchung"
+                className="text-copy-sm mt-5 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
+              >
+                Jetzt buchen
+              </Link>
             </div>
           </article>
 
-          {/* Sarah (links) */}
-          <article className="lg:col-start-1 lg:row-start-5 lg:pt-24">
-            <div className="grid items-start gap-8 lg:grid-cols-[280px_240px] lg:gap-10">
-              <div className="relative aspect-square w-full overflow-hidden bg-transparent lg:w-[280px]">
-                <Image
-                  src="/sarah.png"
-                  alt="Sarah"
-                  fill
-                  className="object-cover"
-                  sizes="280px"
-                  draggable={false}
-                  onContextMenu={blockImageDownloadInteraction}
-                  onDragStart={blockImageDownloadInteraction}
-                />
-              </div>
-              <div>
-                <h3 className="text-h2 text-[#2D2D2D]">Sarah</h3>
-                <p className="text-copy-sm mt-4 max-w-[240px] leading-relaxed text-[#2D2D2D]/85">
-                  Sarah ist spezialisiert auf Haarschnitte, Styling und natürliche Färbungen. Seit über 15 Jahren
-                  arbeitet sie mit Aveda-Produkten, 2022 hat sie ihren Meister gemacht — unter anderem lebte und
-                  arbeitete sie in Wien. Seit November 2024 ist sie bei Petite Maison. Ihr Hund Cooper gehört im
-                  Salon quasi zum Team.
-                </p>
-                <Link
-                  href="/buchung"
-                  className="text-copy-sm mt-5 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
-                >
-                  Jetzt buchen
-                </Link>
-              </div>
+          {/* Masoud — rechts */}
+          <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-end">
+            <div className="lg:max-w-[340px] lg:pt-2">
+              <h3 className="text-h2 text-[#2D2D2D]">Masoud</h3>
+              <p className="text-copy-sm mt-4 leading-relaxed text-[#2D2D2D]/85">
+                Masoud ist spezialisiert auf präzise Schnitte und Farbtechniken. Geboren im Iran, ausgebildet
+                auf zwei Kontinenten, ist er seit über 20 Jahren Friseur und seit Ende 2025 bei Petite Maison.
+                Als zertifizierter Aveda-Spezialist schwört er auf natürliche, nachhaltige Produkte.
+              </p>
+              <Link
+                href="/buchung"
+                className="text-copy-sm mt-5 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
+              >
+                Jetzt buchen
+              </Link>
+            </div>
+            <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-[17.5rem]">
+              <Image
+                src="/masoud.png"
+                alt="Masoud"
+                fill
+                className="object-cover grayscale"
+                sizes="280px"
+                draggable={false}
+                onContextMenu={blockImageDownloadInteraction}
+                onDragStart={blockImageDownloadInteraction}
+              />
             </div>
           </article>
 
-          {/* Kanj (rechts) */}
-          <article className="lg:col-start-3 lg:row-start-6 lg:pt-20">
-            <div className="grid items-start gap-8 lg:grid-cols-[280px_240px] lg:gap-10">
-              <div className="relative aspect-square w-full overflow-hidden bg-transparent lg:w-[280px]">
-                <Image
-                  src="/kanj.png"
-                  alt="Kanj"
-                  fill
-                  className="object-cover grayscale"
-                  sizes="280px"
-                  draggable={false}
-                  onContextMenu={blockImageDownloadInteraction}
-                  onDragStart={blockImageDownloadInteraction}
-                />
-              </div>
-              <div>
-                <h3 className="text-h2 text-[#2D2D2D]">Kanj</h3>
-                <p className="text-copy-sm mt-4 max-w-[240px] leading-relaxed text-[#2D2D2D]/85">
-                  Kanj ist spezialisiert auf Strähnen, Balayage und Schnitte. Er hat 2016 im Libanon seine
-                  Ausbildung gemacht und ist seit August 2025 fester Bestandteil des Teams. Nebenbei spielt er
-                  libanesische Flöte, tritt mit seiner eigenen Band bei Festivals und Hochzeiten auf und war
-                  bereits im libanesischen Fernsehen zu sehen.
-                </p>
-                <Link
-                  href="/buchung"
-                  className="text-copy-sm mt-5 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
-                >
-                  Jetzt buchen
-                </Link>
-              </div>
+          {/* Sarah — links */}
+          <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-start">
+            <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-[17.5rem]">
+              <Image
+                src="/sarah.png"
+                alt="Sarah"
+                fill
+                className="object-cover"
+                sizes="280px"
+                draggable={false}
+                onContextMenu={blockImageDownloadInteraction}
+                onDragStart={blockImageDownloadInteraction}
+              />
+            </div>
+            <div className="lg:max-w-[340px] lg:pt-2">
+              <h3 className="text-h2 text-[#2D2D2D]">Sarah</h3>
+              <p className="text-copy-sm mt-4 leading-relaxed text-[#2D2D2D]/85">
+                Sarah ist spezialisiert auf Haarschnitte, Styling und natürliche Färbungen. Seit über 15 Jahren
+                arbeitet sie mit Aveda-Produkten, 2022 hat sie ihren Meister gemacht — unter anderem lebte und
+                arbeitete sie in Wien. Seit November 2024 ist sie bei Petite Maison. Ihr Hund Cooper gehört im
+                Salon quasi zum Team.
+              </p>
+              <Link
+                href="/buchung"
+                className="text-copy-sm mt-5 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
+              >
+                Jetzt buchen
+              </Link>
             </div>
           </article>
 
-          {/* Cooper (links) */}
-          <article className="lg:col-start-1 lg:row-start-7 lg:pt-24">
-            <div className="grid items-start gap-8 lg:grid-cols-[280px_240px] lg:gap-10">
-              <div className="relative aspect-square w-full overflow-hidden bg-transparent lg:w-[280px]">
-                <Image
-                  src="/cooper.png"
-                  alt="Cooper"
-                  fill
-                  className="object-cover"
-                  sizes="280px"
-                  draggable={false}
-                  onContextMenu={blockImageDownloadInteraction}
-                  onDragStart={blockImageDownloadInteraction}
-                />
-              </div>
-              <div>
-                <h3 className="text-h2 text-[#2D2D2D]">Cooper</h3>
-                <p className="text-copy-sm mt-4 max-w-[240px] leading-relaxed text-[#2D2D2D]/85">
-                  Cooper ist spezialisiert auf gute Laune und ist als Sarahs treuer Begleiter fester Bestandteil
-                  des Salons.
-                </p>
-                <Link
-                  href="/buchung"
-                  className="text-copy-sm mt-5 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
-                >
-                  Jetzt buchen
-                </Link>
-              </div>
+          {/* Kanj — rechts */}
+          <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-end">
+            <div className="lg:max-w-[340px] lg:pt-2">
+              <h3 className="text-h2 text-[#2D2D2D]">Kanj</h3>
+              <p className="text-copy-sm mt-4 leading-relaxed text-[#2D2D2D]/85">
+                Kanj ist spezialisiert auf Strähnen, Balayage und Schnitte. Er hat 2016 im Libanon seine
+                Ausbildung gemacht und ist seit August 2025 fester Bestandteil des Teams. Nebenbei spielt er
+                libanesische Flöte, tritt mit seiner eigenen Band bei Festivals und Hochzeiten auf und war
+                bereits im libanesischen Fernsehen zu sehen.
+              </p>
+              <Link
+                href="/buchung"
+                className="text-copy-sm mt-5 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
+              >
+                Jetzt buchen
+              </Link>
+            </div>
+            <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-[17.5rem]">
+              <Image
+                src="/kanj.png"
+                alt="Kanj"
+                fill
+                className="object-cover grayscale"
+                sizes="280px"
+                draggable={false}
+                onContextMenu={blockImageDownloadInteraction}
+                onDragStart={blockImageDownloadInteraction}
+              />
+            </div>
+          </article>
+
+          {/* Cooper — links */}
+          <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-start">
+            <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-[17.5rem]">
+              <Image
+                src="/cooper.png"
+                alt="Cooper"
+                fill
+                className="object-cover"
+                sizes="280px"
+                draggable={false}
+                onContextMenu={blockImageDownloadInteraction}
+                onDragStart={blockImageDownloadInteraction}
+              />
+            </div>
+            <div className="lg:max-w-[340px] lg:pt-2">
+              <h3 className="text-h2 text-[#2D2D2D]">Cooper</h3>
+              <p className="text-copy-sm mt-4 leading-relaxed text-[#2D2D2D]/85">
+                Cooper ist spezialisiert auf gute Laune und ist als Sarahs treuer Begleiter fester Bestandteil
+                des Salons.
+              </p>
+              <Link
+                href="/buchung"
+                className="text-copy-sm mt-5 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
+              >
+                Jetzt buchen
+              </Link>
             </div>
           </article>
         </div>
@@ -656,7 +641,7 @@ export default function HomeMain() {
         aria-label="Galerie"
       >
         <div className="w-full">
-          <div className="flex items-center justify-end gap-3 px-6 pb-4 md:pb-6">
+          <div className="flex items-center justify-end gap-3 px-4 pb-4 md:pb-6">
             <button
               type="button"
               aria-label="Zurück"
@@ -743,7 +728,7 @@ export default function HomeMain() {
                     className="w-full flex-none snap-start"
                     aria-label={`Galerie Seite ${groupIdx + 1}`}
                   >
-                    <div className="grid gap-4 px-6 md:grid-cols-2 md:gap-6 md:px-6 lg:grid-cols-3 lg:gap-0 lg:px-0">
+                    <div className="grid gap-4 px-4 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:gap-0 lg:px-4">
                       {group.map((src) => (
                         <div
                           key={src}
@@ -787,36 +772,36 @@ export default function HomeMain() {
         ref={(el) => {
           sectionRefs.current.aveda = el;
         }}
-        className="pm-home-section bg-[#BEA8FF] px-6 pb-28 pt-24 md:pb-36 md:pt-28"
+        className="pm-home-section bg-[#BEA8FF] px-4 pb-28 pt-24 md:pb-36 md:pt-28"
         aria-labelledby="home-aveda-heading"
       >
-        <div className="mx-auto max-w-7xl">
+        <div className="w-full">
           <div className="mx-auto max-w-3xl text-center">
             <p className="text-overline text-[#2D2D2D]/70">Aveda</p>
             <h2
               id="home-aveda-heading"
-              className="text-h2 mt-6 text-[#2D2D2D]"
+              className="text-intro mt-6 text-[#2D2D2D]"
             >
               Als Aveda-Salon arbeiten wir mit Produkten, die nicht nur deinem Haar guttun,
               sondern auch der Umwelt.
             </h2>
           </div>
 
-          <div className="mt-20 grid items-start gap-14 lg:grid-cols-12 lg:gap-20">
-            <div className="lg:col-span-6">
+          <div className="mt-20 flex flex-col gap-14 lg:flex-row lg:items-start lg:justify-between">
+            <div className="shrink-0 lg:w-[min(48vw,540px)]">
               <div className="relative aspect-square w-full overflow-hidden bg-white/30">
                 <Image
                   src="/aveda_bild1.png"
                   alt=""
                   fill
                   className="object-cover grayscale"
-                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  sizes="(min-width: 1024px) 48vw, 100vw"
                 />
               </div>
             </div>
-            <div className="lg:col-span-5 lg:col-start-8">
+            <div className="shrink-0 lg:max-w-[min(38vw,28rem)] lg:pt-4">
               <p className="text-overline text-[#2D2D2D]/70">Aveda Philosophie</p>
-              <p className="text-h2 mt-4 text-[#2D2D2D]">
+              <p className="text-intro mt-4 text-[#2D2D2D]">
                 Aveda wurde mit der Vision gegründet, Schönheit und Nachhaltigkeit zu verbinden.
                 Die Marke setzt auf pflanzliche Inhaltsstoffe, recycelbare Verpackungen und einen
                 respektvollen Umgang mit der Natur.
@@ -824,9 +809,9 @@ export default function HomeMain() {
             </div>
           </div>
 
-          <div className="mt-24 grid items-end gap-10 lg:grid-cols-12 lg:gap-20">
-            <div className="lg:col-span-7">
-              <p className="text-copy max-w-xl leading-relaxed text-[#2D2D2D]/85">
+          <div className="mt-24 flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
+            <div className="shrink-0 lg:max-w-[34rem]">
+              <p className="text-copy leading-relaxed text-[#2D2D2D]/85">
                 Diese Haltung passt zu unserer Arbeit: verantwortungsvoll, achtsam und mit echtem
                 Anspruch an Qualität. Wir sind stolz darauf, Produkte anbieten zu können, die genau
                 das widerspiegeln — und freuen uns, diese Werte gemeinsam mit unseren Kunden zu
@@ -834,14 +819,14 @@ export default function HomeMain() {
                 auch direkt im Salon erwerben.
               </p>
             </div>
-            <div className="lg:col-span-4 lg:col-start-9">
+            <div className="shrink-0 lg:w-[min(32vw,26rem)]">
               <div className="relative aspect-square w-full overflow-hidden bg-white/30">
                 <Image
                   src="/aveda_bild2.png"
                   alt=""
                   fill
                   className="object-cover"
-                  sizes="(min-width: 1024px) 33vw, 100vw"
+                  sizes="(min-width: 1024px) 32vw, 100vw"
                 />
               </div>
             </div>
@@ -860,29 +845,7 @@ export default function HomeMain() {
             sizes="100vw"
           />
         </div>
-        <div className="bg-[#F1EEE9] p-0">
-          <div className="grid w-full grid-cols-2 gap-0">
-            <div className="relative aspect-square w-full overflow-hidden bg-[#F1EEE9]">
-              <Image
-                src="/aveda_bild1.png"
-                alt=""
-                fill
-                className="object-cover grayscale"
-                sizes="(min-width: 1024px) 50vw, 100vw"
-              />
-            </div>
-            <div className="relative aspect-square w-full overflow-hidden bg-[#F1EEE9]">
-              <Image
-                src="/footer_bild_1.png"
-                alt=""
-                fill
-                className="object-cover grayscale"
-                sizes="(min-width: 1024px) 50vw, 100vw"
-                quality={100}
-              />
-            </div>
-          </div>
-        </div>
+
       </section>
     </main>
   );
