@@ -11,9 +11,9 @@ type SectionTheme = {
 };
 
 const HOME_SECTIONS: SectionTheme[] = [
-  { id: "salon", bg: "#F1EEE9" },
-  { id: "team", bg: "#F1EEE9" },
-  { id: "gallerie", bg: "#F1EEE9" },
+  { id: "salon", bg: "#EBEAE7" },
+  { id: "team", bg: "#EBEAE7" },
+  { id: "gallerie", bg: "#EBEAE7" },
   { id: "aveda", bg: "#BEA8FF" },
 ];
 
@@ -160,7 +160,7 @@ export default function HomeMain() {
         ref={(el) => {
           sectionRefs.current.salon = el;
         }}
-        className="pm-home-section bg-[#F1EEE9] px-4 py-20 md:py-24"
+        className="pm-home-section bg-[#EBEAE7] px-4 py-20 md:py-24"
       >
         <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
           <div className="w-full shrink-0 lg:w-[min(48vw,540px)]">
@@ -277,7 +277,7 @@ export default function HomeMain() {
       </section>
 
       {/* Salon-Story unten: Text links · Bild rechts */}
-      <section id="salon-info" className="bg-[#F1EEE9] px-4 pb-24 pt-8 md:pb-32 md:pt-12">
+      <section id="salon-info" className="bg-[#EBEAE7] px-4 pb-24 pt-8 md:pb-32 md:pt-12">
         <div className="flex flex-col gap-14 lg:flex-row lg:items-end lg:justify-between">
           <div className="shrink-0 lg:max-w-[34rem]">
             <p className="text-copy leading-relaxed text-[#2D2D2D]/85">
@@ -292,7 +292,7 @@ export default function HomeMain() {
               Jetzt Termin buchen
             </BookingLink>
           </div>
-          <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-[#F1EEE9] lg:w-[min(32vw,26rem)]">
+          <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-[#EBEAE7] lg:w-[min(32vw,26rem)]">
             <Image
               src="/main_rightbild.png"
               alt=""
@@ -305,7 +305,7 @@ export default function HomeMain() {
       </section>
 
       {/* Unsere Leistungen */}
-      <section className="pm-home-section bg-[#F1EEE9]" aria-labelledby="home-services-heading">
+      <section className="pm-home-section bg-[#EBEAE7]" aria-labelledby="home-services-heading">
         <div className="px-4 py-32 text-center md:py-40">
           <p className="text-copy-sm font-medium tracking-[0.04em] text-[#2D2D2D]/100">
             Unsere Leistungen
@@ -334,7 +334,7 @@ export default function HomeMain() {
       </section>
 
       <section
-        className="pm-home-section bg-[#F1EEE9] px-4 py-20 md:py-28"
+        className="pm-home-section bg-[#EBEAE7] px-4 py-20 md:py-28"
         aria-labelledby="home-services-cards-heading"
       >
         <h2 id="home-services-cards-heading" className="sr-only">
@@ -383,7 +383,7 @@ export default function HomeMain() {
         </div>
       </section>
 
-      <section className="pm-home-section bg-[#F1EEE9] px-4 py-32 md:py-40">
+      <section className="pm-home-section bg-[#EBEAE7] px-4 py-32 md:py-40">
         <div className="mx-auto max-w-[28rem] text-center lg:max-w-[35rem]">
           <p className="text-copy font-medium tracking-[0.04em] text-[#1a1a1a]/100">
             Unser Team
@@ -403,7 +403,7 @@ export default function HomeMain() {
         ref={(el) => {
           sectionRefs.current.team = el;
         }}
-        className="pm-home-section bg-[#F1EEE9] px-4 pb-28 pt-6 md:pb-36"
+        className="pm-home-section bg-[#EBEAE7] px-4 pb-28 pt-6 md:pb-36"
         aria-labelledby="home-team-heading"
       >
         <h2 id="home-team-heading" className="sr-only">
@@ -601,7 +601,7 @@ export default function HomeMain() {
         ref={(el) => {
           sectionRefs.current.gallerie = el;
         }}
-        className="pm-home-section bg-[#F1EEE9] pb-0 pt-6"
+        className="pm-home-section bg-[#EBEAE7] pb-0 pt-6"
         aria-label="Galerie"
       >
         <div className="w-full">
@@ -696,7 +696,7 @@ export default function HomeMain() {
                       {group.map((src) => (
                         <div
                           key={src}
-                          className="relative aspect-[3/4] w-full overflow-hidden bg-[#F1EEE9]"
+                          className="relative aspect-[3/4] w-full overflow-hidden bg-[#EBEAE7]"
                           onContextMenu={blockImageDownloadInteraction}
                           onDragStart={blockImageDownloadInteraction}
                         >
@@ -717,7 +717,7 @@ export default function HomeMain() {
                         Array.from({ length: 3 - group.length }).map((_, idx) => (
                           <div
                             key={`empty-${groupIdx}-${idx}`}
-                            className="hidden aspect-[3/4] w-full bg-[#F1EEE9] lg:block"
+                            className="hidden aspect-[3/4] w-full bg-[#EBEAE7] lg:block"
                             aria-hidden
                           />
                         ))}
@@ -835,7 +835,7 @@ export default function HomeMain() {
       </section>
 
       {/* Bildstreifen + 2er-Grid (wie Screenshot, vor Footer) */}
-      <section className="bg-[#F1EEE9]" aria-label="Impressionen">
+      <section className="bg-[#EBEAE7]" aria-label="Impressionen">
         <div className="relative h-92 w-full overflow-hidden sm:h-80 md:h-[460px] lg:h-[820px]">
           <Image
             src="/salon.png"

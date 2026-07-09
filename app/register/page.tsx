@@ -52,7 +52,7 @@ function RegisterForm() {
   if (success) {
     return (
       <main className="min-h-screen bg-[#E4E1DC] px-3 py-4 sm:px-6 sm:py-8">
-        <div className="relative mx-auto w-full max-w-[650px] rounded-[24px] bg-[#F5F2ED] px-10 py-16 text-center text-[#1F1917] sm:rounded-[18px] sm:px-14">
+        <div className="relative mx-auto w-full max-w-[650px] rounded-[24px] bg-[#EBEAE7] px-10 py-16 text-center text-[#1F1917] sm:rounded-[18px] sm:px-14">
           <button
             type="button"
             onClick={() => router.back()}
@@ -97,7 +97,7 @@ function RegisterForm() {
 
   return (
     <main className="min-h-screen bg-[#E4E1DC] px-3 py-4 sm:px-6 sm:py-8">
-      <div className="relative mx-auto w-full max-w-[650px] rounded-[24px] bg-[#F5F2ED] px-12 pb-12 pt-20 text-[#1F1917] sm:rounded-[18px] sm:px-14 sm:pb-12 sm:pt-20">
+      <div className="relative mx-auto w-full max-w-[650px] rounded-[24px] bg-[#EBEAE7] px-12 pb-12 pt-20 text-[#1F1917] sm:rounded-[18px] sm:px-14 sm:pb-12 sm:pt-20">
         <button
           type="button"
           onClick={() => router.back()}

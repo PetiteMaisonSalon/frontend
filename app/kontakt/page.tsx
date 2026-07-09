@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function KontaktPage() {
   return (
-    <main>
+    <main className="bg-[#EBEAE7]">
       <section className="w-full px-4 pb-24 pt-8 sm:pt-12 lg:min-h-[calc(100svh-4.75rem)] lg:pb-12 lg:pt-40">
         {/* Obere Zeile: Text links · Kontakt rechts */}
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between">

@@ -71,7 +71,7 @@ export default function SalonPage() {
       </section>
 
       {/* Unsere Leistungen – Salonseite 1 */}
-      <section className="bg-[#F5F2ED] py-20 md:py-28">
+      <section className="bg-[#EBEAE7] py-20 md:py-28">
         <div className="mx-auto max-w-7xl px-6">
           <h2 className="text-h2 text-[#2D2D2D]">
             Unsere Leistungen
@@ -201,7 +201,7 @@ export default function SalonPage() {
       </section>
 
       {/* Termine – Salonseite 3 */}
-      <section className="border-t border-[#E8E4DF] bg-[#F5F2ED] py-20 md:py-24">
+      <section className="border-t border-[#E8E4DF] bg-[#EBEAE7] py-20 md:py-24">
         <div className="mx-auto max-w-2xl px-6 text-center">
           <h2 className="text-h2 text-[#2D2D2D]">
             Termine

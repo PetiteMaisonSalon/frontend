@@ -6,7 +6,7 @@ export const metadata = {
 
 export default function DatenschutzPage() {
   return (
-    <main className="bg-white">
+    <main className="bg-[#EBEAE7]">
       <section className="border-b border-[#E8E4DF]">
         <div className="mx-auto max-w-4xl px-6 py-16 md:py-20">
           <h1 className="text-h1 text-[#2D2D2D]">
@@ -44,7 +44,7 @@ export default function DatenschutzPage() {
         </div>
       </section>
 
-      <section className="bg-[#F9F7F3]">
+      <section className="bg-[#EBEAE7]">
         <div className="mx-auto max-w-4xl space-y-10 px-6 py-12 text-[#2D2D2D]/85">
           <section>
             <h2 className="text-h2 text-[#2D2D2D]">

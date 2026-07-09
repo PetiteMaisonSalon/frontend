@@ -157,7 +157,7 @@ export default function LeistungenClient() {
   };
 
   return (
-    <main className="bg-[#F1EEE9] pb-16 font-normal [font-family:var(--font-public-sans)]">
+    <main className="bg-[#EBEAE7] pb-16 font-normal [font-family:var(--font-public-sans)]">
       <section>
         <div className="mx-auto max-w-7xl px-6 pb-8 pt-16 md:pt-20">
           <h1

@@ -18,7 +18,7 @@ function ResetPasswordForm() {
 
   if (!token) {
     return (
-      <main className="min-h-screen bg-[#F5F2ED] py-16">
+      <main className="min-h-screen bg-[#EBEAE7] py-16">
         <div className="mx-auto max-w-md px-6">
           <h1 className="text-h2 text-[#2D2D2D]">
             Passwort zurücksetzen
@@ -59,7 +59,7 @@ function ResetPasswordForm() {
   };
 
   return (
-    <main className="min-h-screen bg-[#F5F2ED] py-16">
+    <main className="min-h-screen bg-[#EBEAE7] py-16">
       <div className="mx-auto max-w-md px-6">
         <h1 className="text-h2 text-[#2D2D2D]">
           Passwort zurücksetzen
@@ -124,7 +124,7 @@ export default function ResetPasswordPage() {
   return (
     <Suspense
       fallback={
-        <main className="flex min-h-screen items-center justify-center bg-[#F5F2ED]">
+        <main className="flex min-h-screen items-center justify-center bg-[#EBEAE7]">
           <p className="text-[#2D2D2D]/70">Laden…</p>
         </main>
       }

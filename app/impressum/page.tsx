@@ -5,7 +5,7 @@ export const metadata = {
 
 export default function ImpressumPage() {
   return (
-    <main className="bg-white">
+    <main className="bg-[#EBEAE7]">
       <section className="border-b border-[#E8E4DF]">
         <div className="mx-auto max-w-4xl px-6 py-16 md:py-20">
           <h1 className="text-h1 text-[#2D2D2D]">

@@ -29,12 +29,13 @@
   --petite-braun-light: #7A5C4D;
   --petite-blush: #D4A5A5;
   --petite-terracotta: #C9A86C;
-  --petite-cream: #F5F2ED;
+  --petite-cream: #EBEAE7;
+  --petite-page: #EBEAE7;
   --petite-charcoal: #2D2D2D;
 }
 
 :root {
-  --background: #F5F2ED;
+  --background: #EBEAE7;
   --foreground: #2D2D2D;
 }
 

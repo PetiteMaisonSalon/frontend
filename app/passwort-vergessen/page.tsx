@@ -26,7 +26,7 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#F5F2ED] py-16">
+    <main className="min-h-screen bg-[#EBEAE7] py-16">
       <div className="mx-auto max-w-md px-6">
         <h1 className="text-h2 text-[#2D2D2D]">
           Passwort vergessen

@@ -20,9 +20,9 @@ const homeSubNavItems = [
   { id: "aveda" as const, href: "#aveda", label: "Aveda" },
 ];
 const homeSubNavBgById: Record<(typeof homeSubNavItems)[number]["id"], string> = {
-  salon: "#F1EEE9",
-  team: "#F1EEE9",
-  gallerie: "#F1EEE9",
+  salon: "#EBEAE7",
+  team: "#EBEAE7",
+  gallerie: "#EBEAE7",
   aveda: "#BEA8FF",
 };
 const OPEN_ADMIN_CREATE_EVENT = "admin:create-appointment";
@@ -62,7 +62,7 @@ export default function Header() {
   const navItemsToShow = useAdminLayout ? [] : mainNavItems;
 
   const [homeHeroVisible, setHomeHeroVisible] = useState(true);
-  const [homeSectionBg, setHomeSectionBg] = useState<string>("#F1EEE9");
+  const [homeSectionBg, setHomeSectionBg] = useState<string>("#EBEAE7");
   const [homeSubActiveId, setHomeSubActiveId] = useState<string>("salon");
   const showHomeSubmenu = isHome && !homeHeroVisible && !isAdminUser;
 
@@ -127,7 +127,7 @@ export default function Header() {
     ? homeHeroVisible
       ? "border-0"
       : "border-b border-black/10"
-    : "border-b border-[#E8E4DF]/50 bg-[#F5F2ED]/95 backdrop-blur-sm";
+    : "border-b border-[#E8E4DF]/50 bg-[#EBEAE7]/95 backdrop-blur-sm";
 
   const isHomeHero = isHome && homeHeroVisible;
 
@@ -434,7 +434,7 @@ export default function Header() {
 
       {/* Mobile Menu — Admin */}
       {menuOpen && useAdminLayout && (
-        <div className="border-t border-black/10 bg-[#F5F2ED] px-6 py-6 md:hidden">
+        <div className="border-t border-black/10 bg-[#EBEAE7] px-6 py-6 md:hidden">
           <div className="flex flex-col gap-3">
             <button
               type="button"

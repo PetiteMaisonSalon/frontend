@@ -310,7 +310,7 @@ function AccountPageContent() {
 
   if (authLoading) {
     return (
-      <main className="grid min-h-screen place-items-center bg-[#F2F0EB] px-4 py-20 sm:px-6">
+      <main className="grid min-h-screen place-items-center bg-[#EBEAE7] px-4 py-20 sm:px-6">
         <div className="flex flex-col items-center gap-3">
           <span className="h-10 w-10 animate-spin rounded-full border-2 border-[#2D2D2D]/15 border-t-[#2D2D2D]/55" />
           <p className="text-sm text-[#2D2D2D]/60">Konto wird geladen…</p>
@@ -321,7 +321,7 @@ function AccountPageContent() {
 
   if (!user) {
     return (
-      <main className="mx-auto max-w-4xl bg-[#F2F0EB] px-4 py-12 sm:px-6">
+      <main className="mx-auto max-w-4xl bg-[#EBEAE7] px-4 py-12 sm:px-6">
         <h1 className="font-display text-h1 text-[#2D2D2D]">Dein Profil</h1>
         <p className="mt-3 text-[#2D2D2D]/80">Bitte melde dich an, um dein Profil zu verwalten.</p>
         <Link
@@ -360,7 +360,7 @@ function AccountPageContent() {
     "rounded-full bg-[#2D2D2D] px-5 py-2 text-sm font-medium text-white hover:bg-[#1a1a1a] disabled:opacity-50";
 
   return (
-    <main className="min-h-screen bg-[#F2F0EB] pb-16 pt-10 sm:pt-14">
+    <main className="min-h-screen bg-[#EBEAE7] pb-16 pt-10 sm:pt-14">
       <div className="mx-auto grid max-w-[1180px] items-start gap-12 px-4 sm:gap-14 sm:px-6 lg:grid-cols-[minmax(200px,280px)_minmax(0,1fr)] lg:gap-16 lg:px-8">
         <aside className="lg:sticky lg:top-28 lg:self-start">
           <div className="mx-auto flex w-full max-w-[280px] flex-col lg:mx-0">
@@ -1013,7 +1013,7 @@ export default function AccountPage() {
   return (
     <Suspense
       fallback={
-        <main className="grid min-h-screen place-items-center bg-[#F2F0EB] px-4 py-20 sm:px-6">
+        <main className="grid min-h-screen place-items-center bg-[#EBEAE7] px-4 py-20 sm:px-6">
           <div className="flex flex-col items-center gap-3">
             <span className="h-10 w-10 animate-spin rounded-full border-2 border-[#2D2D2D]/15 border-t-[#2D2D2D]/55" />
             <p className="text-sm text-[#2D2D2D]/60">Konto wird geladen…</p>

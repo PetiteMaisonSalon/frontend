@@ -29,7 +29,7 @@ function VerifyContent() {
   }, [token]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-[#F5F2ED] px-6">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-[#EBEAE7] px-6">
       {status === "loading" && (
         <p className="text-[#2D2D2D]/70">E-Mail wird bestätigt…</p>
       )}
@@ -72,7 +72,7 @@ function VerifyContent() {
 export default function VerifyEmailPage() {
   return (
     <Suspense fallback={
-      <main className="flex min-h-screen items-center justify-center bg-[#F5F2ED]">
+      <main className="flex min-h-screen items-center justify-center bg-[#EBEAE7]">
         <p className="text-[#2D2D2D]/70">Laden…</p>
       </main>
     }>

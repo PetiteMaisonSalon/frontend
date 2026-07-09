@@ -47,7 +47,7 @@ function StornoContent() {
 
   if (loading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#F5F2ED]">
+      <main className="flex min-h-screen items-center justify-center bg-[#EBEAE7]">
         <p className="text-[#2D2D2D]/70">Laden…</p>
       </main>
     );
@@ -143,7 +143,7 @@ function StornoContent() {
 export default function StornoPage() {
   return (
     <Suspense fallback={
-      <main className="flex min-h-screen items-center justify-center bg-[#F5F2ED]">
+      <main className="flex min-h-screen items-center justify-center bg-[#EBEAE7]">
         <p className="text-[#2D2D2D]/70">Laden…</p>
       </main>
     }>

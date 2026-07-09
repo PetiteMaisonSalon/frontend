@@ -40,7 +40,7 @@ export default function AvedaPage() {
       </section>
 
       {/* Philosophie */}
-      <section className="bg-[#F5F2ED] py-20 md:py-28">
+      <section className="bg-[#EBEAE7] py-20 md:py-28">
         <div className="mx-auto max-w-3xl px-6">
           <h2 className="text-h2 font-medium tracking-tight text-[#2D2D2D]">
             Die Aveda-Philosophie
