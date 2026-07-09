@@ -1812,7 +1812,7 @@ export default function AdminPage() {
                     }))
                   }
                   options={[
-                    { value: "select", label: "Auswählen" },
+                    { value: "select", label: "Buchen" },
                     { value: "call", label: "Anrufen" },
                   ]}
                   placeholder="Auswählen…"

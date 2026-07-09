@@ -63,7 +63,7 @@ function TreatwellBookButton({ className }: { className?: string }) {
       rel="noopener noreferrer"
       className={className ?? treatwellBtnClass}
     >
-      Auswählen
+      Buchen
     </a>
   );
 }
