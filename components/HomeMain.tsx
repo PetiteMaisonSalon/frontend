@@ -279,8 +279,8 @@ export default function HomeMain() {
       {/* Salon-Story unten: Text links · Bild rechts */}
       <section id="salon-info" className="bg-[#EBEAE7] px-4 pb-24 pt-8 md:pb-32 md:pt-12">
         <div className="flex flex-col gap-14 lg:flex-row lg:items-end lg:justify-between">
-          <div className="shrink-0 lg:max-w-[34rem]">
-            <p className="text-copy leading-relaxed text-[#2D2D2D]/85">
+          <div className="shrink-0 lg:max-w-[29rem]">
+            <p className="text-copy leading-relaxed text-[#1C1612]/100">
               Uns ist wichtig, dass du dich bei uns gut aufgehoben fühlst. Wir nehmen
               uns Zeit, stellen Fragen und beraten individuell. Jeder Termin ist bewusst
               so geplant, dass deine Wünsche im Mittelpunkt stehen und wir unsere Arbeit
@@ -761,12 +761,12 @@ export default function HomeMain() {
               sizes="100vw"
             />
           </div>
-          <p className="text-intro text-[#2D2D2D]">
+          <p className="text-intro text-[#2D2D2D] lg:max-w-[29rem]">
             Aveda wurde mit der Vision gegründet, Schönheit und Nachhaltigkeit zu verbinden.
             Die Marke setzt auf pflanzliche Inhaltsstoffe, recycelbare Verpackungen und einen
             respektvollen Umgang mit der Natur.
           </p>
-          <p className="text-copy leading-relaxed text-[#2D2D2D]/85">
+          <p className="text-copy leading-relaxed text-[#1C1612]/100">
             Diese Haltung passt zu unserer Arbeit: verantwortungsvoll, achtsam und mit echtem
             Anspruch an Qualität. Wir sind stolz darauf, dir Produkte anbieten zu können, die genau
             das widerspiegeln – und freuen uns, diese Werte gemeinsam mit unseren Kunden zu leben.
