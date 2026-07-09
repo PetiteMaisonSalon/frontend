@@ -15,7 +15,7 @@ export default function KontaktPage() {
       <section className="w-full px-4 pb-24 pt-8 sm:pt-12 lg:min-h-[calc(100svh-4.75rem)] lg:pb-12 lg:pt-12 lg:mt-40">
         {/* Obere Zeile: Text links · Kontakt rechts */}
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between">
-          <div className="font-display shrink-0 text-[#2D2D2D] lg:max-w-[48rem]">
+          <div className="font-display shrink-0 text-[#2D2D2D] lg:max-w-[44rem]">
             <p className="text-[clamp(2.5rem,3.2vw,2.5rem)] leading-[1.12] tracking-[-0.02em]">
               Wir freuen uns darauf, dich bei uns begrüßen zu dürfen. Deinen Termin kannst du jederzeit online
               oder telefonisch vereinbaren.
