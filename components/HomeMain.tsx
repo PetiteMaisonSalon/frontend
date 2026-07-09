@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import BookingLink from "@/components/BookingLink";
 
 type SectionTheme = {
   id: "salon" | "team" | "gallerie"| "aveda" ;
@@ -144,12 +145,11 @@ export default function HomeMain() {
             <br className="hidden md:block" />
             Vertrauenssache.
           </h1>
-          <Link
-            href="/buchung"
+          <BookingLink
             className="text-copy mt-10 inline-block rounded-full border border-white bg-transparent px-10 py-4 font-medium text-white transition hover:bg-white/10"
           >
             Jetzt buchen
-          </Link>
+          </BookingLink>
         </div>
       </section>
 
@@ -286,12 +286,11 @@ export default function HomeMain() {
               so geplant, dass deine Wünsche im Mittelpunkt stehen und wir unsere Arbeit
               mit Ruhe und Sorgfalt ausführen können.
             </p>
-            <Link
-              href="/buchung"
+            <BookingLink
               className="text-copy mt-8 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
             >
               Jetzt Termin buchen
-            </Link>
+            </BookingLink>
           </div>
           <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-[#F1EEE9] lg:w-[min(32vw,26rem)]">
             <Image
@@ -319,12 +318,11 @@ export default function HomeMain() {
             immer individuell abgestimmt auf dein Haar, deinen Typ und deinen Alltag.
           </h2>
           <div className="mt-10 flex items-center justify-center gap-8 text-copy-sm">
-            <Link
-              href="/buchung"
+            <BookingLink
               className="font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
             >
               Jetzt buchen
-            </Link>
+            </BookingLink>
             <Link
               href="/leistungen"
               className="font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
@@ -439,12 +437,11 @@ export default function HomeMain() {
                 und für das Vertrauen, das mir entgegengebracht wird. Diese Haltung prägt meine tägliche Arbeit
                 und den Salon als Ganzes.
               </p>
-              <Link
-                href="/buchung"
+              <BookingLink
                 className="text-copy-sm mt-6 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
               >
                 Jetzt buchen
-              </Link>
+              </BookingLink>
             </div>
           </article>
 
@@ -457,12 +454,11 @@ export default function HomeMain() {
                 31 Jahre für den Starfriseur Jaques Le Coz gearbeitet. Maria isst gerne Tapas und tanzt
                 leidenschaftlich Rumba. Seit Anfang 2022 gehört sie zum Team dazu.
               </p>
-              <Link
-                href="/buchung"
+              <BookingLink
                 className="text-copy-sm mt-5 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
               >
                 Jetzt buchen
-              </Link>
+              </BookingLink>
             </div>
             <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-[17.5rem]">
               <Image
@@ -499,12 +495,11 @@ export default function HomeMain() {
                 ihren Haaren. Zwölf Jahre lang hat sie beim Starfriseur Jaques Le Coz gearbeitet und ist seit
                 Anfang 2022 bei Petite Maison.
               </p>
-              <Link
-                href="/buchung"
+              <BookingLink
                 className="text-copy-sm mt-5 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
               >
                 Jetzt buchen
-              </Link>
+              </BookingLink>
             </div>
           </article>
 
@@ -517,12 +512,11 @@ export default function HomeMain() {
                 auf zwei Kontinenten, ist er seit über 20 Jahren Friseur und seit Ende 2025 bei Petite Maison.
                 Als zertifizierter Aveda-Spezialist schwört er auf natürliche, nachhaltige Produkte.
               </p>
-              <Link
-                href="/buchung"
+              <BookingLink
                 className="text-copy-sm mt-5 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
               >
                 Jetzt buchen
-              </Link>
+              </BookingLink>
             </div>
             <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-[17.5rem]">
               <Image
@@ -560,12 +554,11 @@ export default function HomeMain() {
                 arbeitete sie in Wien. Seit November 2024 ist sie bei Petite Maison. Ihr Hund Cooper gehört im
                 Salon quasi zum Team.
               </p>
-              <Link
-                href="/buchung"
+              <BookingLink
                 className="text-copy-sm mt-5 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
               >
                 Jetzt buchen
-              </Link>
+              </BookingLink>
             </div>
           </article>
 
@@ -579,12 +572,11 @@ export default function HomeMain() {
                 libanesische Flöte, tritt mit seiner eigenen Band bei Festivals und Hochzeiten auf und war
                 bereits im libanesischen Fernsehen zu sehen.
               </p>
-              <Link
-                href="/buchung"
+              <BookingLink
                 className="text-copy-sm mt-5 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
               >
                 Jetzt buchen
-              </Link>
+              </BookingLink>
             </div>
             <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-[17.5rem]">
               <Image
@@ -620,12 +612,11 @@ export default function HomeMain() {
                 Cooper ist spezialisiert auf gute Laune und ist als Sarahs treuer Begleiter fester Bestandteil
                 des Salons.
               </p>
-              <Link
-                href="/buchung"
+              <BookingLink
                 className="text-copy-sm mt-5 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
               >
                 Jetzt buchen
-              </Link>
+              </BookingLink>
             </div>
           </article>
         </div>

@@ -4,6 +4,8 @@ import { startTransition, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "./AuthContext";
+import BookingLink from "./BookingLink";
+import { SHOW_CUSTOMER_AUTH } from "@/lib/siteConfig";
 
 /** Hauptnavigation wie Screenshot: nur Leistungen + Kontakt (Salon/Team/Aveda im Submenü auf der Startseite) */
 const mainNavItems = [
@@ -170,17 +172,14 @@ export default function Header() {
 
   const isNavActive = (href: string) => {
     if (!pathname) return false;
-    // „Leistungen“ soll auch auf /buchung als aktiv gelten (weil Buchung im gleichen Flow läuft).
-    if (href === "/leistungen") return pathname.startsWith("/leistungen") || pathname.startsWith("/buchung");
+    if (href === "/leistungen") return pathname.startsWith("/leistungen");
     return pathname === href;
   };
 
   const isMobileNavActive = (href: string) => {
     if (!pathname) return false;
     if (href === "/#salon") return pathname === "/";
-    if (href === "/leistungen") {
-      return pathname.startsWith("/leistungen") || pathname.startsWith("/buchung");
-    }
+    if (href === "/leistungen") return pathname.startsWith("/leistungen");
     return pathname === href;
   };
 
@@ -212,78 +211,105 @@ export default function Header() {
 
   const desktopAuthActions = (
     <>
-      {user ? (
-        <div className="flex items-center gap-4">
-          {!useAdminLayout ? (
+      {SHOW_CUSTOMER_AUTH ? (
+        user ? (
+          <div className="flex items-center gap-4">
+            {!useAdminLayout ? (
+              <Link
+                href="/konto"
+                className={
+                  isHomeHero
+                    ? `whitespace-nowrap ${outlineBtnHero}`
+                    : `whitespace-nowrap ${outlineBtnLight}`
+                }
+              >
+                Dein Profil
+              </Link>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={openAdminCreateModal}
+                  className="whitespace-nowrap rounded-full bg-[#4A5D4A] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#3A4A3A]"
+                >
+                  Neuen Termin eintragen
+                </button>
+                <button
+                  type="button"
+                  onClick={logout}
+                  className="whitespace-nowrap rounded-full border border-[#D4A5A5] px-4 py-2 text-sm font-semibold text-[#5C4033] transition hover:bg-[#D4A5A5]/20"
+                >
+                  Abmelden
+                </button>
+              </>
+            )}
+            {!useAdminLayout && (
+              <BookingLink
+                className={
+                  isHomeHero
+                    ? `whitespace-nowrap ${outlineBtnHero}`
+                    : `whitespace-nowrap ${outlineBtnLight}`
+                }
+              >
+                Jetzt buchen
+              </BookingLink>
+            )}
+          </div>
+        ) : (
+          <div className="flex items-center gap-4">
             <Link
-              href="/konto"
+              href="/login"
               className={
                 isHomeHero
-                  ? `whitespace-nowrap ${outlineBtnHero}`
-                  : `whitespace-nowrap ${outlineBtnLight}`
+                  ? "whitespace-nowrap text-copy font-medium text-white transition hover:text-white/80"
+                  : !isCmsArea
+                    ? "whitespace-nowrap text-copy font-medium text-[#2D2D2D] transition hover:opacity-80"
+                    : "whitespace-nowrap rounded-full border-2 border-[#4A5D4A] px-5 py-2.5 text-sm font-medium text-[#4A5D4A] transition hover:bg-[#4A5D4A]/10"
               }
             >
-              Dein Profil
+              Login
             </Link>
-          ) : (
-            <>
-              <button
-                type="button"
-                onClick={openAdminCreateModal}
-                className="whitespace-nowrap rounded-full bg-[#4A5D4A] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#3A4A3A]"
+            {!isCmsArea && (
+              <BookingLink
+                className={
+                  isHomeHero
+                    ? `whitespace-nowrap ${outlineBtnHero}`
+                    : `whitespace-nowrap ${outlineBtnLight}`
+                }
               >
-                Neuen Termin eintragen
-              </button>
-              <button
-                type="button"
-                onClick={logout}
-                className="whitespace-nowrap rounded-full border border-[#D4A5A5] px-4 py-2 text-sm font-semibold text-[#5C4033] transition hover:bg-[#D4A5A5]/20"
-              >
-                Abmelden
-              </button>
-            </>
-          )}
-          {!useAdminLayout && (
-            <Link
-              href="/buchung"
-              className={
-                isHomeHero
-                  ? `whitespace-nowrap ${outlineBtnHero}`
-                  : `whitespace-nowrap ${outlineBtnLight}`
-              }
-            >
-              Jetzt buchen
-            </Link>
-          )}
-        </div>
-      ) : (
+                Jetzt buchen
+              </BookingLink>
+            )}
+          </div>
+        )
+      ) : useAdminLayout && user ? (
         <div className="flex items-center gap-4">
-          <Link
-            href="/login"
-            className={
-              isHomeHero
-                ? "whitespace-nowrap text-copy font-medium text-white transition hover:text-white/80"
-                : !isCmsArea
-                  ? "whitespace-nowrap text-copy font-medium text-[#2D2D2D] transition hover:opacity-80"
-                : "whitespace-nowrap rounded-full border-2 border-[#4A5D4A] px-5 py-2.5 text-sm font-medium text-[#4A5D4A] transition hover:bg-[#4A5D4A]/10"
-            }
+          <button
+            type="button"
+            onClick={openAdminCreateModal}
+            className="whitespace-nowrap rounded-full bg-[#4A5D4A] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#3A4A3A]"
           >
-           Login
-          </Link>
-          {!isCmsArea && (
-            <Link
-              href="/buchung"
-              className={
-                isHomeHero
-                  ? `whitespace-nowrap ${outlineBtnHero}`
-                  : `whitespace-nowrap ${outlineBtnLight}`
-              }
-            >
-              Jetzt buchen
-            </Link>
-          )}
+            Neuen Termin eintragen
+          </button>
+          <button
+            type="button"
+            onClick={logout}
+            className="whitespace-nowrap rounded-full border border-[#D4A5A5] px-4 py-2 text-sm font-semibold text-[#5C4033] transition hover:bg-[#D4A5A5]/20"
+          >
+            Abmelden
+          </button>
         </div>
-      )}
+      ) : !isCmsArea ? (
+        <BookingLink
+          className={
+            isHomeHero
+              ? `whitespace-nowrap ${outlineBtnHero}`
+              : `whitespace-nowrap ${outlineBtnLight}`
+          }
+        >
+          Jetzt buchen
+        </BookingLink>
+      ) : null}
     </>
   );
 
@@ -395,13 +421,12 @@ export default function Header() {
             </nav>
 
             <div className="mt-16">
-              <Link
-                href="/buchung"
+              <BookingLink
                 onClick={closeMobileMenu}
                 className="text-copy font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
               >
                 Jetzt buchen
-              </Link>
+              </BookingLink>
             </div>
           </div>
         </div>

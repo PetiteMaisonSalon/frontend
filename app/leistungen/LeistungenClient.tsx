@@ -1,24 +1,10 @@
 "use client";
 
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { startTransition, useEffect, useMemo, useRef, useState } from "react";
-import { getServices } from "@/lib/api";
-import BuchungsFlow from "@/components/BuchungsFlow";
+import { useMemo, useState } from "react";
+import { STATIC_SERVICES, type StaticService } from "@/lib/staticServices";
+import { TREATWELL_BOOKING_URL } from "@/lib/siteConfig";
 
-type Service = {
-  _id: string;
-  category: "women" | "men" | "unisex";
-  name: string;
-  description?: string;
-  durationMinutes: number;
-  priceEur: number;
-  displaySection?: string;
-  displayOrder?: number;
-  groupKey?: string;
-  groupDurationLabel?: string;
-  ctaType?: "select" | "call";
-};
+type Service = StaticService;
 
 type VariantEntry = {
   id: string;
@@ -40,6 +26,9 @@ const WOMEN_SECTION_ORDER = [
   "SCHNITT & STYLING",
   "COLORATIONEN (INKL. STYLING)",
 ] as const;
+
+const treatwellBtnClass =
+  "inline-flex w-full items-center justify-center rounded-full border border-[#2D2D2D]/55 px-4 py-[7px] text-[13px] font-medium text-[#2D2D2D] transition hover:bg-[#2D2D2D]/5 md:w-auto";
 
 function extractVariantLabel(name: string) {
   const match = name.match(/\(([^)]+)\)\s*$/);
@@ -66,43 +55,23 @@ function formatPrice(value: number) {
   return `${value}€`;
 }
 
-function selectedServiceTitle(s: Service) {
-  const match = s.name.match(/\(([^)]+)\)\s*$/);
-  const suffix = match ? match[1].trim() : "";
-  const title = baseTitle(s.name);
-
-  return suffix ? `${toDisplayTitle(title)} (${suffix})` : toDisplayTitle(title);
+function TreatwellBookButton({ className }: { className?: string }) {
+  return (
+    <a
+      href={TREATWELL_BOOKING_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={className ?? treatwellBtnClass}
+    >
+      Auswählen
+    </a>
+  );
 }
 
 export default function LeistungenClient() {
-  const searchParams = useSearchParams();
-  const [services, setServices] = useState<Service[]>([]);
+  const services = STATIC_SERVICES;
   const [activeGender, setActiveGender] = useState<"women" | "men">("women");
-  const [selectedServiceIds, setSelectedServiceIds] = useState<string[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<Record<string, boolean>>({});
-  const urlServiceSelectionApplied = useRef(false);
-
-  useEffect(() => {
-    getServices()
-      .then((data) => setServices(Array.isArray(data) ? data : []))
-      .catch(() => setServices([]));
-  }, []);
-
-  useEffect(() => {
-    if (searchParams.has("booking") || searchParams.has("rescheduleToken")) {
-      urlServiceSelectionApplied.current = false;
-      return;
-    }
-    if (urlServiceSelectionApplied.current) return;
-    const raw = searchParams.get("serviceIds");
-    if (!raw) return;
-    const ids = raw.split(",").map((s) => s.trim()).filter(Boolean);
-    if (ids.length === 0) return;
-    startTransition(() => {
-      setSelectedServiceIds(ids);
-      urlServiceSelectionApplied.current = true;
-    });
-  }, [searchParams]);
 
   const womenSections = useMemo(() => {
     const women = services
@@ -183,46 +152,12 @@ export default function LeistungenClient() {
       }));
   }, [services]);
 
-  const selectedServices = useMemo(() => {
-    const map = new Map(services.map((s) => [s._id, s] as const));
-    return selectedServiceIds.map((id) => map.get(id)).filter(Boolean) as Service[];
-  }, [services, selectedServiceIds]);
-
-  const totalDuration = selectedServices.reduce((sum, s) => sum + s.durationMinutes, 0);
-  const totalPrice = selectedServices.reduce((sum, s) => sum + s.priceEur, 0);
-
-  const toggleService = (serviceId: string) => {
-    setSelectedServiceIds((prev) =>
-      prev.includes(serviceId) ? prev.filter((id) => id !== serviceId) : [...prev, serviceId]
-    );
-  };
-
-  const removeService = (serviceId: string) => {
-    setSelectedServiceIds((prev) => prev.filter((id) => id !== serviceId));
-  };
-
-  const bookingHref =
-    selectedServiceIds.length > 0
-      ? `/buchung?booking=1&serviceIds=${encodeURIComponent(selectedServiceIds.join(","))}`
-      : "/buchung?booking=1";
-
   const toggleExpanded = (key: string) => {
     setExpandedKeys((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const showBookingFlow =
-    searchParams.has("booking") || searchParams.has("rescheduleToken");
-
-  if (showBookingFlow) {
-    return (
-      <main className="min-h-screen bg-[#F1EEE9] px-2 py-4 md:px-4 md:py-6">
-        <BuchungsFlow />
-      </main>
-    );
-  }
-
   return (
-    <main className="bg-[#F1EEE9] pb-36 font-normal [font-family:var(--font-public-sans)]">
+    <main className="bg-[#F1EEE9] pb-16 font-normal [font-family:var(--font-public-sans)]">
       <section>
         <div className="mx-auto max-w-7xl px-6 pb-8 pt-16 md:pt-20">
           <h1
@@ -232,7 +167,7 @@ export default function LeistungenClient() {
             Unsere Leistungen
           </h1>
           <p className="mt-4 max-w-xl text-[13px] leading-relaxed text-[#2D2D2D]/95">
-            Wir bieten Haarschnitte, Farb- und Pflegebehandlungen für Frauen und Männer an –immer
+            Wir bieten Haarschnitte, Farb- und Pflegebehandlungen für Frauen und Männer an – immer
             individuell abgestimmt auf dein Haar, deinen Typ und deinen Alltag.
           </p>
           <div className="mt-10 flex items-center gap-2">
@@ -302,11 +237,11 @@ export default function LeistungenClient() {
                                   Auf Anfrage (telefonisch)
                                 </span>
                               ) : hasVariants ? (
-                                <span className="text-h3 font-display text-[#2D2D2D] tabular-nums">
+                                <span className="text-h3 font-display tabular-nums text-[#2D2D2D]">
                                   ab {formatPrice(minPrice)}
                                 </span>
                               ) : (
-                                <span className="text-h3 font-display text-[#2D2D2D] tabular-nums">
+                                <span className="text-h3 font-display tabular-nums text-[#2D2D2D]">
                                   {formatPrice(minPrice)}
                                 </span>
                               )}
@@ -335,17 +270,7 @@ export default function LeistungenClient() {
                                 </svg>
                               </button>
                             ) : (
-                              <button
-                                type="button"
-                                onClick={() => toggleService(entry.variants[0].id)}
-                                className={`inline-flex w-full items-center justify-center rounded-full border px-4 py-[7px] text-[13px] font-medium md:w-auto transition ${
-                                  selectedServiceIds.includes(entry.variants[0].id)
-                                    ? "border-[#2D2D2D] bg-[#2D2D2D] text-white"
-                                    : "border-[#2D2D2D]/55 bg-transparent text-[#2D2D2D] hover:bg-[#2D2D2D]/5"
-                                }`}
-                              >
-                                {selectedServiceIds.includes(entry.variants[0].id) ? "Ausgewählt" : "Auswählen"}
-                              </button>
+                              <TreatwellBookButton />
                             )}
                           </div>
                           {hasVariants && isExpanded && (
@@ -362,21 +287,11 @@ export default function LeistungenClient() {
                                     </p>
                                   </div>
                                   <div className="md:text-right">
-                                    <span className="text-h3 font-display text-[#2D2D2D] tabular-nums">
+                                    <span className="text-h3 font-display tabular-nums text-[#2D2D2D]">
                                       {formatPrice(variant.priceEur)}
                                     </span>
                                   </div>
-                                  <button
-                                    type="button"
-                                    onClick={() => toggleService(variant.id)}
-                                    className={`inline-flex w-full items-center justify-center rounded-full border px-4 py-[7px] text-[13px] font-medium md:w-auto transition ${
-                                      selectedServiceIds.includes(variant.id)
-                                        ? "border-[#2D2D2D] bg-[#2D2D2D] text-white"
-                                        : "border-[#2D2D2D]/55 bg-transparent text-[#2D2D2D] hover:bg-[#2D2D2D]/5"
-                                    }`}
-                                  >
-                                    {selectedServiceIds.includes(variant.id) ? "Ausgewählt" : "Auswählen"}
-                                  </button>
+                                  <TreatwellBookButton />
                                 </div>
                               ))}
                             </div>
@@ -400,21 +315,11 @@ export default function LeistungenClient() {
                         </p>
                       </div>
                       <div className="md:text-right">
-                        <span className="text-h3 font-display text-[#2D2D2D] tabular-nums">
+                        <span className="text-h3 font-display tabular-nums text-[#2D2D2D]">
                           {formatPrice(item.priceEur)}
                         </span>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => toggleService(item.id)}
-                        className={`inline-flex w-full items-center justify-center rounded-full border px-4 py-[7px] text-[13px] font-medium md:w-auto transition ${
-                          selectedServiceIds.includes(item.id)
-                            ? "border-[#2D2D2D] bg-[#2D2D2D] text-white"
-                            : "border-[#2D2D2D]/55 bg-transparent text-[#2D2D2D] hover:bg-[#2D2D2D]/5"
-                        }`}
-                      >
-                        {selectedServiceIds.includes(item.id) ? "Ausgewählt" : "Auswählen"}
-                      </button>
+                      <TreatwellBookButton />
                     </div>
                   </div>
                 );
@@ -423,45 +328,6 @@ export default function LeistungenClient() {
           </div>
         </div>
       </section>
-
-
-      {selectedServiceIds.length > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#2D2D2D]/35 bg-[#EDEBE6]/95 px-4 py-4 backdrop-blur !bg-[#BEA8FF]">
-          <div className="mx-auto flex max-w-7xl flex-wrap items-start justify-between gap-4 md:items-center">
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-[#2D2D2D]">
-                {selectedServiceIds.length} Leistung(en) ausgewählt
-              </p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {selectedServices.map((s) => (
-                  <button
-                    key={s._id}
-                    type="button"
-                    onClick={() => removeService(s._id)}
-                    className="inline-flex max-w-full items-center gap-2 rounded-full border border-[#2D2D2D]/55 bg-[#BEA8FF]/60 px-3 py-1 text-left text-[12px] font-medium text-[#2D2D2D] transition hover:bg-[#BEA8FF]"
-                    title="Entfernen"
-                  >
-                    <span className="min-w-0 truncate">{selectedServiceTitle(s)}</span>
-                    <span aria-hidden className="shrink-0 text-[#2D2D2D]/70">
-                      ×
-                    </span>
-                  </button>
-                ))}
-              </div>
-              <p className="mt-3 text-[12px] text-[#2D2D2D]/80">
-                Gesamt: {totalDuration} Min. · {totalPrice}€
-              </p>
-            </div>
-            <Link
-              href={bookingHref}
-              className="inline-flex w-full items-center justify-center rounded-full border border-[#2D2D2D] bg-[#2D2D2D] px-6 py-3 text-center text-sm font-medium text-white sm:w-auto"
-            >
-              Zur Terminauswahl
-            </Link>
-          </div>
-        </div>
-      )}
     </main>
   );
 }
-

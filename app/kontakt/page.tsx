@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import BookingLink from "@/components/BookingLink";
 
 export const metadata: Metadata = {
   title: "Kontakt | Petite Maison",
@@ -20,12 +21,9 @@ export default function KontaktPage() {
               oder telefonisch vereinbaren.
             </p>
             <div className="mt-8 flex flex-wrap gap-x-12 gap-y-2 text-[0.875rem] [font-family:var(--font-public-sans)] sm:mt-10">
-              <Link
-                href="/buchung"
-                className="underline decoration-[#2D2D2D]/30 underline-offset-[6px] transition hover:decoration-[#2D2D2D]/60"
-              >
+              <BookingLink className="underline decoration-[#2D2D2D]/30 underline-offset-[6px] transition hover:decoration-[#2D2D2D]/60">
                 Online buchen
-              </Link>
+              </BookingLink>
               <a
                 href="tel:+4917669150964"
                 className="underline decoration-[#2D2D2D]/30 underline-offset-[6px] transition hover:decoration-[#2D2D2D]/60"
