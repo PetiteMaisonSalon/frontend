@@ -84,8 +84,7 @@ export default function KontaktPage() {
             />
           </figure>
 
-          <figure className="relative mt-12 w-full shrink-0 overflow-hidden bg-[#E6E3DE] lg:mt-140 lg:w-[min(42vw,42rem)]">
-            <div className="relative h-[min(68vh,46rem)] w-full min-h-[19rem]">
+          <figure className="relative h-[min(68vh,46rem)] mt-12 w-full shrink-0 overflow-hidden !bg-[#EBEAE7] lg:mt-140 lg:w-[min(42vw,42rem)] min-h-[19rem]">
               <Image
                 src="/kontakt/kontakt_bild2.png"
                 alt="Waschbereich und Aveda-Bereich im Salon Petite Maison"
@@ -93,7 +92,6 @@ export default function KontaktPage() {
                 className="object-cover object-center"
                 sizes="(max-width: 1024px) 100vw, 42vw"
               />
-            </div>
           </figure>
         </div>
       </section>
