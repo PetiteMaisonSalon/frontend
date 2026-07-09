@@ -761,7 +761,7 @@ export default function HomeMain() {
               sizes="100vw"
             />
           </div>
-          <p className="text-intro text-[#2D2D2D] lg:max-w-[29rem]">
+          <p className="text-intro text-[#2D2D2D]">
             Aveda wurde mit der Vision gegründet, Schönheit und Nachhaltigkeit zu verbinden.
             Die Marke setzt auf pflanzliche Inhaltsstoffe, recycelbare Verpackungen und einen
             respektvollen Umgang mit der Natur.
@@ -798,18 +798,20 @@ export default function HomeMain() {
 
           <div className="w-[28rem] justify-self-end min-[1400px]:w-[28rem]">
             <p className="text-intro text-[#2D2D2D]">
-              Aveda wurde mit der Vision gegründet,{" "}
+              Aveda wurde mit der Vision gegründe
               Schönheit und Nachhaltigkeit zu
-              verbinden. Die Marke setzt auf
-              pflanzliche Inhaltsstoffe, recycelbare{" "}
-              Verpackungen und einen respektvollen
+              verbinden.
               <br className="hidden lg:inline" />
+              Die Marke setzt auf
+              pflanzliche Inhaltsstoffe, recycelbare
+              Verpackungen und einen respektvollen
+              
               Umgang mit der Natur.
             </p>
           </div>
 
           <div className="max-w-[32rem] justify-self-start self-end">
-            <p className="text-copy leading-relaxed text-[#2D2D2D]/85">
+            <p className="text-copy leading-relaxed text-[#1C1612]/100">
               Diese Haltung passt zu unserer Arbeit: verantwortungsvoll, achtsam und mit{" "}
               <br />
               echtem Anspruch an Qualität. Wir sind stolz darauf, dir Produkte anbieten zu{" "}
