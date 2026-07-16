@@ -415,7 +415,7 @@ export default function HomeMain() {
           <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-start">
             <div className="relative aspect-[16/15] w-full shrink-0 overflow-hidden bg-transparent lg:w-[min(48vw,560px)]">
               <Image
-                src="/mehtap.png"
+                src="/mehtap_new.png"
                 alt="Mehtap"
                 fill
                 className="object-cover"
