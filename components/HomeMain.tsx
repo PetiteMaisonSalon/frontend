@@ -137,7 +137,7 @@ export default function HomeMain() {
         ref={(el) => {
           heroRef.current = el;
         }}
-        className="relative flex min-h-[100dvh] min-h-screen flex-col"
+        className="relative flex min-h-screen flex-col"
       >
         <Image
           src="/header_bg.png"
@@ -172,7 +172,7 @@ export default function HomeMain() {
       >
         <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
           <div className="w-full shrink-0 lg:w-[min(48vw,540px)]">
-            <div className="relative aspect-[15/12] w-full overflow-hidden bg-[#E8E4DF]">
+            <div className="relative aspect-15/12 w-full overflow-hidden bg-[#E8E4DF]">
               <div
                 ref={mainLeftRef}
                 className="no-scrollbar absolute inset-0 overflow-x-auto scroll-smooth snap-x snap-mandatory"
@@ -302,8 +302,8 @@ export default function HomeMain() {
         className="bg-[#EBEAE7] px-4 pb-24 pt-8 md:pb-32 md:pt-12"
       >
         <div className="flex flex-col gap-14 lg:flex-row lg:items-end lg:justify-between">
-          <div className="shrink-0 lg:max-w-[29rem]">
-            <p className="text-copy leading-relaxed text-[#1C1612]/100">
+          <div className="shrink-0 lg:max-w-116">
+            <p className="text-copy leading-relaxed text-[#1C1612]">
               Uns ist wichtig, dass du dich bei uns gut aufgehoben fühlst. Wir
               nehmen uns Zeit, stellen Fragen und beraten individuell. Jeder
               Termin ist bewusst so geplant, dass deine Wünsche im Mittelpunkt
@@ -332,12 +332,12 @@ export default function HomeMain() {
         aria-labelledby="home-services-heading"
       >
         <div className="px-4 py-32 text-center md:py-40">
-          <p className="text-copy-sm font-medium tracking-[0.04em] text-[#2D2D2D]/100">
+          <p className="text-copy-sm font-medium tracking-[0.04em] text-[#2D2D2D]">
             Unsere Leistungen
           </p>
           <h2
             id="home-services-heading"
-            className="text-intro mx-auto mt-6 max-w-[560px] text-[#2D2D2D]"
+            className="text-intro mx-auto mt-6 max-w-140 text-[#2D2D2D]"
           >
             Wir bieten Haarschnitte, Farb- und Pflegebehandlungen für Frauen und
             Männer an — immer individuell abgestimmt auf dein Haar, deinen Typ
@@ -443,7 +443,7 @@ export default function HomeMain() {
         <div className="flex flex-col gap-24 md:gap-32 lg:gap-40">
           {/* Mehtap — links */}
           <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-start">
-            <div className="relative aspect-[16/15] w-full shrink-0 overflow-hidden bg-transparent lg:w-[min(48vw,560px)]">
+            <div className="relative aspect-16/15 w-full shrink-0 overflow-hidden bg-transparent lg:w-[min(48vw,560px)]">
               <Image
                 src="/mehtap_new.png"
                 alt="Mehtap"
@@ -500,7 +500,7 @@ export default function HomeMain() {
 
           {/* Sevim — links */}
           <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-start">
-            <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-[17.5rem]">
+            <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-70">
               <Image
                 src="/sevim.png"
                 alt="Sevim"
@@ -512,9 +512,9 @@ export default function HomeMain() {
                 onDragStart={blockImageDownloadInteraction}
               />
             </div>
-            <div className="lg:max-w-[340px] lg:pt-2">
+            <div className="lg:max-w-85 lg:pt-2">
               <h3 className="text-h2 text-[#2D2D2D]">Sevim</h3>
-              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D]/100">
+              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D]">
                 Sevim ist unsere Farbspezialistin! Sie liebt es, mit Haaren zu
                 experimentieren, einschließlich ihren Haaren. Zwölf Jahre lang
                 hat sie beim Starfriseur Jaques Le Coz gearbeitet und ist seit
@@ -525,9 +525,9 @@ export default function HomeMain() {
 
           {/* Masoud — rechts */}
           <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-end">
-            <div className="lg:max-w-[340px] lg:pt-2">
+            <div className="lg:max-w-85 lg:pt-2">
               <h3 className="text-h2 text-[#2D2D2D]">Masoud</h3>
-              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D]/100">
+              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D]">
                 Masoud ist spezialisiert auf präzise Schnitte und Farbtechniken.
                 Geboren im Iran, ausgebildet auf zwei Kontinenten, ist er seit
                 über 20 Jahren Friseur und seit Ende 2025 bei Petite Maison. Als
@@ -535,7 +535,7 @@ export default function HomeMain() {
                 nachhaltige Produkte.
               </p>
             </div>
-            <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-[17.5rem]">
+            <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-70">
               <Image
                 src="/masoud.png"
                 alt="Masoud"
@@ -551,7 +551,7 @@ export default function HomeMain() {
 
           {/* Sarah — links */}
           <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-start">
-            <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-[17.5rem]">
+            <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-70">
               <Image
                 src="/sarah.png"
                 alt="Sarah"
@@ -563,9 +563,9 @@ export default function HomeMain() {
                 onDragStart={blockImageDownloadInteraction}
               />
             </div>
-            <div className="lg:max-w-[340px] lg:pt-2">
+            <div className="lg:max-w-85 lg:pt-2">
               <h3 className="text-h2 text-[#2D2D2D]">Sarah</h3>
-              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D]/100">
+              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D]">
                 Sarah ist spezialisiert auf Haarschnitte, Styling und natürliche
                 Färbungen. Seit über 15 Jahren arbeitet sie mit Aveda-Produkten,
                 2022 hat sie ihren Meister gemacht — unter anderem lebte und
@@ -604,7 +604,7 @@ export default function HomeMain() {
 
           {/* Cooper — links */}
           <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-start">
-            <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-[17.5rem]">
+            <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-70">
               <Image
                 src="/cooper.png"
                 alt="Cooper"
@@ -616,9 +616,9 @@ export default function HomeMain() {
                 onDragStart={blockImageDownloadInteraction}
               />
             </div>
-            <div className="lg:max-w-[340px] lg:pt-2">
+            <div className="lg:max-w-85 lg:pt-2">
               <h3 className="text-h2 text-[#2D2D2D]">Cooper</h3>
-              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D]/100">
+              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D]">
                 Cooper ist spezialisiert auf gute Laune und ist als Sarahs
                 treuer Begleiter fester Bestandteil des Salons.
               </p>
@@ -738,7 +738,7 @@ export default function HomeMain() {
                       {group.map((src) => (
                         <div
                           key={src}
-                          className="relative aspect-[3/4] w-full overflow-hidden bg-[#EBEAE7]"
+                          className="relative aspect-3/4 w-full overflow-hidden bg-[#EBEAE7]"
                           onContextMenu={blockImageDownloadInteraction}
                           onDragStart={blockImageDownloadInteraction}
                         >
@@ -760,7 +760,7 @@ export default function HomeMain() {
                           (_, idx) => (
                             <div
                               key={`empty-${groupIdx}-${idx}`}
-                              className="hidden aspect-[3/4] w-full bg-[#EBEAE7] lg:block"
+                              className="hidden aspect-3/4 w-full bg-[#EBEAE7] lg:block"
                               aria-hidden
                             />
                           ),
@@ -889,7 +889,7 @@ export default function HomeMain() {
       {/* Bildstreifen + 2er-Grid (wie Screenshot, vor Footer) */}
 
       <section className="bg-[#EBEAE7]" aria-label="Impressionen">
-        <div className="relative h-92 w-full overflow-hidden sm:h-80 md:h-[460px] lg:h-[820px]">
+        <div className="relative h-92 w-full overflow-hidden sm:h-80 md:h-115 lg:h-205">
           <Image
             src="/salon.png"
             alt=""
