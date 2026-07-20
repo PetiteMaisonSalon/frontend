@@ -7,7 +7,12 @@ type BookingLinkProps = Omit<ComponentPropsWithoutRef<"a">, "href"> & {
 
 export default function BookingLink({ children, ...props }: BookingLinkProps) {
   return (
-    <a href={TREATWELL_BOOKING_URL} target="_blank" rel="noopener noreferrer" {...props}>
+    <a
+      href={TREATWELL_BOOKING_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      {...props}
+    >
       {children}
     </a>
   );

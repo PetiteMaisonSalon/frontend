@@ -137,36 +137,29 @@ export default function HomeMain() {
         ref={(el) => {
           heroRef.current = el;
         }}
-        className="relative flex min-h-screen flex-col overflow-hidden" // overflow-hidden hinzugefügt, damit nichts rausragt
+        className="relative flex min-h-screen flex-col overflow-hidden"
       >
-        {/* --- VIDEO / GIF HINTERGRUND --- */}
         <video
-          autoPlay // Startet automatisch
-          loop // Endlosschleife
-          muted // WICHTIG: Muss stummgeschaltet sein, damit autoPlay in Browsern funktioniert
-          playsInline // Wichtig für mobile Browser, damit es im Inline-Player läuft
-          poster="/header_bg.png" // Optional: Ein Vorschaubild, bis das Video lädt
-          className="absolute inset-0 h-full w-full object-cover" // Füllt die Section wie Image fill
+          autoPlay
+          loop
+          muted
+          playsInline
+          poster="/header_bg.mp4"
+          className="absolute inset-0 h-full w-full object-cover"
         >
-          {/* Passe hier den Pfad zu deiner Videodatei an (z.B. .mp4 oder .webm) */}
-          <source src="/header_video.mp4" type="video/mp4" />
-          {/* Fallback-Text für sehr alte Browser */}
+          <source src="/header_bg.mp4" type="video/mp4" />
           Dein Browser unterstützt kein Video.
         </video>
 
-        {/* --- OVERLAY (Dunkelt das Video etwas ab für bessere Lesbarkeit) --- */}
-        {/* Wir erhöhen den z-Index leicht, damit es sicher über dem Video liegt */}
         <div className="absolute inset-0 z-1 bg-black/30" aria-hidden />
 
-        {/* --- CONTENT --- */}
-        {/* z-10 sorgt dafür, dass der Text über dem Video und dem Overlay steht */}
         <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 pb-24 pt-28 text-center md:pb-32 md:pt-36">
-          <h1 className="text-h1 max-w-3xl text-white">
+          <h1 className="text-h1 max-w-3xl text-[#BEA8FF]">
             Deine Haare sind
             <br className="hidden md:block" />
             Vertrauenssache.
           </h1>
-          <BookingLink className="text-copy mt-10 inline-block rounded-full border border-white bg-transparent px-10 py-4 font-medium text-white transition hover:bg-white/10">
+          <BookingLink className="text-copy mt-10 inline-block rounded-full border border-[#BEA8FF] bg-transparent px-10 py-4 font-medium text-[#BEA8FF] transition hover:bg-[#BEA8FF]/50 hover:text-white">
             Jetzt buchen
           </BookingLink>
         </div>
@@ -850,50 +843,54 @@ export default function HomeMain() {
 
         {/* Desktop — 2×2 Grid*/}
 
-        <div className="mt-44 hidden lg:grid lg:grid-cols-2 lg:gap-x-2 lg:gap-y-40 xl:gap-y-48">
-          <figure className="relative aspect-square w-148 justify-self-start overflow-hidden bg-white/30">
-            <Image
-              src="/aveda_bild1.png"
-              alt=""
-              fill
-              className="object-cover grayscale"
-              sizes="20rem"
-            />
-          </figure>
+        <div className="mt-44 hidden lg:flex lg:flex-col lg:gap-y-40 xl:gap-y-48">
+          <div className="flex items-start gap-4 lg:gap-6">
+            <figure className="relative aspect-square w-148 shrink-0 overflow-hidden bg-white/30">
+              <Image
+                src="/aveda_bild1.png"
+                alt=""
+                fill
+                className="object-cover grayscale"
+                sizes="20rem"
+              />
+            </figure>
 
-          <div className="max-w-lg justify-self-start self-start pt-2">
-            <p className="text-copy leading-relaxed text-[#1C1612]">
-              Aveda wurde mit der Vision gegründet, Schönheit und Nachhaltigkeit
-              zu verbinden. Die Marke setzt auf pflanzliche Inhaltsstoffe,
-              recycelbare Verpackungen und einen respektvollen Umgang mit der
-              Natur.
-            </p>
+            <div className="max-w-lg self-start">
+              <p className="text-copy leading-relaxed text-[#1C1612]">
+                Aveda wurde mit der Vision gegründet, Schönheit und Nachhaltigkeit
+                zu verbinden. Die Marke setzt auf pflanzliche Inhaltsstoffe,
+                recycelbare Verpackungen und einen respektvollen Umgang mit der
+                Natur.
+              </p>
+            </div>
           </div>
 
-          <div className="max-w-lg justify-self-start self-end">
-            <p className="text-copy leading-relaxed text-[#1C1612]">
-              Diese Haltung passt zu unserer Arbeit: verantwortungsvoll, achtsam
-              und mit <br />
-              echtem Anspruch an Qualität. Wir sind stolz darauf, dir Produkte
-              anbieten zu <br />
-              können, die genau das widerspiegeln – und freuen uns, diese Werte{" "}
-              <br />
-              gemeinsam mit unseren Kunden zu leben. Unsere Aveda-Produkte
-              kannst du <br />
-              übrigens nicht nur bei uns erleben, sondern auch direkt im Salon
-              erwerben.
-            </p>
-          </div>
+          <div className="flex items-end justify-between gap-6">
+            <div className="max-w-lg">
+              <p className="text-copy leading-relaxed text-[#1C1612]">
+                Diese Haltung passt zu unserer Arbeit: verantwortungsvoll, achtsam
+                und mit <br />
+                echtem Anspruch an Qualität. Wir sind stolz darauf, dir Produkte
+                anbieten zu <br />
+                können, die genau das widerspiegeln – und freuen uns, diese Werte{" "}
+                <br />
+                gemeinsam mit unseren Kunden zu leben. Unsere Aveda-Produkte
+                kannst du <br />
+                übrigens nicht nur bei uns erleben, sondern auch direkt im Salon
+                erwerben.
+              </p>
+            </div>
 
-          <figure className="relative aspect-square w-[18rem] justify-self-end self-end overflow-hidden bg-white/30">
-            <Image
-              src="/aveda_bild2.png"
-              alt=""
-              fill
-              className="object-cover"
-              sizes="18rem"
-            />
-          </figure>
+            <figure className="relative aspect-square w-[18rem] shrink-0 overflow-hidden bg-white/30">
+              <Image
+                src="/aveda_bild2.png"
+                alt=""
+                fill
+                className="object-cover"
+                sizes="18rem"
+              />
+            </figure>
+          </div>
         </div>
       </section>
 

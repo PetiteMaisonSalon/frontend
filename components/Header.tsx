@@ -19,12 +19,13 @@ const homeSubNavItems = [
   { id: "gallerie" as const, href: "#gallerie", label: "Gallerie" },
   { id: "aveda" as const, href: "#aveda", label: "Aveda" },
 ];
-const homeSubNavBgById: Record<(typeof homeSubNavItems)[number]["id"], string> = {
-  salon: "#EBEAE7",
-  team: "#EBEAE7",
-  gallerie: "#EBEAE7",
-  aveda: "#BEA8FF",
-};
+const homeSubNavBgById: Record<(typeof homeSubNavItems)[number]["id"], string> =
+  {
+    salon: "#EBEAE7",
+    team: "#EBEAE7",
+    gallerie: "#EBEAE7",
+    aveda: "#BEA8FF",
+  };
 const OPEN_ADMIN_CREATE_EVENT = "admin:create-appointment";
 const ADMIN_PENDING_CREATE_KEY = "pm_admin_pending_create";
 
@@ -108,7 +109,9 @@ export default function Header() {
     return () => window.removeEventListener("hashchange", syncHash);
   }, [isHome]);
 
-  const handleHomeSubNavClick = (id: (typeof homeSubNavItems)[number]["id"]) => {
+  const handleHomeSubNavClick = (
+    id: (typeof homeSubNavItems)[number]["id"],
+  ) => {
     setHomeSubActiveId(id);
     setHomeSectionBg(homeSubNavBgById[id]);
     closeMobileMenu();
@@ -120,14 +123,13 @@ export default function Header() {
     return { backgroundColor: homeSectionBg };
   }, [homeHeroVisible, homeSectionBg, isHome]);
 
-  const headerShell =
-    "fixed inset-x-0 top-0 z-50 w-full";
+  const headerShell = "fixed inset-x-0 top-0 z-50 w-full";
 
   const headerChromeClass = isHome
     ? homeHeroVisible
       ? "border-0"
       : "border-b border-black/10"
-    : "border-b border-[#E8E4DF]/50 bg-[#EBEAE7]/95 backdrop-blur-sm";
+    : "border-b border-[#E8E4DF]/50 bg-[#EBEAE7]/100 backdrop-blur-sm";
 
   const isHomeHero = isHome && homeHeroVisible;
 
@@ -137,14 +139,14 @@ export default function Header() {
   const lightBrandUnderline = "border-b border-[#2D2D2D] pb-px";
   const lightActiveUnderline = "border-b border-[#2D2D2D] pb-px";
 
-  /** Hero über Bild: weiß; nur „Petite Maison“ unterstrichen */
+  /** Hero über Bild: #BEA8FF; Petite Maison unterstrichen */
   const heroNavText =
-    "text-copy font-medium text-white antialiased transition hover:text-white/95";
-  const heroBrandUnderline = "border-b border-white pb-px";
-  const heroActiveUnderline = "border-b border-white pb-px";
+    "text-copy font-medium text-[#BEA8FF] antialiased transition hover:text-[#BEA8FF]/90";
+  const heroBrandUnderline = "border-b border-[#BEA8FF] pb-px";
+  const heroActiveUnderline = "border-b border-[#BEA8FF] pb-px";
 
   const outlineBtnHero =
-    "text-copy rounded-full border border-white bg-transparent px-5 py-2.5 font-medium text-white transition hover:bg-white/10";
+    "text-copy rounded-full border border-[#BEA8FF] bg-transparent px-5 py-2.5 font-medium text-[#BEA8FF] transition hover:text-white hover:bg-[#BEA8FF]/60";
 
   const outlineBtnLight =
     "text-copy rounded-full border border-[#2D2D2D] bg-transparent px-5 py-2.5 font-medium text-[#2D2D2D] transition hover:bg-[#2D2D2D]/5";
@@ -197,13 +199,13 @@ export default function Header() {
     >
       <span
         className={`block h-0.5 w-10 transition-all ${
-          isHomeHero ? "bg-white" : "bg-[#2D2D2D]"
+          isHomeHero ? "bg-[#BEA8FF]" : "bg-[#2D2D2D]"
         } ${menuOpen ? "translate-y-0 rotate-45" : ""}`}
       />
 
       <span
         className={`block h-0.5 w-10 transition-all ${
-          isHomeHero ? "bg-white" : "bg-[#2D2D2D]"
+          isHomeHero ? "bg-[#BEA8FF]" : "bg-[#2D2D2D]"
         } ${menuOpen ? "-translate-y-2 -rotate-45 opacity-0" : ""}`}
       />
     </button>
@@ -261,7 +263,7 @@ export default function Header() {
               href="/login"
               className={
                 isHomeHero
-                  ? "whitespace-nowrap text-copy font-medium text-white transition hover:text-white/80"
+                  ? "whitespace-nowrap text-copy font-medium text-[#BEA8FF] transition hover:text-[#BEA8FF]/80"
                   : !isCmsArea
                     ? "whitespace-nowrap text-copy font-medium text-[#2D2D2D] transition hover:opacity-80"
                     : "whitespace-nowrap rounded-full border-2 border-[#4A5D4A] px-5 py-2.5 text-sm font-medium text-[#4A5D4A] transition hover:bg-[#4A5D4A]/10"
@@ -314,13 +316,20 @@ export default function Header() {
   );
 
   return (
-    <header className={`${headerShell} ${headerChromeClass}`} style={headerStyle}>
+    <header
+      className={`${headerShell} ${headerChromeClass}`}
+      style={headerStyle}
+    >
       <div
         className={`mx-auto flex w-full items-center justify-between gap-4 ${containerPaddingClass} py-2`}
       >
         <div className="flex min-w-0 flex-1 items-center gap-6 lg:gap-10">
           {!isAdminUser && (
-            <Link href="/" onClick={closeMobileMenu} className={`shrink-0 whitespace-nowrap ${brandClass}`}>
+            <Link
+              href="/"
+              onClick={closeMobileMenu}
+              className={`shrink-0 whitespace-nowrap ${brandClass}`}
+            >
               Petite Maison
             </Link>
           )}
@@ -333,7 +342,7 @@ export default function Header() {
                   className={`whitespace-nowrap ${mainNavLinkClass} ${
                     isNavActive(href)
                       ? isHomeHero
-                        ? `text-white ${heroActiveUnderline}`
+                        ? `text-[#BEA8FF] ${heroActiveUnderline}`
                         : `font-semibold text-[#2D2D2D] ${lightActiveUnderline}`
                       : isHomeHero
                         ? ""
@@ -347,7 +356,9 @@ export default function Header() {
           )}
         </div>
         <div className="flex shrink-0 items-center gap-4">
-          <div className="hidden md:flex md:items-center">{desktopAuthActions}</div>
+          <div className="hidden md:flex md:items-center">
+            {desktopAuthActions}
+          </div>
           {burgerButton}
         </div>
       </div>
@@ -393,7 +404,13 @@ export default function Header() {
               className="flex h-10 w-10 items-center justify-center text-[#2D2D2D]"
               aria-label="Menü schließen"
             >
-              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden>
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 28 28"
+                fill="none"
+                aria-hidden
+              >
                 <path
                   d="M6 6l16 16M22 6L6 22"
                   stroke="currentColor"
