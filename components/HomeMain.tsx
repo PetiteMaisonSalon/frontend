@@ -137,18 +137,29 @@ export default function HomeMain() {
         ref={(el) => {
           heroRef.current = el;
         }}
-        className="relative flex min-h-screen flex-col"
+        className="relative flex min-h-screen flex-col overflow-hidden" // overflow-hidden hinzugefügt, damit nichts rausragt
       >
-        <Image
-          src="/header_bg.png"
-          alt=""
-          fill
-          priority
-          className="object-cover"
-          sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-black/25" aria-hidden />
+        {/* --- VIDEO / GIF HINTERGRUND --- */}
+        <video
+          autoPlay // Startet automatisch
+          loop // Endlosschleife
+          muted // WICHTIG: Muss stummgeschaltet sein, damit autoPlay in Browsern funktioniert
+          playsInline // Wichtig für mobile Browser, damit es im Inline-Player läuft
+          poster="/header_bg.png" // Optional: Ein Vorschaubild, bis das Video lädt
+          className="absolute inset-0 h-full w-full object-cover" // Füllt die Section wie Image fill
+        >
+          {/* Passe hier den Pfad zu deiner Videodatei an (z.B. .mp4 oder .webm) */}
+          <source src="/header_video.mp4" type="video/mp4" />
+          {/* Fallback-Text für sehr alte Browser */}
+          Dein Browser unterstützt kein Video.
+        </video>
 
+        {/* --- OVERLAY (Dunkelt das Video etwas ab für bessere Lesbarkeit) --- */}
+        {/* Wir erhöhen den z-Index leicht, damit es sicher über dem Video liegt */}
+        <div className="absolute inset-0 z-1 bg-black/30" aria-hidden />
+
+        {/* --- CONTENT --- */}
+        {/* z-10 sorgt dafür, dass der Text über dem Video und dem Overlay steht */}
         <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 pb-24 pt-28 text-center md:pb-32 md:pt-36">
           <h1 className="text-h1 max-w-3xl text-white">
             Deine Haare sind
@@ -462,12 +473,12 @@ export default function HomeMain() {
                 Maison. Seit vielen Jahren arbeite ich in diesem Beruf und habe
                 früh gemerkt, dass mir der persönliche Umgang mit Menschen
                 genauso wichtig ist wie das Handwerk selbst.
-                <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D] lg:w-147.5">
-                  Für mich bedeutet Friseurhandwerk, Verantwortung zu übernehmen
-                  — für Entscheidungen, für Wünsche und für das Vertrauen, das
-                  mir entgegengebracht wird. Diese Haltung prägt meine tägliche
-                  Arbeit und den Salon als Ganzes.
-                </p>
+              </p>
+              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D] lg:w-147.5">
+                Für mich bedeutet Friseurhandwerk, Verantwortung zu übernehmen —
+                für Entscheidungen, für Wünsche und für das Vertrauen, das mir
+                entgegengebracht wird. Diese Haltung prägt meine tägliche Arbeit
+                und den Salon als Ganzes.
               </p>
             </div>
           </article>
