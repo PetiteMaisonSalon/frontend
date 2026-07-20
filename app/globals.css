@@ -9,8 +9,8 @@
 
 /* Scrollbar für IE, Edge und Firefox verstecken */
 .no-scrollbar {
-  -ms-overflow-style: none;  /* IE und Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE und Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 @theme inline {
@@ -21,29 +21,31 @@
   --font-body: var(--font-public-sans, system-ui, sans-serif);
 
   /* Petite Maison Palette */
-  --petite-sand: #E8E4DF;
-  --petite-sand-dark: #D4CFC8;
-  --petite-forest: #4A5D4A;
-  --petite-forest-dark: #3A4A3A;
-  --petite-braun: #5C4033;
-  --petite-braun-light: #7A5C4D;
-  --petite-blush: #D4A5A5;
-  --petite-terracotta: #C9A86C;
-  --petite-cream: #EBEAE7;
-  --petite-page: #EBEAE7;
-  --petite-charcoal: #2D2D2D;
+  --petite-sand: #e8e4df;
+  --petite-sand-dark: #d4cfc8;
+  --petite-forest: #4a5d4a;
+  --petite-forest-dark: #3a4a3a;
+  --petite-braun: #5c4033;
+  --petite-braun-light: #7a5c4d;
+  --petite-blush: #d4a5a5;
+  --petite-terracotta: #c9a86c;
+  --petite-cream: #ebeae7;
+  --petite-page: #ebeae7;
+  --petite-charcoal: #2d2d2d;
 }
 
 :root {
-  --background: #EBEAE7;
-  --foreground: #2D2D2D;
+  --background: #ebeae7;
+  --foreground: #2d2d2d;
 }
 
 html {
   scroll-behavior: smooth;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -114,8 +116,8 @@ body {
 .text-h3 {
   font-family: var(--font-heading);
   font-weight: 400;
-  font-size: 1.25rem;
-  line-height: 1.2;
+  font-size: 1.35rem;
+  line-height: 1.1;
   letter-spacing: 0;
 }
 
@@ -130,6 +132,12 @@ body {
 
 .text-copy {
   font-size: 0.875rem;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
+.text-aveda {
+  font-size: 0.975rem;
   line-height: 1.5;
   letter-spacing: 0;
 }

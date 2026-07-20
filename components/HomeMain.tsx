@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import BookingLink from "@/components/BookingLink";
 
 type SectionTheme = {
-  id: "salon" | "team" | "gallerie"| "aveda" ;
+  id: "salon" | "team" | "gallerie" | "aveda";
   bg: string;
 };
 
@@ -31,22 +31,22 @@ export default function HomeMain() {
   const [mainLeftIndex, setMainLeftIndex] = useState(0);
   const galerieImages = useMemo(
     () => [
-      "/gallerie/galerie_bild1.png",
-      "/gallerie/galerie_bild2.png",
-      "/gallerie/galerie_bild3.png",
-      "/gallerie/galerie_bild4.png",
-      "/gallerie/galerie_bild5.png",
-      "/gallerie/galerie_bild6.png",
-      "/gallerie/galerie_bild7.png",
-      "/gallerie/galerie_bild8.png",
-      "/gallerie/galerie_bild9.png",
-      "/gallerie/galerie_bild10.png",
-      "/gallerie/galerie_bild11.png",
-      "/gallerie/galerie_bild12.png",
+      "/gallerie/galerie_bild1_new.png",
+      "/gallerie/galerie_bild2_new.png",
+      "/gallerie/galerie_bild3_new.png",
+      "/gallerie/galerie_bild4_new.png",
+      "/gallerie/galerie_bild5_new.png",
+      "/gallerie/galerie_bild6_new.png",
+      "/gallerie/galerie_bild7_new.png",
+      "/gallerie/galerie_bild8_new.png",
+      "/gallerie/galerie_bild9_new.png",
     ],
-    []
+    [],
   );
-  const galerieSlides = useMemo(() => Math.ceil(galerieImages.length / 3), [galerieImages.length]);
+  const galerieSlides = useMemo(
+    () => Math.ceil(galerieImages.length / 3),
+    [galerieImages.length],
+  );
 
   const sectionById = useMemo(() => {
     const map = new Map<string, SectionTheme>();
@@ -61,9 +61,12 @@ export default function HomeMain() {
       "/main_leftbild1_3.jpg",
       "/main_leftbild1_4.avif",
     ],
-    []
+    [],
   );
-  const mainLeftSlides = useMemo(() => mainLeftImages.length, [mainLeftImages.length]);
+  const mainLeftSlides = useMemo(
+    () => mainLeftImages.length,
+    [mainLeftImages.length],
+  );
   const blockImageDownloadInteraction = (event: React.SyntheticEvent) => {
     event.preventDefault();
   };
@@ -76,11 +79,13 @@ export default function HomeMain() {
       ([entry]) => {
         dispatch("pm:home:hero", { visible: entry.isIntersecting });
       },
-      { threshold: 0.25 }
+      { threshold: 0.25 },
     );
     heroObserver.observe(heroEl);
 
-    const sectionEls = Object.values(sectionRefs.current).filter(Boolean) as HTMLElement[];
+    const sectionEls = Object.values(sectionRefs.current).filter(
+      Boolean,
+    ) as HTMLElement[];
     let rafId = 0;
     const syncActiveSection = () => {
       rafId = 0;
@@ -91,14 +96,17 @@ export default function HomeMain() {
           return rect.top <= markerY && rect.bottom > markerY;
         }) ||
         sectionEls
-          .map((el) => ({ el, distance: Math.abs(el.getBoundingClientRect().top - markerY) }))
+          .map((el) => ({
+            el,
+            distance: Math.abs(el.getBoundingClientRect().top - markerY),
+          }))
           .sort((a, b) => a.distance - b.distance)[0]?.el;
 
       const id = current?.dataset.sectionId;
       if (!id) return;
-        const theme = sectionById.get(id);
-        if (!theme) return;
-        dispatch("pm:home:section", { id: theme.id, bg: theme.bg });
+      const theme = sectionById.get(id);
+      if (!theme) return;
+      dispatch("pm:home:section", { id: theme.id, bg: theme.bg });
     };
     const scheduleActiveSectionSync = () => {
       if (rafId) return;
@@ -106,7 +114,9 @@ export default function HomeMain() {
     };
 
     syncActiveSection();
-    window.addEventListener("scroll", scheduleActiveSectionSync, { passive: true });
+    window.addEventListener("scroll", scheduleActiveSectionSync, {
+      passive: true,
+    });
     window.addEventListener("resize", scheduleActiveSectionSync);
 
     // Initialzustand: Hero sichtbar, damit Header korrekt startet.
@@ -145,9 +155,7 @@ export default function HomeMain() {
             <br className="hidden md:block" />
             Vertrauenssache.
           </h1>
-          <BookingLink
-            className="text-copy mt-10 inline-block rounded-full border border-white bg-transparent px-10 py-4 font-medium text-white transition hover:bg-white/10"
-          >
+          <BookingLink className="text-copy mt-10 inline-block rounded-full border border-white bg-transparent px-10 py-4 font-medium text-white transition hover:bg-white/10">
             Jetzt buchen
           </BookingLink>
         </div>
@@ -177,7 +185,10 @@ export default function HomeMain() {
               >
                 <div className="flex h-full w-full">
                   {mainLeftImages.map((src) => (
-                    <div key={src} className="relative h-full w-full flex-none snap-start">
+                    <div
+                      key={src}
+                      className="relative h-full w-full flex-none snap-start"
+                    >
                       <Image
                         src={src}
                         alt=""
@@ -211,7 +222,10 @@ export default function HomeMain() {
                     const el = mainLeftRef.current;
                     if (!el) return;
                     const next = Math.max(0, mainLeftIndex - 1);
-                    el.scrollTo({ left: next * el.clientWidth, behavior: "smooth" });
+                    el.scrollTo({
+                      left: next * el.clientWidth,
+                      behavior: "smooth",
+                    });
                     setMainLeftIndex(next);
                   }}
                   disabled={mainLeftIndex === 0}
@@ -240,8 +254,14 @@ export default function HomeMain() {
                   onClick={() => {
                     const el = mainLeftRef.current;
                     if (!el) return;
-                    const next = Math.min(mainLeftSlides - 1, mainLeftIndex + 1);
-                    el.scrollTo({ left: next * el.clientWidth, behavior: "smooth" });
+                    const next = Math.min(
+                      mainLeftSlides - 1,
+                      mainLeftIndex + 1,
+                    );
+                    el.scrollTo({
+                      left: next * el.clientWidth,
+                      behavior: "smooth",
+                    });
                     setMainLeftIndex(next);
                   }}
                   disabled={mainLeftIndex >= mainLeftSlides - 1}
@@ -268,27 +288,29 @@ export default function HomeMain() {
           </div>
           <div className="shrink-0 lg:max-w-[min(42vw,32rem)]">
             <p className="text-intro text-[#2D2D2D]">
-              Petite Maison ist ein Salon, in dem man sich Zeit füreinander nimmt.
-              Für Gespräche, für Beratung und für eine Arbeit, mit Liebe zum Detail,
-              die nicht zwischen Tür und Angel entsteht.
+              Petite Maison ist ein Salon, in dem man sich Zeit füreinander
+              nimmt. Für Gespräche, für Beratung und für eine Arbeit, mit Liebe
+              zum Detail, die nicht zwischen Tür und Angel entsteht.
             </p>
           </div>
         </div>
       </section>
 
       {/* Salon-Story unten: Text links · Bild rechts */}
-      <section id="salon-info" className="bg-[#EBEAE7] px-4 pb-24 pt-8 md:pb-32 md:pt-12">
+      <section
+        id="salon-info"
+        className="bg-[#EBEAE7] px-4 pb-24 pt-8 md:pb-32 md:pt-12"
+      >
         <div className="flex flex-col gap-14 lg:flex-row lg:items-end lg:justify-between">
           <div className="shrink-0 lg:max-w-[29rem]">
             <p className="text-copy leading-relaxed text-[#1C1612]/100">
-              Uns ist wichtig, dass du dich bei uns gut aufgehoben fühlst. Wir nehmen
-              uns Zeit, stellen Fragen und beraten individuell. Jeder Termin ist bewusst
-              so geplant, dass deine Wünsche im Mittelpunkt stehen und wir unsere Arbeit
-              mit Ruhe und Sorgfalt ausführen können.
+              Uns ist wichtig, dass du dich bei uns gut aufgehoben fühlst. Wir
+              nehmen uns Zeit, stellen Fragen und beraten individuell. Jeder
+              Termin ist bewusst so geplant, dass deine Wünsche im Mittelpunkt
+              stehen und wir unsere Arbeit mit Ruhe und Sorgfalt ausführen
+              können.
             </p>
-            <BookingLink
-              className="text-copy mt-8 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
-            >
+            <BookingLink className="text-copy mt-8 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80">
               Jetzt Termin buchen
             </BookingLink>
           </div>
@@ -305,22 +327,24 @@ export default function HomeMain() {
       </section>
 
       {/* Unsere Leistungen */}
-      <section className="pm-home-section bg-[#EBEAE7]" aria-labelledby="home-services-heading">
+      <section
+        className="pm-home-section bg-[#EBEAE7]"
+        aria-labelledby="home-services-heading"
+      >
         <div className="px-4 py-32 text-center md:py-40">
           <p className="text-copy-sm font-medium tracking-[0.04em] text-[#2D2D2D]/100">
             Unsere Leistungen
           </p>
           <h2
             id="home-services-heading"
-            className="text-intro mx-auto mt-6 max-w-[420px] text-[#2D2D2D]"
+            className="text-intro mx-auto mt-6 max-w-[560px] text-[#2D2D2D]"
           >
-            Wir bieten Haarschnitte, Farb- und Pflegebehandlungen für Frauen und Männer an —
-            immer individuell abgestimmt auf dein Haar, deinen Typ und deinen Alltag.
+            Wir bieten Haarschnitte, Farb- und Pflegebehandlungen für Frauen und
+            Männer an — immer individuell abgestimmt auf dein Haar, deinen Typ
+            und deinen Alltag.
           </h2>
           <div className="mt-10 flex items-center justify-center gap-8 text-copy-sm">
-            <BookingLink
-              className="font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
-            >
+            <BookingLink className="font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80">
               Jetzt buchen
             </BookingLink>
             <Link
@@ -340,7 +364,9 @@ export default function HomeMain() {
         <h2 id="home-services-cards-heading" className="sr-only">
           Leistungen im Überblick
         </h2>
-        <div className="mx-auto grid max-w-[68rem] gap-5 md:grid-cols-3 md:gap-5 lg:gap-6">
+
+        {/* lg:grid-cols-3 statt md: */}
+        <div className="mx-auto grid max-w-280 grid-cols-1 gap-6 lg:grid-cols-3">
           {[
             {
               icon: "/schere_new.png",
@@ -361,37 +387,41 @@ export default function HomeMain() {
                 "Wir schauen genau hin, was dein Haar braucht und beraten dich ehrlich und ohne Umwege.",
             },
           ].map((card) => (
-            <div
-              key={card.title}
-              className="flex flex-col items-center rounded-[28px] bg-white px-7 py-12 text-center transition-colors duration-300 ease-out hover:bg-[#BEA8FF] md:px-8 md:py-14"
-            >
-              <div className="relative h-24 w-28 shrink-0">
-                <Image
-                  src={card.icon}
-                  alt=""
-                  fill
-                  className="object-contain"
-                  sizes="112px"
-                />
+            /* ÄNDERUNG: 'block h-full' zwingt den Link, die volle Grid-Höhe zu nutzen */
+            <Link href="/leistungen" key={card.title} className="block h-full">
+              <div
+                /* ÄNDERUNG: 'h-full' macht alle weißen Kacheln exakt gleich hoch */
+                className="flex h-full flex-col items-center justify-start rounded-[28px] bg-white px-6 py-12 text-center transition-colors duration-300 ease-out hover:bg-[#BEA8FF] md:px-8 md:py-14"
+              >
+                <div className="relative h-24 w-28 shrink-0">
+                  <Image
+                    src={card.icon}
+                    alt=""
+                    fill
+                    className="object-contain"
+                    sizes="112px"
+                  />
+                </div>
+                <h3 className="text-h3 mt-8 text-[#2D2D2D]">{card.title}</h3>
+                {/* ÄNDERUNG: max-w-60 entfernt für natürlichen Textfluss */}
+                <p className="text-copy-sm mt-3 leading-relaxed text-[#2D2D2D]">
+                  {card.description}
+                </p>
               </div>
-              <h3 className="text-h3 mt-8 text-[#2D2D2D]">{card.title}</h3>
-              <p className="text-copy-sm mt-5 max-w-[15rem] leading-relaxed text-[#2D2D2D]/75">
-                {card.description}
-              </p>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
 
       <section className="pm-home-section bg-[#EBEAE7] px-4 py-32 md:py-40">
-        <div className="mx-auto max-w-[28rem] text-center lg:max-w-[35rem]">
-          <p className="text-copy font-medium tracking-[0.04em] text-[#1a1a1a]/100">
+        <div className="mx-auto max-w-md text-center lg:max-w-130">
+          <p className="text-copy font-medium tracking-[0.04em] text-[#1a1a1a]">
             Unser Team
           </p>
           <p className="text-intro mt-6 text-[#1a1a1a]">
-            Was uns verbindet, ist die Freude am Handwerk, ein ruhiger Arbeitsstil und der
-            Wunsch, eine Atmosphäre zu schaffen, in der man sich wohl und ernst genommen
-            fühlt.
+            Was uns verbindet, ist die Freude am Handwerk, ein ruhiger
+            Arbeitsstil und der Wunsch, eine Atmosphäre zu schaffen, in der man
+            sich wohl und ernst genommen fühlt.
           </p>
         </div>
       </section>
@@ -425,34 +455,26 @@ export default function HomeMain() {
                 onDragStart={blockImageDownloadInteraction}
               />
             </div>
-            <div className="lg:max-w-[340px] lg:pt-2">
+            <div className="lg:max-w-85 lg:pt-2">
               <h3 className="text-h2 text-[#2D2D2D]">Mehtap</h3>
-              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D]/85">
-                Ich bin Mehtap, Friseurmeisterin und Inhaberin von Petite Maison. Seit vielen Jahren arbeite ich
-                in diesem Beruf und habe früh gemerkt, dass mir der persönliche Umgang mit Menschen genauso
-                wichtig ist wie das Handwerk selbst.
+              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D] lg:w-147.5">
+                Ich bin Mehtap, Friseurmeisterin und Inhaberin von Petite
+                Maison. Seit vielen Jahren arbeite ich in diesem Beruf und habe
+                früh gemerkt, dass mir der persönliche Umgang mit Menschen
+                genauso wichtig ist wie das Handwerk selbst.
+                <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D] lg:w-147.5">
+                  Für mich bedeutet Friseurhandwerk, Verantwortung zu übernehmen
+                  — für Entscheidungen, für Wünsche und für das Vertrauen, das
+                  mir entgegengebracht wird. Diese Haltung prägt meine tägliche
+                  Arbeit und den Salon als Ganzes.
+                </p>
               </p>
-              <p className="text-copy-sm mt-5 font-medium leading-relaxed text-[#2D2D2D]/85">
-                Für mich bedeutet Friseurhandwerk, Verantwortung zu übernehmen — für Entscheidungen, für Wünsche
-                und für das Vertrauen, das mir entgegengebracht wird. Diese Haltung prägt meine tägliche Arbeit
-                und den Salon als Ganzes.
-              </p>
-           
             </div>
           </article>
 
           {/* Maria — rechts */}
           <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-end">
-            <div className="lg:max-w-[340px] lg:pt-2">
-              <h3 className="text-h2 text-[#2D2D2D]">Maria</h3>
-              <p className="text-copy-sm mt-4 leading-relaxed text-[#2D2D2D]/85">
-                Maria ist unsere Schnittspezialistin! Sie ist seit 35 Jahren Friseurin mit Leidenschaft und hat
-                31 Jahre für den Starfriseur Jaques Le Coz gearbeitet. Maria isst gerne Tapas und tanzt
-                leidenschaftlich Rumba. Seit Anfang 2022 gehört sie zum Team dazu.
-              </p>
-         
-            </div>
-            <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-[17.5rem]">
+            <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-70">
               <Image
                 src="/maria.png"
                 alt="Maria"
@@ -463,6 +485,16 @@ export default function HomeMain() {
                 onContextMenu={blockImageDownloadInteraction}
                 onDragStart={blockImageDownloadInteraction}
               />
+            </div>
+            <div className="lg:max-w-85 lg:pt-2">
+              <h3 className="text-h2 text-[#2D2D2D]">Maria</h3>
+              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D]">
+                Maria ist unsere Schnittspezialistin! Sie ist seit 35 Jahren
+                Friseurin mit Leidenschaft und hat 31 Jahre für den Starfriseur
+                Jaques Le Coz gearbeitet. Maria isst gerne Tapas und tanzt
+                leidenschaftlich Rumba. Seit Anfang 2022 gehört sie zum Team
+                dazu.
+              </p>
             </div>
           </article>
 
@@ -482,12 +514,12 @@ export default function HomeMain() {
             </div>
             <div className="lg:max-w-[340px] lg:pt-2">
               <h3 className="text-h2 text-[#2D2D2D]">Sevim</h3>
-              <p className="text-copy-sm mt-4 leading-relaxed text-[#2D2D2D]/85">
-                Sevim ist unsere Farbspezialistin! Sie liebt es, mit Haaren zu experimentieren, einschließlich
-                ihren Haaren. Zwölf Jahre lang hat sie beim Starfriseur Jaques Le Coz gearbeitet und ist seit
+              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D]/100">
+                Sevim ist unsere Farbspezialistin! Sie liebt es, mit Haaren zu
+                experimentieren, einschließlich ihren Haaren. Zwölf Jahre lang
+                hat sie beim Starfriseur Jaques Le Coz gearbeitet und ist seit
                 Anfang 2022 bei Petite Maison.
               </p>
-            
             </div>
           </article>
 
@@ -495,12 +527,13 @@ export default function HomeMain() {
           <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-end">
             <div className="lg:max-w-[340px] lg:pt-2">
               <h3 className="text-h2 text-[#2D2D2D]">Masoud</h3>
-              <p className="text-copy-sm mt-4 leading-relaxed text-[#2D2D2D]/85">
-                Masoud ist spezialisiert auf präzise Schnitte und Farbtechniken. Geboren im Iran, ausgebildet
-                auf zwei Kontinenten, ist er seit über 20 Jahren Friseur und seit Ende 2025 bei Petite Maison.
-                Als zertifizierter Aveda-Spezialist schwört er auf natürliche, nachhaltige Produkte.
+              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D]/100">
+                Masoud ist spezialisiert auf präzise Schnitte und Farbtechniken.
+                Geboren im Iran, ausgebildet auf zwei Kontinenten, ist er seit
+                über 20 Jahren Friseur und seit Ende 2025 bei Petite Maison. Als
+                zertifizierter Aveda-Spezialist schwört er auf natürliche,
+                nachhaltige Produkte.
               </p>
-           
             </div>
             <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-[17.5rem]">
               <Image
@@ -532,29 +565,19 @@ export default function HomeMain() {
             </div>
             <div className="lg:max-w-[340px] lg:pt-2">
               <h3 className="text-h2 text-[#2D2D2D]">Sarah</h3>
-              <p className="text-copy-sm mt-4 leading-relaxed text-[#2D2D2D]/85">
-                Sarah ist spezialisiert auf Haarschnitte, Styling und natürliche Färbungen. Seit über 15 Jahren
-                arbeitet sie mit Aveda-Produkten, 2022 hat sie ihren Meister gemacht — unter anderem lebte und
-                arbeitete sie in Wien. Seit November 2024 ist sie bei Petite Maison. Ihr Hund Cooper gehört im
-                Salon quasi zum Team.
+              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D]/100">
+                Sarah ist spezialisiert auf Haarschnitte, Styling und natürliche
+                Färbungen. Seit über 15 Jahren arbeitet sie mit Aveda-Produkten,
+                2022 hat sie ihren Meister gemacht — unter anderem lebte und
+                arbeitete sie in Wien. Seit November 2024 ist sie bei Petite
+                Maison. Ihr Hund Cooper gehört im Salon quasi zum Team.
               </p>
-          
             </div>
           </article>
 
           {/* Kanj — rechts */}
           <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-end">
-            <div className="lg:max-w-[340px] lg:pt-2">
-              <h3 className="text-h2 text-[#2D2D2D]">Kanj</h3>
-              <p className="text-copy-sm mt-4 leading-relaxed text-[#2D2D2D]/85">
-                Kanj ist spezialisiert auf Strähnen, Balayage und Schnitte. Er hat 2016 im Libanon seine
-                Ausbildung gemacht und ist seit August 2025 fester Bestandteil des Teams. Nebenbei spielt er
-                libanesische Flöte, tritt mit seiner eigenen Band bei Festivals und Hochzeiten auf und war
-                bereits im libanesischen Fernsehen zu sehen.
-              </p>
-           
-            </div>
-            <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-[17.5rem]">
+            <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-70">
               <Image
                 src="/kanj.png"
                 alt="Kanj"
@@ -565,6 +588,17 @@ export default function HomeMain() {
                 onContextMenu={blockImageDownloadInteraction}
                 onDragStart={blockImageDownloadInteraction}
               />
+            </div>
+            <div className="lg:max-w-85 lg:pt-2">
+              <h3 className="text-h2 text-[#2D2D2D]">Kanj</h3>
+              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D]">
+                Kanj ist spezialisiert auf Strähnen, Balayage und Schnitte. Er
+                hat 2016 im Libanon seine Ausbildung gemacht und ist seit August
+                2025 fester Bestandteil des Teams. Nebenbei spielt er
+                libanesische Flöte, tritt mit seiner eigenen Band bei Festivals
+                und Hochzeiten auf und war bereits im libanesischen Fernsehen zu
+                sehen.
+              </p>
             </div>
           </article>
 
@@ -584,17 +618,16 @@ export default function HomeMain() {
             </div>
             <div className="lg:max-w-[340px] lg:pt-2">
               <h3 className="text-h2 text-[#2D2D2D]">Cooper</h3>
-              <p className="text-copy-sm mt-4 leading-relaxed text-[#2D2D2D]/85">
-                Cooper ist spezialisiert auf gute Laune und ist als Sarahs treuer Begleiter fester Bestandteil
-                des Salons.
+              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D]/100">
+                Cooper ist spezialisiert auf gute Laune und ist als Sarahs
+                treuer Begleiter fester Bestandteil des Salons.
               </p>
-          
             </div>
           </article>
         </div>
       </section>
 
-      {/* GALLERIE (Carousel wie Screenshot) */}
+      {/* GALLERIE  */}
       <section
         id="gallerie"
         data-section-id="gallerie"
@@ -605,6 +638,7 @@ export default function HomeMain() {
         aria-label="Galerie"
       >
         <div className="w-full">
+          {/* Header mit den Navigations-Pfeilen */}
           <div className="flex items-center justify-end gap-3 px-4 pb-4 md:pb-6">
             <button
               type="button"
@@ -614,7 +648,10 @@ export default function HomeMain() {
                 const el = galerieRef.current;
                 if (!el) return;
                 const next = Math.max(0, galerieIndex - 1);
-                el.scrollTo({ left: next * el.clientWidth, behavior: "smooth" });
+                el.scrollTo({
+                  left: next * el.clientWidth,
+                  behavior: "smooth",
+                });
                 setGalerieIndex(next);
               }}
               disabled={galerieIndex === 0}
@@ -644,7 +681,10 @@ export default function HomeMain() {
                 const el = galerieRef.current;
                 if (!el) return;
                 const next = Math.min(galerieSlides - 1, galerieIndex + 1);
-                el.scrollTo({ left: next * el.clientWidth, behavior: "smooth" });
+                el.scrollTo({
+                  left: next * el.clientWidth,
+                  behavior: "smooth",
+                });
                 setGalerieIndex(next);
               }}
               disabled={galerieIndex >= galerieSlides - 1}
@@ -668,6 +708,7 @@ export default function HomeMain() {
             </button>
           </div>
 
+          {/* Scroll-Container für die Galerie */}
           <div
             ref={galerieRef}
             className="no-scrollbar overflow-x-auto scroll-smooth snap-x snap-mandatory"
@@ -692,7 +733,8 @@ export default function HomeMain() {
                     className="w-full flex-none snap-start"
                     aria-label={`Galerie Seite ${groupIdx + 1}`}
                   >
-                    <div className="grid gap-4 px-4 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:gap-0 lg:px-4">
+                    {/* Grid ohne Ränder (px-0) und ohne Lücken (gap-0) */}
+                    <div className="grid grid-cols-1 gap-0 md:grid-cols-2 lg:grid-cols-3">
                       {group.map((src) => (
                         <div
                           key={src}
@@ -714,13 +756,15 @@ export default function HomeMain() {
                       ))}
                       {/* Fülle auf 3 Slots auf Desktop auf, damit Breiten immer gleich bleiben */}
                       {group.length < 3 &&
-                        Array.from({ length: 3 - group.length }).map((_, idx) => (
-                          <div
-                            key={`empty-${groupIdx}-${idx}`}
-                            className="hidden aspect-[3/4] w-full bg-[#EBEAE7] lg:block"
-                            aria-hidden
-                          />
-                        ))}
+                        Array.from({ length: 3 - group.length }).map(
+                          (_, idx) => (
+                            <div
+                              key={`empty-${groupIdx}-${idx}`}
+                              className="hidden aspect-[3/4] w-full bg-[#EBEAE7] lg:block"
+                              aria-hidden
+                            />
+                          ),
+                        )}
                     </div>
                   </div>
                 ))}
@@ -736,12 +780,15 @@ export default function HomeMain() {
         ref={(el) => {
           sectionRefs.current.aveda = el;
         }}
-        className="pm-home-section bg-[#BEA8FF] px-4 pb-28 pt-24 md:pb-36 md:pt-28"
+        className="pm-home-section bg-[#BEA8FF] px-4 pb-58 pt-54 md:pb-36 md:pt-28"
         aria-labelledby="home-aveda-heading"
       >
-        <div className="mx-auto w-full max-w-[32rem] text-center min-[1400px]:max-w-[38rem]">
+        <div className="mx-auto w-full max-w-lg text-center min-[1400px]:max-w-152">
           <p className="text-copy-sm font-bold text-[#2D2D2D]">Aveda</p>
-          <h2 id="home-aveda-heading" className="text-intro mt-4 text-[#2D2D2D]">
+          <h2
+            id="home-aveda-heading"
+            className="text-intro mt-0 text-[#2D2D2D]"
+          >
             Als Aveda-Salon arbeiten wir mit
             <br className="hidden lg:inline" />
             Produkten, die nicht nur deinem Haar
@@ -751,6 +798,7 @@ export default function HomeMain() {
         </div>
 
         {/* Mobile / Tablet */}
+
         <div className="mt-16 flex flex-col gap-14 lg:hidden">
           <div className="relative aspect-square w-full max-w-[20rem] overflow-hidden bg-white/30">
             <Image
@@ -761,18 +809,23 @@ export default function HomeMain() {
               sizes="100vw"
             />
           </div>
-          <p className="text-intro text-[#2D2D2D]">
-            Aveda wurde mit der Vision gegründet, Schönheit und Nachhaltigkeit zu verbinden.
-            Die Marke setzt auf pflanzliche Inhaltsstoffe, recycelbare Verpackungen und einen
-            respektvollen Umgang mit der Natur.
+
+          <p className="text-copy leading-relaxed text-[#1C1612]">
+            Aveda wurde mit der Vision gegründet, Schönheit und Nachhaltigkeit
+            zu verbinden. Die Marke setzt auf pflanzliche Inhaltsstoffe,
+            recycelbare Verpackungen und einen respektvollen Umgang mit der
+            Natur.
           </p>
-          <p className="text-copy leading-relaxed text-[#1C1612]/100">
-            Diese Haltung passt zu unserer Arbeit: verantwortungsvoll, achtsam und mit echtem
-            Anspruch an Qualität. Wir sind stolz darauf, dir Produkte anbieten zu können, die genau
-            das widerspiegeln – und freuen uns, diese Werte gemeinsam mit unseren Kunden zu leben.
-            Unsere Aveda-Produkte kannst du übrigens nicht nur bei uns erleben, sondern auch direkt
-            im Salon erwerben.
+
+          <p className="text-copy leading-relaxed text-[#1C1612]">
+            Diese Haltung passt zu unserer Arbeit: verantwortungsvoll, achtsam
+            und mit echtem Anspruch an Qualität. Wir sind stolz darauf, dir
+            Produkte anbieten zu können, die genau das widerspiegeln – und
+            freuen uns, diese Werte gemeinsam mit unseren Kunden zu leben.
+            Unsere Aveda-Produkte kannst du übrigens nicht nur bei uns erleben,
+            sondern auch direkt im Salon erwerben.
           </p>
+
           <div className="relative ml-auto aspect-square w-full max-w-[18rem] overflow-hidden bg-white/30">
             <Image
               src="/aveda_bild2.png"
@@ -784,9 +837,10 @@ export default function HomeMain() {
           </div>
         </div>
 
-        {/* Desktop — 2×2 Grid, keine Überlappung */}
-        <div className="mt-24 hidden lg:grid lg:grid-cols-2 lg:gap-x-8 lg:gap-y-40 xl:gap-y-48">
-          <figure className="relative aspect-square w-[20rem] justify-self-start overflow-hidden bg-white/30">
+        {/* Desktop — 2×2 Grid*/}
+
+        <div className="mt-44 hidden lg:grid lg:grid-cols-2 lg:gap-x-2 lg:gap-y-40 xl:gap-y-48">
+          <figure className="relative aspect-square w-148 justify-self-start overflow-hidden bg-white/30">
             <Image
               src="/aveda_bild1.png"
               alt=""
@@ -796,31 +850,27 @@ export default function HomeMain() {
             />
           </figure>
 
-          <div className="w-[28rem] justify-self-end min-[1400px]:w-[28rem]">
-            <p className="text-intro text-[#2D2D2D]">
-              Aveda wurde mit der Vision gegründe
-              Schönheit und Nachhaltigkeit zu
-              verbinden.
-              <br className="hidden lg:inline" />
-              Die Marke setzt auf
-              pflanzliche Inhaltsstoffe, recycelbare
-              Verpackungen und einen respektvollen
-              
-              Umgang mit der Natur.
+          <div className="max-w-lg justify-self-start self-start pt-2">
+            <p className="text-copy leading-relaxed text-[#1C1612]">
+              Aveda wurde mit der Vision gegründet, Schönheit und Nachhaltigkeit
+              zu verbinden. Die Marke setzt auf pflanzliche Inhaltsstoffe,
+              recycelbare Verpackungen und einen respektvollen Umgang mit der
+              Natur.
             </p>
           </div>
 
-          <div className="max-w-[32rem] justify-self-start self-end">
-            <p className="text-copy leading-relaxed text-[#1C1612]/100">
-              Diese Haltung passt zu unserer Arbeit: verantwortungsvoll, achtsam und mit{" "}
-              <br />
-              echtem Anspruch an Qualität. Wir sind stolz darauf, dir Produkte anbieten zu{" "}
-              <br />
+          <div className="max-w-lg justify-self-start self-end">
+            <p className="text-copy leading-relaxed text-[#1C1612]">
+              Diese Haltung passt zu unserer Arbeit: verantwortungsvoll, achtsam
+              und mit <br />
+              echtem Anspruch an Qualität. Wir sind stolz darauf, dir Produkte
+              anbieten zu <br />
               können, die genau das widerspiegeln – und freuen uns, diese Werte{" "}
               <br />
-              gemeinsam mit unseren Kunden zu leben. Unsere Aveda-Produkte kannst du{" "}
-              <br />
-              übrigens nicht nur bei uns erleben, sondern auch direkt im Salon erwerben.
+              gemeinsam mit unseren Kunden zu leben. Unsere Aveda-Produkte
+              kannst du <br />
+              übrigens nicht nur bei uns erleben, sondern auch direkt im Salon
+              erwerben.
             </p>
           </div>
 
@@ -837,6 +887,7 @@ export default function HomeMain() {
       </section>
 
       {/* Bildstreifen + 2er-Grid (wie Screenshot, vor Footer) */}
+
       <section className="bg-[#EBEAE7]" aria-label="Impressionen">
         <div className="relative h-92 w-full overflow-hidden sm:h-80 md:h-[460px] lg:h-[820px]">
           <Image
@@ -847,9 +898,7 @@ export default function HomeMain() {
             sizes="100vw"
           />
         </div>
-
       </section>
     </main>
   );
 }
-
