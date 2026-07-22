@@ -165,3 +165,23 @@ body {
     font-size: 1.75rem; /* Entspricht 40px ab 1400px Bildschirmbreite */
   }
 }
+
+@keyframes custom-jump {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  10% {
+    transform: translateY(-33px);
+  }
+  20% {
+    transform: translateY(-35px);
+  }
+  30% {
+    transform: translateY(0);
+  }
+}
+
+.animate-custom-jump {
+  animation: custom-jump 1.4s infinite ease-in-out;
+}
