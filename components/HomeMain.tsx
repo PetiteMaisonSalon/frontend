@@ -143,6 +143,10 @@ export default function HomeMain() {
     };
   }, [sectionById]);
 
+  const [servicesIndex, setServicesIndex] = useState(0);
+  const servicesRef = useRef<HTMLDivElement>(null);
+  const servicesSlides = 3;
+
   return (
     <main className="relative">
       {/* HERO (Viewport 1) */}
@@ -198,17 +202,18 @@ export default function HomeMain() {
         </div>
       </section>
 
-      {/* MAIN (Viewport 2+) — Bild links · Intro rechts, am Rand */}
+      {/* MAIN (Viewport 2+) — Screenshot 1: Text oben auf Mobile, Bild darunter */}
       <section
         id="salon"
         data-section-id="salon"
         ref={(el) => {
           sectionRefs.current.salon = el;
         }}
-        className="pm-home-section bg-[#EBEAE7] px-4 py-20 md:pt-10 md:py-2"
+        className="pm-home-section bg-[#EBEAE7] px-4 py-5 md:pt-10 md:py-2"
       >
-        <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
-          <div className="w-full shrink-0 lg:w-[min(48vw,540px)]">
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between lg:gap-12">
+          {/* Slider Bild: Auf Mobile an Position 2 (order-2), auf Desktop links (lg:order-1) */}
+          <div className="order-2 w-full shrink-0 lg:order-1 lg:w-[min(48vw,540px)]">
             <div className="relative aspect-square w-full overflow-hidden bg-[#E8E4DF]">
               <div
                 ref={mainLeftRef}
@@ -239,9 +244,9 @@ export default function HomeMain() {
               </div>
             </div>
 
-            {/* Indicators + Buttons (unter dem Bild) */}
-            <div className="mt-3 flex items-center justify-between">
-              <div className="flex items-center gap-2" aria-hidden>
+            {/* Indicators + Buttons: Auf Mobile nur Pfeile links, auf Desktop mit Linie */}
+            <div className="mt-3 flex items-center justify-start lg:justify-between">
+              <div className="hidden items-center gap-2 lg:flex" aria-hidden>
                 {mainLeftImages.map((_, i) => (
                   <div
                     key={i}
@@ -323,7 +328,9 @@ export default function HomeMain() {
               </div>
             </div>
           </div>
-          <div className="shrink-0 lg:max-w-[min(42vw,32rem)]">
+
+          {/* Intro Text: Auf Mobile ganz oben (order-1), auf Desktop rechts (lg:order-2) */}
+          <div className="order-1 shrink-0 lg:order-2 lg:max-w-[min(42vw,32rem)]">
             <p className="text-intro text-[#1C1612]">
               Petite Maison ist ein Salon, in dem man sich Zeit füreinander
               nimmt. Für Gespräche, für Beratung und für eine Arbeit, mit Liebe
@@ -333,13 +340,13 @@ export default function HomeMain() {
         </div>
       </section>
 
-      {/* Salon-Story unten: Text links */}
+      {/* Salon-Story: Bild auf Mobile 50% klein & rechtsbündig VOR dem Text (Screenshot 1) */}
       <section
         id="salon-info"
-        className="bg-[#EBEAE7] px-4 pb-24 pt-8 md:pb-20 md:pt-0"
+        className="bg-[#EBEAE7] px-4 pb-24 md:pb-20 md:pt-0"
       >
-        <div className="flex flex-col gap-14 lg:flex-row lg:items-end lg:justify-between">
-          <div className="shrink-0 lg:max-w-116">
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between lg:gap-14">
+          <div className="order-2 shrink-0 lg:order-1 lg:max-w-116">
             <p className="text-copy leading-relaxed text-[#1C1612]">
               Uns ist wichtig, dass du dich bei uns gut aufgehoben fühlst. Wir
               nehmen uns Zeit, stellen Fragen und beraten individuell. Jeder
@@ -351,24 +358,26 @@ export default function HomeMain() {
               Jetzt Termin buchen
             </BookingLink>
           </div>
-          <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-[#EBEAE7] lg:w-[min(32vw,26rem)]">
+
+          {/* Auf Mobile: 50% Breite, rechtsbündig, oberhalb vom Text (order-1). Desktop absolut original! */}
+          <div className="order-1 ml-auto aspect-square w-1/2 shrink-0 overflow-hidden bg-[#EBEAE7] lg:order-2 lg:ml-0 lg:w-[min(32vw,26rem)] relative">
             <Image
               src="/main_rightbild.png"
               alt=""
               fill
               className="object-contain"
-              sizes="(min-width: 1024px) 32vw, 100vw"
+              sizes="(min-width: 1024px) 32vw, 50vw"
             />
           </div>
         </div>
       </section>
 
-      {/* Unsere Leistungen */}
+      {/* Unsere Leistungen — Screenshot 2: Linksbündig auf Mobile */}
       <section
         className="pm-home-section bg-[#EBEAE7]"
         aria-labelledby="home-services-heading"
       >
-        <div className="px-4 py-32 text-center md:py-10">
+        <div className="px-4 py-20 text-left md:py-10 lg:py-12 lg:text-center">
           <p className="text-copy-sm font-medium tracking-[0.04em] text-[#1C1612]">
             Unsere Leistungen
           </p>
@@ -380,7 +389,7 @@ export default function HomeMain() {
             Männer an — immer individuell abgestimmt auf dein Haar, deinen Typ
             und deinen Alltag.
           </h2>
-          <div className="mt-10 flex items-center justify-center gap-8 text-copy-sm">
+          <div className="mt-10 flex items-center justify-start gap-8 text-copy-sm lg:justify-center">
             <BookingLink className="font-medium text-[#1C1612] underline underline-offset-2 transition hover:opacity-80">
               Jetzt buchen
             </BookingLink>
@@ -394,16 +403,17 @@ export default function HomeMain() {
         </div>
       </section>
 
+      {/* LEISTUNGEN KACHELN — Screenshot 2: Auf Mobile eine Galerie mit Pfeilen, Desktop originales 3er Grid! */}
       <section
-        className="pm-home-section bg-[#EBEAE7] px-4 py-20 md:py-28"
+        className="pm-home-section bg-[#EBEAE7] px-4 py-10 md:py-28"
         aria-labelledby="home-services-cards-heading"
       >
         <h2 id="home-services-cards-heading" className="sr-only">
           Leistungen im Überblick
         </h2>
 
-        {/* lg:grid-cols-3 statt md: */}
-        <div className="mx-auto grid max-w-280 grid-cols-1 gap-6 lg:grid-cols-3">
+        {/* 1. DESKTOP VERSION (hidden lg:grid) — 100% UNBERÜHRT */}
+        <div className="mx-auto hidden max-w-280 grid-cols-1 gap-6 lg:grid lg:grid-cols-3">
           {[
             {
               icon: "/schere_new.png",
@@ -427,10 +437,8 @@ export default function HomeMain() {
             <Link
               href="/leistungen"
               key={card.title}
-              /* WICHTIG: pt-12 & pb-6 bringen den Text nach unten, halten die Kachel aber kompakt! */
               className="flex h-full flex-col items-center justify-start rounded-[28px] bg-white px-8 pt-12 pb-6 text-center transition-colors duration-300 ease-out hover:bg-[#BEA8FF] md:px-8 md:pt-12 md:pb-8"
             >
-              {/* Icon-Container quadratisch (h-28 w-28) verhindert, dass die Kachel zu lang wird */}
               <div className="relative h-28 w-28 shrink-0">
                 <Image
                   src={card.icon}
@@ -440,8 +448,6 @@ export default function HomeMain() {
                   sizes="112px"
                 />
               </div>
-
-              {/* mt-14 bringt den idealen Abstand zum Icon, ohne die Kachel in die Länge zu ziehen */}
               <h3 className="text-h3 mt-16 text-[#1C1612]">{card.title}</h3>
               <p className="text-copy-sm mt-3 leading-relaxed text-[#1C1612]">
                 {card.description}
@@ -449,10 +455,149 @@ export default function HomeMain() {
             </Link>
           ))}
         </div>
+
+        {/* 2. MOBILE VERSION (lg:hidden) — Galerie wie im Screenshot 2 */}
+        {/* 2. MOBILE VERSION (lg:hidden) — Alle Kacheln exakt gleich hoch (h-full & items-stretch) */}
+        <div className="w-full lg:hidden">
+          <div
+            id="mobile-services-gallery"
+            ref={servicesRef}
+            onScroll={() => {
+              const el = servicesRef.current;
+              if (!el) return;
+              const idx = Math.round(el.scrollLeft / el.clientWidth);
+              if (idx !== servicesIndex) setServicesIndex(idx);
+            }}
+            /* HIER NEU: items-stretch hinzugefügt */
+            className="no-scrollbar flex w-full items-stretch overflow-x-auto scroll-smooth snap-x snap-mandatory gap-4"
+          >
+            {[
+              {
+                icon: "/schere_new.png",
+                title: "Haarschnitt & Styling",
+                description:
+                  "Präzise Schnitte für jeden Typ – vom klassischen Look bis zum modernen Statement.",
+              },
+              {
+                icon: "/farbe_new.png",
+                title: "Farbe & Highlights",
+                description:
+                  "Natürlich oder ausdrucksstark: Wir finden den Farbton, der wirklich zu dir passt.",
+              },
+              {
+                icon: "/hand_new.png",
+                title: "Pflege & individuelle Beratung",
+                description:
+                  "Wir schauen genau hin, was dein Haar braucht und beraten dich ehrlich und ohne Umwege.",
+              },
+            ].map((card) => (
+              /* HIER NEU: flex h-auto hinzugefügt */
+              <div
+                key={card.title}
+                className="flex h-auto w-full flex-none snap-start"
+              >
+                <Link
+                  href="/leistungen"
+                  /* HIER NEU: h-full w-full hinzugefügt */
+                  className="flex h-full w-full flex-col items-center justify-start rounded-[28px] bg-white px-8 pt-12 pb-10 text-center transition-colors duration-300 ease-out active:bg-[#BEA8FF]"
+                >
+                  <div className="relative h-28 w-28 shrink-0">
+                    <Image
+                      src={card.icon}
+                      alt=""
+                      fill
+                      className="object-contain"
+                      sizes="112px"
+                    />
+                  </div>
+                  <h3 className="text-h3 mt-16 text-[#1C1612]">{card.title}</h3>
+                  <p className="text-copy-sm mt-3 leading-relaxed text-[#1C1612]">
+                    {card.description}
+                  </p>
+                </Link>
+              </div>
+            ))}
+          </div>
+
+          {/* Pfeile unter der mobilen Leistungs-Galerie mit exakter Disabled-Logik */}
+          <div className="mt-6 flex items-center justify-start gap-3">
+            <button
+              type="button"
+              aria-label="Zurück"
+              className="grid h-10 w-16 place-items-center text-[#1C1612] transition hover:opacity-70 disabled:opacity-30"
+              onClick={() => {
+                const el =
+                  servicesRef.current ||
+                  document.getElementById("mobile-services-gallery");
+                if (!el) return;
+                const next = Math.max(0, servicesIndex - 1);
+                el.scrollTo({
+                  left: next * el.clientWidth,
+                  behavior: "smooth",
+                });
+                setServicesIndex(next);
+              }}
+              disabled={servicesIndex === 0}
+            >
+              <svg
+                width="64"
+                height="16"
+                viewBox="0 0 64 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden
+              >
+                <path
+                  d="M12 2L2 8l10 6M4 8h58"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+            <button
+              type="button"
+              aria-label="Weiter"
+              className="grid h-10 w-16 place-items-center text-[#1C1612] transition hover:opacity-70 disabled:opacity-30"
+              onClick={() => {
+                const el =
+                  servicesRef.current ||
+                  document.getElementById("mobile-services-gallery");
+                if (!el) return;
+                const next = Math.min(servicesSlides - 1, servicesIndex + 1);
+                el.scrollTo({
+                  left: next * el.clientWidth,
+                  behavior: "smooth",
+                });
+                setServicesIndex(next);
+              }}
+              disabled={servicesIndex >= servicesSlides - 1}
+            >
+              <svg
+                width="64"
+                height="16"
+                viewBox="0 0 64 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden
+              >
+                <path
+                  d="M52 2l10 6-10 6M2 8h58"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
       </section>
 
-      <section className="pm-home-section bg-[#EBEAE7] px-4 py-32 md:py-40">
-        <div className="mx-auto max-w-md text-center lg:max-w-130">
+      {/* Unser Team Intro — Screenshot 2 (unten): Linksbündig auf Mobile */}
+      <section className="pm-home-section bg-[#EBEAE7] px-4 py-20 md:py-30">
+        <div className="mx-auto max-w-md text-left lg:max-w-130 lg:text-center">
           <p className="text-copy font-medium tracking-[0.04em] text-[#1C1612]">
             Unser Team
           </p>
@@ -464,7 +609,7 @@ export default function HomeMain() {
         </div>
       </section>
 
-      {/* TEAM / Mitarbeiter (Anchor + Submenu Ziel) — Bilder vorerst Platzhalter */}
+      {/* TEAM / Mitarbeiter — Screenshot 3 & 4: Auf Mobile mit zusätzlichem "Jetzt buchen" Link */}
       <section
         id="team"
         data-section-id="team"
@@ -510,9 +655,9 @@ export default function HomeMain() {
             </div>
           </article>
 
-          {/* Maria — rechts */}
+          {/* Maria */}
           <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-end">
-            <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-70">
+            <div className="relative aspect-square w-3/5 self-end shrink-0 overflow-hidden bg-transparent lg:w-70 lg:self-auto">
               <Image
                 src="/maria.png"
                 alt="Maria"
@@ -538,7 +683,7 @@ export default function HomeMain() {
 
           {/* Sevim — links */}
           <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-start">
-            <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-70">
+            <div className="relative aspect-square w-3/5 self-end shrink-0 overflow-hidden bg-transparent lg:w-70 lg:self-auto">
               <Image
                 src="/sevim.png"
                 alt="Sevim"
@@ -563,7 +708,7 @@ export default function HomeMain() {
 
           {/* Masoud — rechts */}
           <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-end">
-            <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-70">
+            <div className="relative aspect-square w-3/5 self-end shrink-0 overflow-hidden bg-transparent lg:w-70 lg:self-auto">
               <Image
                 src="/masoud.png"
                 alt="Masoud"
@@ -589,7 +734,7 @@ export default function HomeMain() {
 
           {/* Sarah — links */}
           <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-start">
-            <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-70">
+            <div className="relative aspect-square w-3/5 self-end shrink-0 overflow-hidden bg-transparent lg:w-70 lg:self-auto">
               <Image
                 src="/sarah.png"
                 alt="Sarah"
@@ -615,7 +760,7 @@ export default function HomeMain() {
 
           {/* Kanj — rechts */}
           <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-end">
-            <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-70">
+            <div className="relative aspect-square w-3/5 self-end shrink-0 overflow-hidden bg-transparent lg:w-70 lg:self-auto">
               <Image
                 src="/kanj.png"
                 alt="Kanj"
@@ -642,7 +787,7 @@ export default function HomeMain() {
 
           {/* Cooper — links */}
           <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-start">
-            <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-70">
+            <div className="relative aspect-square w-3/5 self-end shrink-0 overflow-hidden bg-transparent lg:w-70 lg:self-auto">
               <Image
                 src="/cooper.png"
                 alt="Cooper"
@@ -665,7 +810,7 @@ export default function HomeMain() {
         </div>
       </section>
 
-      {/* GALLERIE  */}
+      {/* GALLERIE */}
       <section
         id="gallerie"
         data-section-id="gallerie"
@@ -676,7 +821,6 @@ export default function HomeMain() {
         aria-label="Galerie"
       >
         <div className="w-full">
-          {/* Header mit den Navigations-Pfeilen */}
           <div className="flex items-center justify-end gap-3 px-4 pb-4 md:pb-6">
             <button
               type="button"
@@ -746,7 +890,6 @@ export default function HomeMain() {
             </button>
           </div>
 
-          {/* Scroll-Container für die Galerie (Flex statt Grid-Gruppen) */}
           <div
             ref={galerieRef}
             className="no-scrollbar flex w-full overflow-x-auto scroll-smooth snap-x snap-mandatory"
@@ -781,17 +924,17 @@ export default function HomeMain() {
         </div>
       </section>
 
-      {/* AVEDA (lila) — wie Screenshot */}
+      {/* AVEDA SECTION */}
       <section
         id="aveda"
         data-section-id="aveda"
         ref={(el) => {
           sectionRefs.current.aveda = el;
         }}
-        className="pm-home-section bg-[#BEA8FF] px-4 pb-58 pt-54 md:pb-4 md:pt-28"
+        className="pm-home-section bg-[#BEA8FF] px-4 pb-20 pt-20 md:pb-4 md:pt-28 lg:pb-4 lg:pt-23"
         aria-labelledby="home-aveda-heading"
       >
-        <div className="mx-auto w-full max-w-lg text-center min-[1400px]:max-w-152">
+        <div className="mx-auto w-full max-w-lg text-left lg:text-center min-[1400px]:max-w-152">
           <p className="text-copy-sm font-bold text-[#1C1612]">Aveda</p>
           <h2
             id="home-aveda-heading"
@@ -805,10 +948,10 @@ export default function HomeMain() {
           </h2>
         </div>
 
-        {/* Mobile / Tablet */}
-
-        <div className="mt-16 flex flex-col gap-14 lg:hidden">
-          <div className="relative aspect-square w-full max-w-[20rem] overflow-hidden bg-white/30">
+        {/* Mobile / Tablet (lg:hidden - exakt wie Screenshot 5 angeordnet) */}
+        <div className="mt-12 flex flex-col gap-6 lg:hidden">
+          {/* Bild 1: Volle Breite oben */}
+          <div className="relative aspect-square w-full overflow-hidden bg-white/30">
             <Image
               src="/aveda_bild1.png"
               alt=""
@@ -818,35 +961,38 @@ export default function HomeMain() {
             />
           </div>
 
-          <p className="text-copy leading-relaxed text-[#1C1612]">
-            Aveda wurde mit der Vision gegründet, Schönheit und Nachhaltigkeit
-            zu verbinden. Die Marke setzt auf pflanzliche Inhaltsstoffe,
-            recycelbare Verpackungen und einen respektvollen Umgang mit der
-            Natur.
-          </p>
-
-          <p className="text-copy leading-relaxed text-[#1C1612]">
-            Diese Haltung passt zu unserer Arbeit: verantwortungsvoll, achtsam
-            und mit echtem Anspruch an Qualität. Wir sind stolz darauf, dir
-            Produkte anbieten zu können, die genau das widerspiegeln – und
-            freuen uns, diese Werte gemeinsam mit unseren Kunden zu leben.
-            Unsere Aveda-Produkte kannst du übrigens nicht nur bei uns erleben,
-            sondern auch direkt im Salon erwerben.
-          </p>
-
-          <div className="relative ml-auto aspect-square w-full max-w-[18rem] overflow-hidden bg-white/30">
+          {/* Bild 2: 50% Breite & rechtsbündig direkt unter Bild 1 */}
+          <div className="relative ml-auto aspect-square w-1/2 overflow-hidden bg-white/30">
             <Image
               src="/aveda_bild2.png"
               alt=""
               fill
               className="object-cover"
-              sizes="100vw"
+              sizes="50vw"
             />
+          </div>
+
+          {/* Beide Texte zusammen darunter */}
+          <div className="flex flex-col gap-6 pt-4">
+            <p className="text-intro leading-relaxed text-[#1C1612]">
+              Aveda wurde mit der Vision gegründet, Schönheit und Nachhaltigkeit
+              zu verbinden. Die Marke setzt auf pflanzliche Inhaltsstoffe,
+              recycelbare Verpackungen und einen respektvollen Umgang mit der
+              Natur.
+            </p>
+
+            <p className="text-copy leading-relaxed text-[#1C1612]">
+              Diese Haltung passt zu unserer Arbeit: verantwortungsvoll, achtsam
+              und mit echtem Anspruch an Qualität. Wir sind stolz darauf, dir
+              Produkte anbieten zu können, die genau das widerspiegeln – und
+              freuen uns, diese Werte gemeinsam mit unseren Kunden zu leben.
+              Unsere Aveda-Produkte kannst du übrigens nicht nur bei uns
+              erleben, sondern auch direkt im Salon erwerben.
+            </p>
           </div>
         </div>
 
-        {/* Desktop — 2×2 Grid*/}
-
+        {/* Desktop — 2×2 Grid — 100% UNBERÜHRT */}
         <div className="mt-44 hidden lg:flex lg:flex-col lg:gap-y-40 xl:gap-y-5">
           <div className="flex items-start gap-4 lg:gap-6">
             <figure className="relative aspect-square w-148 shrink-0 overflow-hidden bg-white/30">
@@ -898,8 +1044,7 @@ export default function HomeMain() {
         </div>
       </section>
 
-      {/* Bildstreifen + 2er-Grid (wie Screenshot, vor Footer) */}
-
+      {/* Bildstreifen + 2er-Grid (Screenshot 6 vor Footer) */}
       <section className="bg-[#EBEAE7]" aria-label="Impressionen">
         <div className="relative h-92 w-full overflow-hidden sm:h-80 md:h-115 lg:h-205">
           <Image

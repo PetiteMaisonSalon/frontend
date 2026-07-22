@@ -12,7 +12,7 @@ export default function HeaderSpacer() {
 
   return (
     <div
-      className="h-[76px] md:h-[84px]"
+      className="h-19 md:h-21"
       style={{ backgroundColor: spacerBg }}
       aria-hidden
     />
