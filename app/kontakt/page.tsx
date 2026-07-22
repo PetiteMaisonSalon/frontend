@@ -14,7 +14,7 @@ export default function KontaktPage() {
       <section className="w-full px-4 pb-14 pt-8 sm:pt-12 lg:min-h-[calc(100svh-120.75rem)] lg:pb-12 lg:pt-30">
         {/* Obere Zeile: Text links · Kontakt rechts */}
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between">
-          <div className="font-display shrink-0 text-[#1C1612] lg:max-w-[44rem]">
+          <div className="font-display shrink-0 text-[#1C1612] lg:max-w-176">
             <p className="text-[clamp(2.5rem,3.2vw,2.5rem)] leading-[1.12] tracking-[-0.02em]">
               Wir freuen uns darauf, dich bei uns begrüßen zu dürfen. Deinen
               Termin kannst du jederzeit online oder telefonisch vereinbaren.
@@ -50,7 +50,7 @@ export default function KontaktPage() {
               </a>
               <a
                 href="mailto:info@petitemaison.hamburg"
-                className="block break-words transition hover:opacity-70"
+                className="block wrap-break-word transition hover:opacity-70"
               >
                 info@petitemaison.hamburg
               </a>
@@ -77,8 +77,9 @@ export default function KontaktPage() {
         </div>
       </section>
 
-      <section className="grid grid-cols-[28%_30%_42%] gap-x-0 content-center max-md:grid-cols-1 max-md:gap-y-7.5 max-md:p-5 grid-rows-[auto_auto]">
-        <div className="w-full col-start-1 col-end-2 row-start-1 row-end-2 max-md:col-span-full max-md:row-start-1 max-md:row-end-2 p-2">
+      <section className="grid grid-cols-[28%_30%_42%] gap-x-0 content-center max-md:grid-cols-1 grid-rows-[auto_auto]">
+        {/* Bild 1: Desktop unverändert | Mobile: wandert in Reihe 2 (unten), wird 50% schmaler & rechtsbündig */}
+        <div className="w-full col-start-1 col-end-2 row-start-1 row-end-2 max-md:col-span-full max-md:row-start-2 max-md:row-end-3 max-md:w-1/2 max-md:ml-auto p-2">
           <Image
             src="/kontakt/kontakt_bild1.png"
             alt="Friseursalon Spiegel"
@@ -89,7 +90,8 @@ export default function KontaktPage() {
           />
         </div>
 
-        <div className="w-full col-start-3 col-end-4 row-start-2 row-end-3 max-md:col-span-full max-md:row-start-2 max-md:row-end-3 p-2 mb-1">
+        {/* Bild 2: Desktop unverändert | Mobile: wandert in Reihe 1 (oben) und wird groß */}
+        <div className="w-full col-start-3 col-end-4 row-start-2 row-end-3 max-md:col-span-full max-md:row-start-1 max-md:row-end-2 p-2 mb-1">
           <Image
             src="/kontakt/kontakt_bild2.png"
             alt="Waschbecken Bereich"
