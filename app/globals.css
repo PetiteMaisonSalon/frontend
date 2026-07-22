@@ -160,6 +160,13 @@ body {
   letter-spacing: 0;
 }
 
+.text-aveda {
+  font-family: var(--font-gilda-display, Georgia, serif);
+  font-weight: 400;
+  font-size: 1.26rem;
+  letter-spacing: 0;
+}
+
 @media (min-width: 1400px) {
   .text-intro {
     font-size: 1.75rem; /* Entspricht 40px ab 1400px Bildschirmbreite */

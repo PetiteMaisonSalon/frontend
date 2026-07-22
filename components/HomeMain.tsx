@@ -173,6 +173,7 @@ export default function HomeMain() {
         <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 pb-24 pt-28 text-center md:pb-32 md:pt-36">
           <h1 className="text-h1 max-w-3xl text-[#BEA8FF]">
             Deine Haare sind
+            <br className="block md:hidden" />
             <br className="hidden md:block" />
             Vertrauenssache.
           </h1>
@@ -191,7 +192,7 @@ export default function HomeMain() {
             viewBox="0 0 24 24"
             strokeWidth="0.65"
             stroke="currentColor"
-            className="h-10 w-10 md:h-12 md:w-12"
+            className="h-30 w-10 md:h-12 md:w-12"
           >
             <path
               strokeLinecap="round"
@@ -942,7 +943,7 @@ export default function HomeMain() {
           >
             Als Aveda-Salon arbeiten wir mit
             <br className="hidden lg:inline" />
-            Produkten, die nicht nur deinem Haar
+            Produkten, die nicht nur deinem Haar{" "}
             <br className="hidden lg:inline" />
             guttun, sondern auch der Umwelt.
           </h2>
@@ -974,9 +975,10 @@ export default function HomeMain() {
 
           {/* Beide Texte zusammen darunter */}
           <div className="flex flex-col gap-6 pt-4">
-            <p className="text-intro leading-relaxed text-[#1C1612]">
+            <p className="text-aveda leading-relaxed text-[#1C1612]">
               Aveda wurde mit der Vision gegründet, Schönheit und Nachhaltigkeit
               zu verbinden. Die Marke setzt auf pflanzliche Inhaltsstoffe,
+              <br />
               recycelbare Verpackungen und einen respektvollen Umgang mit der
               Natur.
             </p>
