@@ -44,16 +44,16 @@ export default function SalonPage() {
         <div className="mx-auto max-w-7xl px-6 py-20 md:py-28">
           <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
             <div className="order-2 lg:order-1">
-              <h2 className="text-h2 text-[#2D2D2D]">
+              <h2 className="text-h2 text-[#1C1612]">
                 Unser Salon
               </h2>
-              <p className="mt-6 text-lg leading-relaxed text-[#2D2D2D]/85">
+              <p className="mt-6 text-lg leading-relaxed text-[#1C1612]/85">
                 Unser Salon liegt im Innenhof auf der Uhlenhorst – ruhig gelegen
                 und etwas zurückgezogen. Ein Ort, an dem man ankommen kann und
                 in dem Zeit, Aufmerksamkeit und sorgfältige Arbeit im
                 Mittelpunkt stehen.
               </p>
-              <p className="mt-4 text-lg leading-relaxed text-[#2D2D2D]/85">
+              <p className="mt-4 text-lg leading-relaxed text-[#1C1612]/85">
                 Er soll sich wie ein Ort anfühlen, an dem man durchatmen kann.
                 Hier stehen Begegnungen, Aufmerksamkeit und gutes Handwerk im
                 Vordergrund.
@@ -73,32 +73,32 @@ export default function SalonPage() {
       {/* Unsere Leistungen – Salonseite 1 */}
       <section className="bg-[#EBEAE7] py-20 md:py-28">
         <div className="mx-auto max-w-7xl px-6">
-          <h2 className="text-h2 text-[#2D2D2D]">
+          <h2 className="text-h2 text-[#1C1612]">
             Unsere Leistungen
           </h2>
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[#2D2D2D]/85">
+          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[#1C1612]/85">
             Wir bieten Haarschnitte, Farb- und Pflegebehandlungen für Frauen und
             Männer an – immer individuell abgestimmt auf dein Haar, deinen Typ
             und deinen Alltag.
           </p>
-          <h3 className="mt-10 text-h3 text-[#2D2D2D]">
+          <h3 className="mt-10 text-h3 text-[#1C1612]">
             Leistungsbereiche
           </h3>
           <ul className="mt-4 space-y-2">
             {leistungen.map((l) => (
-              <li key={l} className="text-lg text-[#2D2D2D]/85">
+              <li key={l} className="text-lg text-[#1C1612]/85">
                 • {l}
               </li>
             ))}
           </ul>
-          <p className="mt-8 max-w-2xl text-lg leading-relaxed text-[#2D2D2D]/85">
+          <p className="mt-8 max-w-2xl text-lg leading-relaxed text-[#1C1612]/85">
             Unsere Leistungen folgen einer zeitlichen Planung, die Qualität
             ermöglicht. Nicht alles braucht gleich viel Zeit – aber alles die
             Aufmerksamkeit, die es verdient.
           </p>
           <Link
             href="/leistungen"
-            className="mt-10 inline-block border-2 border-[#2D2D2D] px-8 py-3 font-medium text-[#2D2D2D] transition hover:bg-[#2D2D2D] hover:text-white"
+            className="mt-10 inline-block border-2 border-[#1C1612] px-8 py-3 font-medium text-[#1C1612] transition hover:bg-[#1C1612] hover:text-white"
           >
             Zur Leistungsübersicht
           </Link>
@@ -109,15 +109,15 @@ export default function SalonPage() {
       <section className="border-t border-[#E8E4DF] py-20 md:py-28">
         <div className="mx-auto max-w-7xl px-6">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="text-h2 text-[#2D2D2D]">
+            <h2 className="text-h2 text-[#1C1612]">
               Unser Team
             </h2>
-            <p className="mt-6 text-lg leading-relaxed text-[#2D2D2D]/85">
+            <p className="mt-6 text-lg leading-relaxed text-[#1C1612]/85">
               Petite Maison ist ein Ort, an dem Erfahrung und Persönlichkeit
               zusammenkommen. Wir arbeiten als kleines Team und teilen den
               Anspruch, jede Kundin und jeden Kunden individuell zu betreuen.
             </p>
-            <p className="mt-4 text-lg leading-relaxed text-[#2D2D2D]/85">
+            <p className="mt-4 text-lg leading-relaxed text-[#1C1612]/85">
               Was uns verbindet, ist die Freude am Handwerk, ein ruhiger
               Arbeitsstil und der Wunsch, eine Atmosphäre zu schaffen, in der man
               sich wohl und ernst genommen fühlt.
@@ -148,13 +148,13 @@ export default function SalonPage() {
                     member.imagePos === "right" ? "lg:order-1" : "lg:order-2"
                   }
                 >
-                  <h3 className="text-h2 text-[#2D2D2D]">
+                  <h3 className="text-h2 text-[#1C1612]">
                     {member.name}
                   </h3>
                   <p className="mt-1 text-sm uppercase tracking-wider text-[#4A5D4A]">
                     {member.role}
                   </p>
-                  <p className="mt-6 text-lg leading-relaxed text-[#2D2D2D]/85">
+                  <p className="mt-6 text-lg leading-relaxed text-[#1C1612]/85">
                     {member.description}
                   </p>
                 </div>
@@ -176,15 +176,15 @@ export default function SalonPage() {
               </div>
             </div>
             <div>
-              <h2 className="text-h2 text-[#2D2D2D]">
+              <h2 className="text-h2 text-[#1C1612]">
                 Aveda
               </h2>
-              <p className="mt-6 text-lg leading-relaxed text-[#2D2D2D]/85">
+              <p className="mt-6 text-lg leading-relaxed text-[#1C1612]/85">
                 AVEDA steht für nachhaltige Haarpflege und einen bewussten Umgang
                 mit Ressourcen. Diese Haltung passt zu unserer Arbeit –
                 verantwortungsvoll, achtsam und mit Anspruch an Qualität.
               </p>
-              <p className="mt-4 text-lg leading-relaxed text-[#2D2D2D]/85">
+              <p className="mt-4 text-lg leading-relaxed text-[#1C1612]/85">
                 Als Aveda-Salon setzen wir bewusst auf Produkte, die nicht nur
                 gut für dein Haar sind, sondern auch für die Umwelt. Wir arbeiten
                 mit der Aveda-Philosophie – von der Wurzel bis zur Spitze.
@@ -203,10 +203,10 @@ export default function SalonPage() {
       {/* Termine – Salonseite 3 */}
       <section className="border-t border-[#E8E4DF] bg-[#EBEAE7] py-20 md:py-24">
         <div className="mx-auto max-w-2xl px-6 text-center">
-          <h2 className="text-h2 text-[#2D2D2D]">
+          <h2 className="text-h2 text-[#1C1612]">
             Termine
           </h2>
-          <p className="mt-6 text-lg leading-relaxed text-[#2D2D2D]/85">
+          <p className="mt-6 text-lg leading-relaxed text-[#1C1612]/85">
             Wir freuen uns darauf, dich bei uns begrüßen zu dürfen. Deinen
             Termin kannst du jederzeit online oder telefonisch vereinbaren. Wenn
             du uns anrufen möchtest, erreichst du uns direkt über die
@@ -214,7 +214,7 @@ export default function SalonPage() {
           </p>
           <Link
             href="/kontakt?buchung=1"
-            className="mt-10 inline-block rounded-full bg-[#2D2D2D] px-8 py-4 font-medium text-white transition hover:bg-[#4A5D4A]"
+            className="mt-10 inline-block rounded-full bg-[#1C1612] px-8 py-4 font-medium text-white transition hover:bg-[#4A5D4A]"
           >
             Jetzt Termin buchen
           </Link>

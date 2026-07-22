@@ -31,14 +31,14 @@ function VerifyContent() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-[#EBEAE7] px-6">
       {status === "loading" && (
-        <p className="text-[#2D2D2D]/70">E-Mail wird bestätigt…</p>
+        <p className="text-[#1C1612]/70">E-Mail wird bestätigt…</p>
       )}
       {status === "success" && (
         <div className="max-w-md rounded-2xl border border-[#4A5D4A]/30 bg-white p-8 text-center shadow-sm">
-          <h1 className="text-h2 text-[#2D2D2D]">
+          <h1 className="text-h2 text-[#1C1612]">
             E-Mail bestätigt
           </h1>
-          <p className="mt-4 text-[#2D2D2D]/85">
+          <p className="mt-4 text-[#1C1612]/85">
             Du kannst dich jetzt anmelden.
           </p>
           <Link
@@ -51,10 +51,10 @@ function VerifyContent() {
       )}
       {status === "error" && (
         <div className="max-w-md rounded-2xl border border-[#E8E4DF] bg-white p-8 text-center">
-          <h1 className="text-h2 text-[#2D2D2D]">
+          <h1 className="text-h2 text-[#1C1612]">
             Link ungültig oder abgelaufen
           </h1>
-          <p className="mt-4 text-[#2D2D2D]/85">
+          <p className="mt-4 text-[#1C1612]/85">
             Der Bestätigungslink ist ungültig oder abgelaufen. Bitte registriere dich erneut.
           </p>
           <Link
@@ -73,7 +73,7 @@ export default function VerifyEmailPage() {
   return (
     <Suspense fallback={
       <main className="flex min-h-screen items-center justify-center bg-[#EBEAE7]">
-        <p className="text-[#2D2D2D]/70">Laden…</p>
+        <p className="text-[#1C1612]/70">Laden…</p>
       </main>
     }>
       <VerifyContent />

@@ -48,7 +48,7 @@ function StornoContent() {
   if (loading) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#EBEAE7]">
-        <p className="text-[#2D2D2D]/70">Laden…</p>
+        <p className="text-[#1C1612]/70">Laden…</p>
       </main>
     );
   }
@@ -57,7 +57,7 @@ function StornoContent() {
     return (
       <main className="mx-auto max-w-xl px-6 py-16">
         <div className="rounded-2xl border border-[#E8E4DF] bg-white p-8 text-center">
-          <h1 className="text-h2 text-[#2D2D2D]">
+          <h1 className="text-h2 text-[#1C1612]">
             {error}
           </h1>
           <Link
@@ -75,10 +75,10 @@ function StornoContent() {
     return (
       <main className="mx-auto max-w-xl px-6 py-16">
         <div className="rounded-2xl border border-[#4A5D4A]/30 bg-white p-8 text-center shadow-sm">
-          <h1 className="text-h2 text-[#2D2D2D]">
+          <h1 className="text-h2 text-[#1C1612]">
             Termin storniert
           </h1>
-          <p className="mt-4 text-[#2D2D2D]/85">
+          <p className="mt-4 text-[#1C1612]/85">
             Dein Termin wurde erfolgreich storniert.
           </p>
           <Link
@@ -97,10 +97,10 @@ function StornoContent() {
   return (
     <main className="mx-auto max-w-xl px-6 py-16">
       <div className="rounded-2xl border border-[#E8E4DF] bg-white p-8">
-        <h1 className="text-h2 text-[#2D2D2D]">
+        <h1 className="text-h2 text-[#1C1612]">
           Termin ändern oder stornieren
         </h1>
-        <div className="mt-6 space-y-1 text-[#2D2D2D]/85">
+        <div className="mt-6 space-y-1 text-[#1C1612]/85">
           <p>{appointment.serviceId?.name}</p>
           <p>
             {appointment.staffId?.firstName} {appointment.staffId?.lastName}
@@ -144,7 +144,7 @@ export default function StornoPage() {
   return (
     <Suspense fallback={
       <main className="flex min-h-screen items-center justify-center bg-[#EBEAE7]">
-        <p className="text-[#2D2D2D]/70">Laden…</p>
+        <p className="text-[#1C1612]/70">Laden…</p>
       </main>
     }>
       <StornoContent />

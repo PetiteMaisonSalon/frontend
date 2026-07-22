@@ -45,10 +45,10 @@ export function CustomSelect({
         onClick={() => setOpen((o) => !o)}
         className={`flex w-full items-center justify-between rounded-lg border border-[#E8E4DF] bg-white px-3 py-2 text-left text-sm focus:border-[#4A5D4A] focus:outline-none focus:ring-2 focus:ring-[#4A5D4A]/20 ${className}`}
       >
-        <span className={`min-w-0 truncate ${value ? "text-[#2D2D2D]" : "text-[#2D2D2D]/55"}`}>
+        <span className={`min-w-0 truncate ${value ? "text-[#1C1612]" : "text-[#1C1612]/55"}`}>
           {selectedLabel}
         </span>
-        <span className="ml-2 shrink-0 text-[#2D2D2D]/50" aria-hidden>▼</span>
+        <span className="ml-2 shrink-0 text-[#1C1612]/50" aria-hidden>▼</span>
       </button>
 
       {open && (
@@ -63,7 +63,7 @@ export function CustomSelect({
                 setOpen(false);
               }}
               className={`block w-full px-3 py-2 text-left text-sm hover:bg-[#4A5D4A]/10 ${
-                !value ? "bg-[#4A5D4A]/10 text-[#4A5D4A]" : "text-[#2D2D2D]/55"
+                !value ? "bg-[#4A5D4A]/10 text-[#4A5D4A]" : "text-[#1C1612]/55"
               }`}
             >
               {placeholder}
@@ -80,7 +80,7 @@ export function CustomSelect({
                   setOpen(false);
                 }}
                 className={`block w-full px-3 py-2 text-left text-sm hover:bg-[#4A5D4A]/10 ${
-                  isSelected ? "bg-[#4A5D4A] text-white hover:bg-[#4A5D4A]" : "text-[#2D2D2D]"
+                  isSelected ? "bg-[#4A5D4A] text-white hover:bg-[#4A5D4A]" : "text-[#1C1612]"
                 }`}
               >
                 {opt.label}

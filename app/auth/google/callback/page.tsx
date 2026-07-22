@@ -28,8 +28,8 @@ function GoogleCallbackContent() {
   return (
     <main className="grid min-h-screen place-items-center bg-[#E4E1DC] px-4">
       <div className="rounded-[28px] bg-[#EBEAE7] px-8 py-10 text-center">
-        <span className="mx-auto block h-9 w-9 animate-spin rounded-full border-2 border-[#2D2D2D]/15 border-t-[#2D2D2D]" />
-        <p className="mt-4 text-sm text-[#2D2D2D]/70">Google Anmeldung wird abgeschlossen…</p>
+        <span className="mx-auto block h-9 w-9 animate-spin rounded-full border-2 border-[#1C1612]/15 border-t-[#1C1612]" />
+        <p className="mt-4 text-sm text-[#1C1612]/70">Google Anmeldung wird abgeschlossen…</p>
       </div>
     </main>
   );
@@ -40,7 +40,7 @@ export default function GoogleCallbackPage() {
     <Suspense
       fallback={
         <main className="grid min-h-screen place-items-center bg-[#E4E1DC] px-4">
-          <p className="text-sm text-[#2D2D2D]/70">Laden…</p>
+          <p className="text-sm text-[#1C1612]/70">Laden…</p>
         </main>
       }
     >

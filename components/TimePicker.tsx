@@ -76,7 +76,7 @@ export function TimePicker({ value, onChange, className = "" }: TimePickerProps)
                   className={`rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A5D4A] focus:ring-offset-1 ${
                     isSelected
                       ? "bg-[#4A5D4A] text-white"
-                      : "text-[#2D2D2D] hover:bg-[#4A5D4A]/10"
+                      : "text-[#1C1612] hover:bg-[#4A5D4A]/10"
                   }`}
                 >
                   {slot}

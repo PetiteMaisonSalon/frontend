@@ -312,8 +312,8 @@ function AccountPageContent() {
     return (
       <main className="grid min-h-screen place-items-center bg-[#EBEAE7] px-4 py-20 sm:px-6">
         <div className="flex flex-col items-center gap-3">
-          <span className="h-10 w-10 animate-spin rounded-full border-2 border-[#2D2D2D]/15 border-t-[#2D2D2D]/55" />
-          <p className="text-sm text-[#2D2D2D]/60">Konto wird geladen…</p>
+          <span className="h-10 w-10 animate-spin rounded-full border-2 border-[#1C1612]/15 border-t-[#1C1612]/55" />
+          <p className="text-sm text-[#1C1612]/60">Konto wird geladen…</p>
         </div>
       </main>
     );
@@ -322,11 +322,11 @@ function AccountPageContent() {
   if (!user) {
     return (
       <main className="mx-auto max-w-4xl bg-[#EBEAE7] px-4 py-12 sm:px-6">
-        <h1 className="font-display text-h1 text-[#2D2D2D]">Dein Profil</h1>
-        <p className="mt-3 text-[#2D2D2D]/80">Bitte melde dich an, um dein Profil zu verwalten.</p>
+        <h1 className="font-display text-h1 text-[#1C1612]">Dein Profil</h1>
+        <p className="mt-3 text-[#1C1612]/80">Bitte melde dich an, um dein Profil zu verwalten.</p>
         <Link
           href="/login?redirect=%2Fkonto"
-          className="mt-6 inline-block rounded-full border border-[#2D2D2D] bg-transparent px-6 py-3 font-medium text-[#2D2D2D] hover:bg-black/[0.04]"
+          className="mt-6 inline-block rounded-full border border-[#1C1612] bg-transparent px-6 py-3 font-medium text-[#1C1612] hover:bg-black/[0.04]"
         >
           Zur Anmeldung
         </Link>
@@ -338,50 +338,50 @@ function AccountPageContent() {
     [user.firstName, user.lastName].filter(Boolean).join(" ").trim() || user.firstName || "Gast";
 
   const outlineBtnClass =
-    "inline-flex items-center justify-center rounded-full border border-[#2D2D2D] bg-transparent px-5 py-2 text-sm font-medium text-[#2D2D2D] transition hover:bg-black/[0.04] disabled:opacity-50";
+    "inline-flex items-center justify-center rounded-full border border-[#1C1612] bg-transparent px-5 py-2 text-sm font-medium text-[#1C1612] transition hover:bg-black/[0.04] disabled:opacity-50";
 
   const textLinkUnderline =
-    "text-sm underline decoration-[#2D2D2D]/50 underline-offset-4 hover:decoration-[#2D2D2D]";
+    "text-sm underline decoration-[#1C1612]/50 underline-offset-4 hover:decoration-[#1C1612]";
 
-  const labelUnderline = "text-xs text-[#2D2D2D] underline decoration-[#2D2D2D]/35 underline-offset-4";
+  const labelUnderline = "text-xs text-[#1C1612] underline decoration-[#1C1612]/35 underline-offset-4";
 
   const profileCardInner =
     "rounded-[32px] bg-white px-7 py-8 shadow-[0_1px_3px_rgba(0,0,0,0.05)] sm:px-9 sm:py-9";
   const profileBearbeitenLink =
-    "shrink-0 text-sm text-[#2D2D2D] underline decoration-[#2D2D2D]/40 underline-offset-[7px] hover:decoration-[#2D2D2D]";
+    "shrink-0 text-sm text-[#1C1612] underline decoration-[#1C1612]/40 underline-offset-[7px] hover:decoration-[#1C1612]";
   const profileSectionHeading =
-    "font-display text-[1.375rem] leading-tight text-[#2D2D2D] sm:text-[1.5rem]";
-  const profileFieldLabel = "text-xs text-[#2D2D2D]/52";
+    "font-display text-[1.375rem] leading-tight text-[#1C1612] sm:text-[1.5rem]";
+  const profileFieldLabel = "text-xs text-[#1C1612]/52";
   const profileFieldValue =
-    "font-display text-[1.375rem] leading-snug tracking-tight text-[#2D2D2D] sm:text-2xl";
+    "font-display text-[1.375rem] leading-snug tracking-tight text-[#1C1612] sm:text-2xl";
   const profileFormBtnSecondary =
-    "rounded-full border border-[#2D2D2D] bg-transparent px-5 py-2 text-sm font-medium text-[#2D2D2D] hover:bg-black/[0.04]";
+    "rounded-full border border-[#1C1612] bg-transparent px-5 py-2 text-sm font-medium text-[#1C1612] hover:bg-black/[0.04]";
   const profileFormBtnPrimary =
-    "rounded-full bg-[#2D2D2D] px-5 py-2 text-sm font-medium text-white hover:bg-[#1a1a1a] disabled:opacity-50";
+    "rounded-full bg-[#1C1612] px-5 py-2 text-sm font-medium text-white hover:bg-[#1a1a1a] disabled:opacity-50";
 
   return (
     <main className="min-h-screen bg-[#EBEAE7] pb-16 pt-10 sm:pt-14">
       <div className="mx-auto grid max-w-[1180px] items-start gap-12 px-4 sm:gap-14 sm:px-6 lg:grid-cols-[minmax(200px,280px)_minmax(0,1fr)] lg:gap-16 lg:px-8">
         <aside className="lg:sticky lg:top-28 lg:self-start">
           <div className="mx-auto flex w-full max-w-[280px] flex-col lg:mx-0">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#E4E4E0] font-display text-xl tracking-tight text-[#2D2D2D]">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#E4E4E0] font-display text-xl tracking-tight text-[#1C1612]">
               {initials}
             </div>
-            <h1 className="mt-8 font-display text-2xl leading-tight text-[#2D2D2D] sm:text-[1.65rem]">
+            <h1 className="mt-8 font-display text-2xl leading-tight text-[#1C1612] sm:text-[1.65rem]">
               {displayName}
             </h1>
             {user.email && (
-              <p className="mt-2 text-sm leading-relaxed text-[#2D2D2D]/55">{user.email}</p>
+              <p className="mt-2 text-sm leading-relaxed text-[#1C1612]/55">{user.email}</p>
             )}
 
-            <nav className="mt-10 flex flex-col gap-5 text-[0.9375rem] text-[#2D2D2D]" aria-label="Konto">
+            <nav className="mt-10 flex flex-col gap-5 text-[0.9375rem] text-[#1C1612]" aria-label="Konto">
               <button
                 type="button"
                 onClick={() => switchTab("bookings")}
                 className={`w-fit text-left transition hover:opacity-80 ${
                   activeTab === "bookings"
-                    ? "underline decoration-[#2D2D2D] decoration-1 underline-offset-8"
-                    : "text-[#2D2D2D]/80"
+                    ? "underline decoration-[#1C1612] decoration-1 underline-offset-8"
+                    : "text-[#1C1612]/80"
                 }`}
               >
                 Meine Termine
@@ -391,8 +391,8 @@ function AccountPageContent() {
                 onClick={() => switchTab("profile")}
                 className={`w-fit text-left transition hover:opacity-80 ${
                   activeTab === "profile"
-                    ? "font-semibold underline decoration-[#2D2D2D] decoration-1 underline-offset-8"
-                    : "text-[#2D2D2D]/80"
+                    ? "font-semibold underline decoration-[#1C1612] decoration-1 underline-offset-8"
+                    : "text-[#1C1612]/80"
                 }`}
               >
                 Profileinstellungen
@@ -436,25 +436,25 @@ function AccountPageContent() {
               {loadingData ? (
                 <div className="grid min-h-[320px] place-items-center rounded-[28px] bg-white px-6 py-14 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
                   <div className="flex flex-col items-center gap-3">
-                    <span className="h-10 w-10 animate-spin rounded-full border-2 border-[#2D2D2D]/15 border-t-[#2D2D2D]/60" />
-                    <p className="text-sm text-[#2D2D2D]/60">Daten werden geladen…</p>
+                    <span className="h-10 w-10 animate-spin rounded-full border-2 border-[#1C1612]/15 border-t-[#1C1612]/60" />
+                    <p className="text-sm text-[#1C1612]/60">Daten werden geladen…</p>
                   </div>
                 </div>
               ) : (
                 <>
                   {/* Nächster Termin */}
                   <section className="space-y-6">
-                    <h2 className="font-display text-h1 text-[#2D2D2D] sm:text-[2.125rem] sm:leading-[1.15]">
+                    <h2 className="font-display text-h1 text-[#1C1612] sm:text-[2.125rem] sm:leading-[1.15]">
                       Nächster Termin
                     </h2>
                     {nextAppointment ? (
                       <div className="rounded-[28px] bg-white p-8 shadow-[0_1px_3px_rgba(0,0,0,0.05)] sm:p-10">
                         <div className="flex flex-wrap items-start justify-between gap-4">
                           <div className="min-w-0">
-                            <p className="font-display text-[2rem] leading-[1.1] tracking-tight text-[#2D2D2D] sm:text-[2.35rem]">
+                            <p className="font-display text-[2rem] leading-[1.1] tracking-tight text-[#1C1612] sm:text-[2.35rem]">
                               {formatDateCardTitle(nextAppointment.startAt)}
                             </p>
-                            <p className="mt-3 text-[0.8125rem] leading-relaxed text-[#2D2D2D]/75">
+                            <p className="mt-3 text-[0.8125rem] leading-relaxed text-[#1C1612]/75">
                               {formatWeekdayTimeBar(
                                 nextAppointment.startAt,
                                 nextAppointment.endAt,
@@ -472,13 +472,13 @@ function AccountPageContent() {
                         <div className="mt-10 grid gap-10 sm:grid-cols-2 sm:gap-12">
                           <div>
                             <p className={labelUnderline}>Mitarbeiter</p>
-                            <p className="mt-3 text-[0.9375rem] leading-relaxed text-[#2D2D2D]">
+                            <p className="mt-3 text-[0.9375rem] leading-relaxed text-[#1C1612]">
                               {nextAppointment.staffId?.firstName || "Freier Mitarbeiter"}
                             </p>
                           </div>
                           <div>
                             <p className={labelUnderline}>Service</p>
-                            <p className="mt-3 text-[0.9375rem] leading-relaxed text-[#2D2D2D]">
+                            <p className="mt-3 text-[0.9375rem] leading-relaxed text-[#1C1612]">
                               {getAppointmentServiceLabel(nextAppointment)}
                             </p>
                           </div>
@@ -505,7 +505,7 @@ function AccountPageContent() {
                         </div>
                       </div>
                     ) : (
-                      <p className="rounded-[28px] bg-white px-8 py-10 text-[0.9375rem] text-[#2D2D2D]/65 shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+                      <p className="rounded-[28px] bg-white px-8 py-10 text-[0.9375rem] text-[#1C1612]/65 shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
                         Kein kommender Termin vorhanden.
                       </p>
                     )}
@@ -513,7 +513,7 @@ function AccountPageContent() {
 
                   {/* Warteliste */}
                   <section className="space-y-6">
-                    <h2 className="font-display text-h1 text-[#2D2D2D] sm:text-[2.125rem] sm:leading-[1.15]">
+                    <h2 className="font-display text-h1 text-[#1C1612] sm:text-[2.125rem] sm:leading-[1.15]">
                       Warteliste
                     </h2>
                     <div className="space-y-4">
@@ -526,13 +526,13 @@ function AccountPageContent() {
                               className="flex flex-wrap items-center justify-between gap-6 rounded-[28px] bg-white p-8 shadow-[0_1px_3px_rgba(0,0,0,0.05)]"
                             >
                               <div>
-                                <p className="font-display text-[1.75rem] leading-tight text-[#2D2D2D]">
+                                <p className="font-display text-[1.75rem] leading-tight text-[#1C1612]">
                                   {formatDateShort(day)}
                                 </p>
-                                <p className="mt-2 text-sm text-[#2D2D2D]/75">
+                                <p className="mt-2 text-sm text-[#1C1612]/75">
                                   {entry.staffId?.firstName || "Freier Mitarbeiter"}
                                 </p>
-                                <p className="text-sm text-[#2D2D2D]/75">{entry.serviceId?.name || "Leistung"}</p>
+                                <p className="text-sm text-[#1C1612]/75">{entry.serviceId?.name || "Leistung"}</p>
                               </div>
                               <button
                                 type="button"
@@ -546,7 +546,7 @@ function AccountPageContent() {
                           );
                         })
                       ) : (
-                        <p className="rounded-[24px] bg-white px-8 py-6 text-[0.9375rem] leading-relaxed text-[#2D2D2D]/75 shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+                        <p className="rounded-[24px] bg-white px-8 py-6 text-[0.9375rem] leading-relaxed text-[#1C1612]/75 shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
                           Du stehst aktuell nicht auf der Warteliste.
                         </p>
                       )}
@@ -555,7 +555,7 @@ function AccountPageContent() {
 
                   {/* Vergangene */}
                   <section className="space-y-6">
-                    <h2 className="font-display text-h1 text-[#2D2D2D] sm:text-[2.125rem] sm:leading-[1.15]">
+                    <h2 className="font-display text-h1 text-[#1C1612] sm:text-[2.125rem] sm:leading-[1.15]">
                       Vergangene
                     </h2>
                     <div className="space-y-6">
@@ -567,10 +567,10 @@ function AccountPageContent() {
                           >
                             <div className="flex flex-wrap items-start justify-between gap-4">
                               <div className="min-w-0">
-                                <p className="font-display text-[2rem] leading-[1.1] tracking-tight text-[#2D2D2D] sm:text-[2.35rem]">
+                                <p className="font-display text-[2rem] leading-[1.1] tracking-tight text-[#1C1612] sm:text-[2.35rem]">
                                   {formatDateCardTitle(a.startAt)}
                                 </p>
-                                <p className="mt-3 text-[0.8125rem] leading-relaxed text-[#2D2D2D]/75">
+                                <p className="mt-3 text-[0.8125rem] leading-relaxed text-[#1C1612]/75">
                                   {formatWeekdayTimeBar(a.startAt, a.endAt, a.durationMinutes)}
                                 </p>
                               </div>
@@ -584,13 +584,13 @@ function AccountPageContent() {
                             <div className="mt-10 grid gap-10 sm:grid-cols-2 sm:gap-12">
                               <div>
                                 <p className={labelUnderline}>Mitarbeiter</p>
-                                <p className="mt-3 text-[0.9375rem] leading-relaxed text-[#2D2D2D]">
+                                <p className="mt-3 text-[0.9375rem] leading-relaxed text-[#1C1612]">
                                   {a.staffId?.firstName || "Freier Mitarbeiter"}
                                 </p>
                               </div>
                               <div>
                                 <p className={labelUnderline}>Service</p>
-                                <p className="mt-3 text-[0.9375rem] leading-relaxed text-[#2D2D2D]">
+                                <p className="mt-3 text-[0.9375rem] leading-relaxed text-[#1C1612]">
                                   {getAppointmentServiceLabel(a)}
                                 </p>
                               </div>
@@ -617,7 +617,7 @@ function AccountPageContent() {
                           </div>
                         ))
                       ) : (
-                        <p className="rounded-[28px] bg-white px-8 py-10 text-[0.9375rem] text-[#2D2D2D]/65 shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+                        <p className="rounded-[28px] bg-white px-8 py-10 text-[0.9375rem] text-[#1C1612]/65 shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
                           Keine vergangenen Termine vorhanden.
                         </p>
                       )}
@@ -628,12 +628,12 @@ function AccountPageContent() {
             </div>
           ) : (
             <div className="space-y-10 sm:space-y-12">
-              <h2 className="font-display text-h1 text-[#2D2D2D] sm:text-[2.125rem] sm:leading-[1.15]">
+              <h2 className="font-display text-h1 text-[#1C1612] sm:text-[2.125rem] sm:leading-[1.15]">
                 Persönliche Daten
               </h2>
 
               {profileSuccess && (
-                <div className="flex items-center gap-4 rounded-2xl bg-[#2D2D2D] px-5 py-3.5 pr-4 text-sm text-white sm:px-6">
+                <div className="flex items-center gap-4 rounded-2xl bg-[#1C1612] px-5 py-3.5 pr-4 text-sm text-white sm:px-6">
                   <p className="min-w-0 flex-1 leading-relaxed">{profileSuccess}</p>
                   <button
                     type="button"
@@ -683,7 +683,7 @@ function AccountPageContent() {
                         onChange={(e) =>
                           setProfileDraft((p) => ({ ...p, firstName: e.target.value }))
                         }
-                        className="w-full rounded-xl border border-[#E8E4DF] bg-[#FBFAF8] px-4 py-3.5 text-[#2D2D2D]"
+                        className="w-full rounded-xl border border-[#E8E4DF] bg-[#FBFAF8] px-4 py-3.5 text-[#1C1612]"
                         placeholder="Vorname"
                       />
                       <div className="flex justify-end gap-3 pt-1">
@@ -737,7 +737,7 @@ function AccountPageContent() {
                         onChange={(e) =>
                           setProfileDraft((p) => ({ ...p, lastName: e.target.value }))
                         }
-                        className="w-full rounded-xl border border-[#E8E4DF] bg-[#FBFAF8] px-4 py-3.5 text-[#2D2D2D]"
+                        className="w-full rounded-xl border border-[#E8E4DF] bg-[#FBFAF8] px-4 py-3.5 text-[#1C1612]"
                         placeholder="Nachname"
                       />
                       <div className="flex justify-end gap-3 pt-1">
@@ -791,7 +791,7 @@ function AccountPageContent() {
                         onChange={(e) =>
                           setProfileDraft((p) => ({ ...p, phone: e.target.value }))
                         }
-                        className="w-full rounded-xl border border-[#E8E4DF] bg-[#FBFAF8] px-4 py-3.5 text-[#2D2D2D]"
+                        className="w-full rounded-xl border border-[#E8E4DF] bg-[#FBFAF8] px-4 py-3.5 text-[#1C1612]"
                         placeholder="+49 …"
                       />
                       <div className="flex justify-end gap-3 pt-1">
@@ -849,7 +849,7 @@ function AccountPageContent() {
                         onChange={(e) =>
                           setProfileDraft((p) => ({ ...p, email: e.target.value }))
                         }
-                        className="w-full rounded-xl border border-[#E8E4DF] bg-[#FBFAF8] px-4 py-3.5 text-[#2D2D2D]"
+                        className="w-full rounded-xl border border-[#E8E4DF] bg-[#FBFAF8] px-4 py-3.5 text-[#1C1612]"
                         placeholder="E-Mail-Adresse"
                       />
                       <div className="flex justify-end gap-3 pt-1">
@@ -879,7 +879,7 @@ function AccountPageContent() {
                     <div className="min-w-0 flex-1">
                       <p className={profileFieldLabel}>Passwort</p>
                       {editingField !== "password" && (
-                        <p className={`mt-3 font-display text-xl tracking-[0.2em] text-[#2D2D2D] sm:text-2xl`}>
+                        <p className={`mt-3 font-display text-xl tracking-[0.2em] text-[#1C1612] sm:text-2xl`}>
                           ••••••••••••
                         </p>
                       )}
@@ -906,7 +906,7 @@ function AccountPageContent() {
                         onChange={(e) =>
                           setPasswordDraft((p) => ({ ...p, currentPassword: e.target.value }))
                         }
-                        className="w-full rounded-xl border border-[#E8E4DF] bg-[#FBFAF8] px-4 py-3.5 text-[#2D2D2D]"
+                        className="w-full rounded-xl border border-[#E8E4DF] bg-[#FBFAF8] px-4 py-3.5 text-[#1C1612]"
                         placeholder="Aktuelles Passwort"
                       />
                       <input
@@ -915,7 +915,7 @@ function AccountPageContent() {
                         onChange={(e) =>
                           setPasswordDraft((p) => ({ ...p, newPassword: e.target.value }))
                         }
-                        className="w-full rounded-xl border border-[#E8E4DF] bg-[#FBFAF8] px-4 py-3.5 text-[#2D2D2D]"
+                        className="w-full rounded-xl border border-[#E8E4DF] bg-[#FBFAF8] px-4 py-3.5 text-[#1C1612]"
                         placeholder="Neues Passwort"
                       />
                       <input
@@ -924,7 +924,7 @@ function AccountPageContent() {
                         onChange={(e) =>
                           setPasswordDraft((p) => ({ ...p, confirmPassword: e.target.value }))
                         }
-                        className="w-full rounded-xl border border-[#E8E4DF] bg-[#FBFAF8] px-4 py-3.5 text-[#2D2D2D]"
+                        className="w-full rounded-xl border border-[#E8E4DF] bg-[#FBFAF8] px-4 py-3.5 text-[#1C1612]"
                         placeholder="Neues Passwort wiederholen"
                       />
                       <div className="flex justify-end gap-3 pt-2">
@@ -953,7 +953,7 @@ function AccountPageContent() {
                 <h3 className={profileSectionHeading}>Konto löschen</h3>
                 <div className={profileCardInner}>
                   <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between sm:gap-8">
-                    <p className="max-w-xl text-sm leading-relaxed text-[#2D2D2D]/78">
+                    <p className="max-w-xl text-sm leading-relaxed text-[#1C1612]/78">
                       Wenn du dein Konto löschst, werden alle deine Daten und Termine unwiderruflich
                       entfernt. Diese Aktion kann nicht rückgängig gemacht werden.
                     </p>
@@ -980,8 +980,8 @@ function AccountPageContent() {
       {showDeleteProfileDialog && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/45 px-4">
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
-            <h3 className="text-h2 text-[#2D2D2D]">Profil wirklich löschen?</h3>
-            <p className="mt-2 text-sm text-[#2D2D2D]/75">
+            <h3 className="text-h2 text-[#1C1612]">Profil wirklich löschen?</h3>
+            <p className="mt-2 text-sm text-[#1C1612]/75">
               Dein Konto wird dauerhaft entfernt. Kommende Termine werden storniert.
             </p>
             <div className="mt-5 flex justify-end gap-3">
@@ -989,7 +989,7 @@ function AccountPageContent() {
                 type="button"
                 onClick={() => setShowDeleteProfileDialog(false)}
                 disabled={deletingProfile}
-                className="rounded-full border border-[#E8E4DF] px-5 py-2 text-sm font-medium text-[#2D2D2D] disabled:opacity-50"
+                className="rounded-full border border-[#E8E4DF] px-5 py-2 text-sm font-medium text-[#1C1612] disabled:opacity-50"
               >
                 Abbrechen
               </button>
@@ -1015,8 +1015,8 @@ export default function AccountPage() {
       fallback={
         <main className="grid min-h-screen place-items-center bg-[#EBEAE7] px-4 py-20 sm:px-6">
           <div className="flex flex-col items-center gap-3">
-            <span className="h-10 w-10 animate-spin rounded-full border-2 border-[#2D2D2D]/15 border-t-[#2D2D2D]/55" />
-            <p className="text-sm text-[#2D2D2D]/60">Konto wird geladen…</p>
+            <span className="h-10 w-10 animate-spin rounded-full border-2 border-[#1C1612]/15 border-t-[#1C1612]/55" />
+            <p className="text-sm text-[#1C1612]/60">Konto wird geladen…</p>
           </div>
         </main>
       }

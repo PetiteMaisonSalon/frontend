@@ -6,7 +6,7 @@ export default function LeistungenPage() {
   return (
     <Suspense
       fallback={
-        <main className="min-h-screen bg-[#EBEAE7] px-6 py-16 text-[#2D2D2D]/70">
+        <main className="min-h-screen bg-[#EBEAE7] px-6 py-16 text-[#1C1612]/70">
           Lade…
         </main>
       }

@@ -28,10 +28,10 @@ export default function ForgotPasswordPage() {
   return (
     <main className="min-h-screen bg-[#EBEAE7] py-16">
       <div className="mx-auto max-w-md px-6">
-        <h1 className="text-h2 text-[#2D2D2D]">
+        <h1 className="text-h2 text-[#1C1612]">
           Passwort vergessen
         </h1>
-        <p className="mt-2 text-[#2D2D2D]/85">
+        <p className="mt-2 text-[#1C1612]/85">
           Gib deine E-Mail-Adresse ein. Wenn ein Konto existiert, senden wir dir einen Link zum Zurücksetzen.
         </p>
 
@@ -48,7 +48,7 @@ export default function ForgotPasswordPage() {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-[#2D2D2D]">
+            <label className="block text-sm font-medium text-[#1C1612]">
               E-Mail *
             </label>
             <input
@@ -69,7 +69,7 @@ export default function ForgotPasswordPage() {
           </button>
         </form>
 
-        <p className="mt-8 text-center text-[#2D2D2D]/85">
+        <p className="mt-8 text-center text-[#1C1612]/85">
           Zurück zum{" "}
           <Link href="/login" className="text-[#4A5D4A] hover:underline">
             Login

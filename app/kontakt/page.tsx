@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import type { Metadata } from "next";
 import BookingLink from "@/components/BookingLink";
 
@@ -12,28 +11,28 @@ export const metadata: Metadata = {
 export default function KontaktPage() {
   return (
     <main className="bg-[#EBEAE7]">
-      <section className="w-full px-4 pb-24 pt-8 sm:pt-12 lg:min-h-[calc(100svh-4.75rem)] lg:pb-12 lg:pt-40">
+      <section className="w-full px-4 pb-14 pt-8 sm:pt-12 lg:min-h-[calc(100svh-120.75rem)] lg:pb-12 lg:pt-30">
         {/* Obere Zeile: Text links · Kontakt rechts */}
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between">
-          <div className="font-display shrink-0 text-[#2D2D2D] lg:max-w-[44rem]">
+          <div className="font-display shrink-0 text-[#1C1612] lg:max-w-[44rem]">
             <p className="text-[clamp(2.5rem,3.2vw,2.5rem)] leading-[1.12] tracking-[-0.02em]">
-              Wir freuen uns darauf, dich bei uns begrüßen zu dürfen. Deinen Termin kannst du jederzeit online
-              oder telefonisch vereinbaren.
+              Wir freuen uns darauf, dich bei uns begrüßen zu dürfen. Deinen
+              Termin kannst du jederzeit online oder telefonisch vereinbaren.
             </p>
-            <div className="mt-8 flex flex-wrap gap-x-12 gap-y-2 text-[0.875rem] [font-family:var(--font-public-sans)] sm:mt-10">
-              <BookingLink className="underline decoration-[#2D2D2D]/30 underline-offset-[6px] transition hover:decoration-[#2D2D2D]/60">
+            <div className="mt-4 flex flex-wrap gap-x-12 gap-y-2 text-[0.875rem] [font-family:var(--font-public-sans)]">
+              <BookingLink className="underline decoration-[#1C1612]/30 underline-offset-[6px] transition hover:decoration-[#1C1612]/60">
                 Online buchen
               </BookingLink>
               <a
                 href="tel:+4917669150964"
-                className="underline decoration-[#2D2D2D]/30 underline-offset-[6px] transition hover:decoration-[#2D2D2D]/60"
+                className="underline decoration-[#1C1612]/30 underline-offset-[6px] transition hover:decoration-[#1C1612]/60"
               >
                 Anrufen
               </a>
             </div>
           </div>
 
-          <div className="mt-12 shrink-0 text-copy-sm space-y-7 text-[#2D2D2D]/90 lg:mt-80 lg:w-[13.5rem]">
+          <div className="mt-12 shrink-0 text-copy-sm space-y-7 text-[#1C1612]/90 lg:mt-60 lg:w-[13.5rem]">
             <address className="not-italic leading-[1.65]">
               <p>Arndtstr. 33</p>
               <p>22085 Hamburg</p>
@@ -43,10 +42,16 @@ export default function KontaktPage() {
               <p>Sa 9–14 Uhr</p>
             </div>
             <div className="space-y-2 leading-[1.65]">
-              <a href="tel:+4917669150964" className="block transition hover:opacity-70">
+              <a
+                href="tel:+4917669150964"
+                className="block transition hover:opacity-70"
+              >
                 +49 176 69150964
               </a>
-              <a href="mailto:info@petitemaison.hamburg" className="block break-words transition hover:opacity-70">
+              <a
+                href="mailto:info@petitemaison.hamburg"
+                className="block break-words transition hover:opacity-70"
+              >
                 info@petitemaison.hamburg
               </a>
             </div>
@@ -70,29 +75,29 @@ export default function KontaktPage() {
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Bilder: links · rechts */}
-        <div className="mt-16 flex flex-col lg:mt-20 lg:flex-row lg:items-start lg:justify-between">
-          <figure className="relative aspect-[3/4] w-[min(100%,17.5rem)] shrink-0 overflow-hidden bg-[#E6E3DE] lg:w-[min(22vw,18rem)]">
-            <Image
-              src="/kontakt/kontakt_bild1.png"
-              alt="Salon Interior Petite Maison – Arbeitsplätze mit Spiegeln"
-              fill
-              className="object-cover object-center"
-              sizes="(max-width: 1024px) 70vw, 22vw"
-              priority
-            />
-          </figure>
+      <section className="grid grid-cols-[28%_30%_42%] gap-x-0 content-center max-md:grid-cols-1 max-md:gap-y-7.5 max-md:p-5 grid-rows-[auto_auto]">
+        <div className="w-full col-start-1 col-end-2 row-start-1 row-end-2 max-md:col-span-full max-md:row-start-1 max-md:row-end-2 p-2">
+          <Image
+            src="/kontakt/kontakt_bild1.png"
+            alt="Friseursalon Spiegel"
+            width={300}
+            height={300}
+            priority
+            className="block aspect-square object-cover"
+          />
+        </div>
 
-          <figure className="relative h-[min(68vh,46rem)] mt-12 w-full shrink-0 overflow-hidden !bg-[#EBEAE7] lg:mt-140 lg:w-[min(42vw,42rem)] min-h-[19rem]">
-              <Image
-                src="/kontakt/kontakt_bild2.png"
-                alt="Waschbereich und Aveda-Bereich im Salon Petite Maison"
-                fill
-                className="object-cover object-center"
-                sizes="(max-width: 1024px) 100vw, 42vw"
-              />
-          </figure>
+        <div className="w-full col-start-3 col-end-4 row-start-2 row-end-3 max-md:col-span-full max-md:row-start-2 max-md:row-end-3 p-2 mb-1">
+          <Image
+            src="/kontakt/kontakt_bild2.png"
+            alt="Waschbecken Bereich"
+            width={1200}
+            height={750}
+            priority
+            className="w-full h-auto block aspect-16/10 object-cover"
+          />
         </div>
       </section>
     </main>

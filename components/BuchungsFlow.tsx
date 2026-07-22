@@ -667,16 +667,16 @@ export default function BuchungsFlow() {
             </div>
 
             {isBooked && timeRangeLabel && (
-              <p className="text-center text-[15px] font-medium tracking-tight text-[#2D2D2D]/90">{timeRangeLabel}</p>
+              <p className="text-center text-[15px] font-medium tracking-tight text-[#1C1612]/90">{timeRangeLabel}</p>
             )}
 
             {headlineSerif ? (
-              <p className="font-display mt-1 text-center text-[2.125rem] leading-[1.1] tracking-[-0.02em] text-[#2D2D2D] sm:text-[2.5rem]">
+              <p className="font-display mt-1 text-center text-[2.125rem] leading-[1.1] tracking-[-0.02em] text-[#1C1612] sm:text-[2.5rem]">
                 {headlineSerif}
               </p>
             ) : null}
 
-            <p className="mx-auto mt-5 max-w-sm text-center text-[15px] leading-relaxed text-[#2D2D2D]/85">
+            <p className="mx-auto mt-5 max-w-sm text-center text-[15px] leading-relaxed text-[#1C1612]/85">
               {isBooked
                 ? "Termin bestätigt! Du erhältst gleich eine Bestätigung per E-Mail. Wir freuen uns auf dich!"
                 : "Du stehst auf unserer Warteliste. Sobald ein Termin frei wird, melden wir uns per E-Mail."}
@@ -688,7 +688,7 @@ export default function BuchungsFlow() {
                   href={googleCalendarHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full border border-[#2D2D2D]/25 bg-transparent px-5 py-2.5 text-sm font-medium text-[#2D2D2D] transition hover:border-[#2D2D2D]/45 hover:bg-black/[0.03]"
+                  className="inline-flex items-center gap-2 rounded-full border border-[#1C1612]/25 bg-transparent px-5 py-2.5 text-sm font-medium text-[#1C1612] transition hover:border-[#1C1612]/45 hover:bg-black/[0.03]"
                 >
                   <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
                     <rect x="3.5" y="5.5" width="17" height="15" rx="2" />
@@ -703,25 +703,25 @@ export default function BuchungsFlow() {
               {confirmedBookingRef && (
                 <div className="mb-4 flex justify-end">
                   <div className="text-right">
-                    <p className="text-[11px] font-medium uppercase tracking-[0.06em] text-[#2D2D2D]/45">
+                    <p className="text-[11px] font-medium uppercase tracking-[0.06em] text-[#1C1612]/45">
                       Buchungsnummer
                     </p>
-                    <p className="text-sm font-semibold tracking-wide text-[#2D2D2D]">{confirmedBookingRef}</p>
+                    <p className="text-sm font-semibold tracking-wide text-[#1C1612]">{confirmedBookingRef}</p>
                   </div>
                 </div>
               )}
 
               <div className="divide-y divide-[#E8E8E6]">
                 <div className="flex items-start justify-between gap-6 py-3 first:pt-0">
-                  <span className="shrink-0 pt-0.5 text-[13px] text-[#2D2D2D]/55">Name</span>
-                  <span className="text-right text-[15px] font-medium text-[#2D2D2D]">
+                  <span className="shrink-0 pt-0.5 text-[13px] text-[#1C1612]/55">Name</span>
+                  <span className="text-right text-[15px] font-medium text-[#1C1612]">
                     {customerDisplayName || "—"}
                   </span>
                 </div>
 
                 <div className="flex gap-6 py-3">
-                  <span className="shrink-0 pt-0.5 text-[13px] text-[#2D2D2D]/55">Leistungen</span>
-                  <div className="min-w-0 flex-1 space-y-1.5 text-right text-[15px] leading-snug text-[#2D2D2D]">
+                  <span className="shrink-0 pt-0.5 text-[13px] text-[#1C1612]/55">Leistungen</span>
+                  <div className="min-w-0 flex-1 space-y-1.5 text-right text-[15px] leading-snug text-[#1C1612]">
                     {selectedServices.map((s) => (
                       <p key={s._id}>
                         {baseServiceTitle(s.name)} · {s.priceEur}€
@@ -731,21 +731,21 @@ export default function BuchungsFlow() {
                 </div>
 
                 <div className="flex items-start justify-between gap-6 py-3">
-                  <span className="shrink-0 pt-0.5 text-[13px] text-[#2D2D2D]/55">Stylistin</span>
-                  <span className="text-right text-[15px] font-medium text-[#2D2D2D]">
+                  <span className="shrink-0 pt-0.5 text-[13px] text-[#1C1612]/55">Stylistin</span>
+                  <span className="text-right text-[15px] font-medium text-[#1C1612]">
                     {selectedStaff?.firstName ?? "—"}
                   </span>
                 </div>
 
                 {isBooked ? (
-                  <div className="flex items-end justify-between gap-4 border-t border-[#2D2D2D]/12 pt-5">
-                    <span className="text-[15px] font-medium text-[#2D2D2D]">Vor Ort bezahlen</span>
-                    <span className="font-display text-[2rem] leading-none tracking-tight text-[#2D2D2D]">
+                  <div className="flex items-end justify-between gap-4 border-t border-[#1C1612]/12 pt-5">
+                    <span className="text-[15px] font-medium text-[#1C1612]">Vor Ort bezahlen</span>
+                    <span className="font-display text-[2rem] leading-none tracking-tight text-[#1C1612]">
                       {totalPrice} €
                     </span>
                   </div>
                 ) : (
-                  <p className="border-t border-[#2D2D2D]/12 pt-5 text-center text-[13px] text-[#2D2D2D]/55">
+                  <p className="border-t border-[#1C1612]/12 pt-5 text-center text-[13px] text-[#1C1612]/55">
                     Sobald wir dir einen Termin anbieten können, gilt der reguläre Preis – keine Zahlung über die Warteliste.
                   </p>
                 )}
@@ -791,15 +791,15 @@ export default function BuchungsFlow() {
         <div className="overflow-hidden rounded-[26px] border border-[#D5D0C8] bg-[#F1EEE9] shadow-[0_20px_60px_rgba(0,0,0,0.12)]">
           <div className="flex items-start justify-between gap-4 px-5 pb-4 pt-5 md:px-7 md:pb-6 md:pt-6">
             <div>
-              <h2 className="text-h1 text-[#2D2D2D]">Termin & Stylist</h2>
-              <p className="mt-1 text-sm text-[#2D2D2D]/85">
+              <h2 className="text-h1 text-[#1C1612]">Termin & Stylist</h2>
+              <p className="mt-1 text-sm text-[#1C1612]/85">
                 Wähle deine Stylistin und einen freien Termin.
               </p>
             </div>
             <Link
               href={leistungenHref}
               prefetch={false}
-              className="rounded-md p-1 text-[#2D2D2D]/70 transition hover:bg-black/5 hover:text-[#2D2D2D]"
+              className="rounded-md p-1 text-[#1C1612]/70 transition hover:bg-black/5 hover:text-[#1C1612]"
               aria-label="Flow schließen"
             >
               <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -811,7 +811,7 @@ export default function BuchungsFlow() {
           <div className="grid gap-8 px-5 pb-6 md:px-7 lg:grid-cols-[1fr_1.08fr]">
             <div className="space-y-8">
               <div>
-                <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#2D2D2D]/50">
+                <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#1C1612]/50">
                   {selectedServices.length} Leistungen ausgewählt
                 </p>
                 <div className="mt-4 flex flex-wrap gap-2">
@@ -820,19 +820,19 @@ export default function BuchungsFlow() {
                       key={service._id}
                       type="button"
                       onClick={() => handleServiceToggle(service)}
-                      className="inline-flex items-center gap-2 rounded-full border border-[#2D2D2D]/45 bg-[#F5F2ED] px-3 py-1.5 text-sm text-[#2D2D2D]"
+                      className="inline-flex items-center gap-2 rounded-full border border-[#1C1612]/45 bg-[#F5F2ED] px-3 py-1.5 text-sm text-[#1C1612]"
                     >
                       <span>
                         {baseServiceTitle(service.name)} · {service.priceEur}€
                       </span>
-                      <span aria-hidden className="text-[#2D2D2D]/70">×</span>
+                      <span aria-hidden className="text-[#1C1612]/70">×</span>
                     </button>
                   ))}
                 </div>
               </div>
 
               <div>
-                <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#2D2D2D]/50">
+                <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#1C1612]/50">
                   Mitarbeiter auswählen
                 </p>
                 <div className="mt-4 flex flex-wrap gap-4">
@@ -850,7 +850,7 @@ export default function BuchungsFlow() {
                           className={`relative grid h-11 w-11 place-items-center overflow-hidden rounded-full border text-xs font-medium ${
                             selectedStaff?._id === s._id
                               ? "border-[#1F1A17] border-3 text-white shadow-lg"
-                              : "border-[#2D2D2D]/35 bg-[#EBC8B7] text-[#2D2D2D]"
+                              : "border-[#1C1612]/35 bg-[#EBC8B7] text-[#1C1612]"
                           }`}
                         >
                           {portraitSrc ? (
@@ -865,7 +865,7 @@ export default function BuchungsFlow() {
                             <span className="relative z-10">{initials || "PM"}</span>
                           )}
                         </span>
-                        <span className="text-xs text-[#2D2D2D]">{s.firstName}</span>
+                        <span className="text-xs text-[#1C1612]">{s.firstName}</span>
                       </button>
                     );
                   })}
@@ -874,7 +874,7 @@ export default function BuchungsFlow() {
             </div>
 
             <div>
-              <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#2D2D2D]/50">
+              <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#1C1612]/50">
                 Datum & Uhrzeit auswählen
               </p>
 
@@ -892,7 +892,7 @@ export default function BuchungsFlow() {
                   >
                     ‹
                   </button>
-                  <p className="text-xl text-[#2D2D2D] capitalize">{monthLabel}</p>
+                  <p className="text-xl text-[#1C1612] capitalize">{monthLabel}</p>
                   <button
                     type="button"
                     onClick={() =>
@@ -907,7 +907,7 @@ export default function BuchungsFlow() {
                   </button>
                 </div>
 
-                <div className="grid grid-cols-7 gap-y-2 text-center text-xs text-[#2D2D2D]/75">
+                <div className="grid grid-cols-7 gap-y-2 text-center text-xs text-[#1C1612]/75">
                   {weekdayLabels.map((weekday) => (
                     <div key={weekday}>{weekday}</div>
                   ))}
@@ -937,7 +937,7 @@ export default function BuchungsFlow() {
                               ? "bg-[#1F1A17] text-white"
                               : isPast
                                 ? "cursor-not-allowed text-[#C4BFB8]"
-                                : "text-[#2D2D2D] hover:bg-black/5"
+                                : "text-[#1C1612] hover:bg-black/5"
                           }`}
                         >
                           {day}
@@ -958,7 +958,7 @@ export default function BuchungsFlow() {
                   className={`rounded-full border px-4 py-1.5 text-sm ${
                     slotFilter === "all"
                       ? "border-[#1D1D1D] bg-[#1D1D1D] text-white"
-                      : "border-[#7D7D7D] bg-transparent text-[#2D2D2D]"
+                      : "border-[#7D7D7D] bg-transparent text-[#1C1612]"
                   }`}
                 >
                   Alle
@@ -969,7 +969,7 @@ export default function BuchungsFlow() {
                   className={`rounded-full border px-4 py-1.5 text-sm ${
                     slotFilter === "morning"
                       ? "border-[#1D1D1D] bg-[#1D1D1D] text-white"
-                      : "border-[#7D7D7D] bg-transparent text-[#2D2D2D]"
+                      : "border-[#7D7D7D] bg-transparent text-[#1C1612]"
                   }`}
                 >
                   Vormittags
@@ -980,7 +980,7 @@ export default function BuchungsFlow() {
                   className={`rounded-full border px-4 py-1.5 text-sm ${
                     slotFilter === "afternoon"
                       ? "border-[#1D1D1D] bg-[#1D1D1D] text-white"
-                      : "border-[#7D7D7D] bg-transparent text-[#2D2D2D]"
+                      : "border-[#7D7D7D] bg-transparent text-[#1C1612]"
                   }`}
                 >
                   Nachmittags
@@ -988,8 +988,8 @@ export default function BuchungsFlow() {
               </div>
 
               {loading && (
-                <div className="mt-3 flex items-center gap-2 text-sm text-[#2D2D2D]/70">
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#2D2D2D]/30 border-t-[#2D2D2D]" />
+                <div className="mt-3 flex items-center gap-2 text-sm text-[#1C1612]/70">
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#1C1612]/30 border-t-[#1C1612]" />
                   <span>Zeiten werden geladen…</span>
                 </div>
               )}
@@ -1003,7 +1003,7 @@ export default function BuchungsFlow() {
                       className={`rounded-lg border px-3 py-1.5 text-sm ${
                         selectedSlot?.start === slot.start
                           ? "border-[#1D1D1D] bg-[#1D1D1D] text-white"
-                          : "border-[#D5D0C8] bg-[#ECE9E3] text-[#2D2D2D] hover:bg-[#E4E0DA]"
+                          : "border-[#D5D0C8] bg-[#ECE9E3] text-[#1C1612] hover:bg-[#E4E0DA]"
                       }`}
                     >
                       {new Date(slot.start).toLocaleTimeString("de-DE", {
@@ -1016,7 +1016,7 @@ export default function BuchungsFlow() {
               )}
 
               {slots.length === 0 && !loading && selectedDate && (
-                <p className="mt-4 text-sm text-[#2D2D2D]/70">
+                <p className="mt-4 text-sm text-[#1C1612]/70">
                   Für dieses Datum sind keine freien Zeiten verfügbar.{" "}
                   <button
                     type="button"
@@ -1030,7 +1030,7 @@ export default function BuchungsFlow() {
               )}
 
               {slots.length > 0 && filteredSlots.length === 0 && !loading && (
-                <p className="mt-4 text-sm text-[#2D2D2D]/70">
+                <p className="mt-4 text-sm text-[#1C1612]/70">
                   Für diesen Tagesbereich gibt es aktuell keine freien Zeiten.
                 </p>
               )}
@@ -1042,7 +1042,7 @@ export default function BuchungsFlow() {
               <button
                 type="button"
                 onClick={handleBackToLeistungen}
-                className="rounded-full border border-[#2D2D2D]/70 bg-transparent py-2.5 text-sm font-medium text-[#2D2D2D]"
+                className="rounded-full border border-[#1C1612]/70 bg-transparent py-2.5 text-sm font-medium text-[#1C1612]"
               >
                 Zurück
               </button>
@@ -1064,15 +1064,15 @@ export default function BuchungsFlow() {
         <div className="overflow-hidden rounded-[26px] border border-[#D5D0C8] bg-[#F1EEE9] shadow-[0_20px_60px_rgba(0,0,0,0.12)]">
           <div className="flex items-start justify-between gap-4 px-5 pb-4 pt-5 md:px-7 md:pb-5 md:pt-6">
             <div>
-              <h2 className="text-h1 text-[#2D2D2D]">Fast geschafft!</h2>
-              <p className="mt-1 text-sm text-[#2D2D2D]/85">
+              <h2 className="text-h1 text-[#1C1612]">Fast geschafft!</h2>
+              <p className="mt-1 text-sm text-[#1C1612]/85">
                 Kontaktdaten prüfen und Buchung abschließen.
               </p>
             </div>
             <Link
               href={leistungenHref}
               prefetch={false}
-              className="rounded-md p-1 text-[#2D2D2D]/70 transition hover:bg-black/5 hover:text-[#2D2D2D]"
+              className="rounded-md p-1 text-[#1C1612]/70 transition hover:bg-black/5 hover:text-[#1C1612]"
               aria-label="Flow schließen"
             >
               <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -1084,8 +1084,8 @@ export default function BuchungsFlow() {
           {!authLoading && !user && (
             <div className="px-5 pb-7 md:px-7">
               <div className="rounded-xl border border-[#CFC8BD] bg-[#ECE8E2] p-6 text-center">
-                <h3 className="text-h3 text-[#2D2D2D]">Anmeldung erforderlich</h3>
-                <p className="mt-2 text-[#2D2D2D]/85">
+                <h3 className="text-h3 text-[#1C1612]">Anmeldung erforderlich</h3>
+                <p className="mt-2 text-[#1C1612]/85">
                   Du kannst nur mit einem bestätigten Konto einen Termin verbindlich buchen.
                 </p>
                 <div className="mt-6 flex flex-wrap justify-center gap-3">
@@ -1099,7 +1099,7 @@ export default function BuchungsFlow() {
                   <Link
                     href={`/register?redirect=${encodeURIComponent(bookingRedirect)}`}
                     onClick={persistBookingState}
-                    className="rounded-full border border-[#2D2D2D]/70 px-6 py-2.5 text-sm font-medium text-[#2D2D2D]"
+                    className="rounded-full border border-[#1C1612]/70 px-6 py-2.5 text-sm font-medium text-[#1C1612]"
                   >
                     Registrieren
                   </Link>
@@ -1107,7 +1107,7 @@ export default function BuchungsFlow() {
                 <button
                   type="button"
                   onClick={() => goToStep(2)}
-                  className="mt-5 text-sm text-[#2D2D2D]/75 underline underline-offset-2"
+                  className="mt-5 text-sm text-[#1C1612]/75 underline underline-offset-2"
                 >
                   Zurück zur Terminauswahl
                 </button>
@@ -1119,70 +1119,70 @@ export default function BuchungsFlow() {
             <div className="grid gap-8 px-5 pb-7 md:px-7 lg:grid-cols-[1fr_360px]">
               <div className="space-y-8">
                 <div>
-                  <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#2D2D2D]/45">
+                  <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#1C1612]/45">
                     Kontaktdaten
                   </p>
                   <div className="mt-4 grid gap-5 sm:grid-cols-2">
                     <div>
-                      <label className="text-sm text-[#2D2D2D]/85">Name</label>
+                      <label className="text-sm text-[#1C1612]/85">Name</label>
                       <input
                         type="text"
                         value={form.firstName}
                         onChange={(e) => setForm({ ...form, firstName: e.target.value })}
-                        className="mt-2 w-full border-b border-[#7D7870] bg-transparent pb-1.5 text-[29px] text-[#2D2D2D] outline-none"
+                        className="mt-2 w-full border-b border-[#7D7870] bg-transparent pb-1.5 text-[29px] text-[#1C1612] outline-none"
                         required
                       />
                     </div>
                     <div>
-                      <label className="text-sm text-[#2D2D2D]/85">Nachname</label>
+                      <label className="text-sm text-[#1C1612]/85">Nachname</label>
                       <input
                         type="text"
                         value={form.lastName}
                         onChange={(e) => setForm({ ...form, lastName: e.target.value })}
-                        className="mt-2 w-full border-b border-[#7D7870] bg-transparent pb-1.5 text-[29px] text-[#2D2D2D] outline-none"
+                        className="mt-2 w-full border-b border-[#7D7870] bg-transparent pb-1.5 text-[29px] text-[#1C1612] outline-none"
                         required
                       />
                     </div>
                     <div>
-                      <label className="text-sm text-[#2D2D2D]/85">E-Mail</label>
+                      <label className="text-sm text-[#1C1612]/85">E-Mail</label>
                       <input
                         type="email"
                         value={form.email}
                         onChange={(e) => setForm({ ...form, email: e.target.value })}
-                        className="mt-2 w-full border-b border-[#7D7870] bg-transparent pb-1.5 text-[29px] text-[#2D2D2D] outline-none"
+                        className="mt-2 w-full border-b border-[#7D7870] bg-transparent pb-1.5 text-[29px] text-[#1C1612] outline-none"
                         required
                       />
                     </div>
                     <div>
-                      <label className="text-sm text-[#2D2D2D]/85">Telefon</label>
+                      <label className="text-sm text-[#1C1612]/85">Telefon</label>
                       <input
                         type="tel"
                         value={form.phone}
                         onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                        className="mt-2 w-full border-b border-[#7D7870] bg-transparent pb-1.5 text-[29px] text-[#2D2D2D] outline-none"
+                        className="mt-2 w-full border-b border-[#7D7870] bg-transparent pb-1.5 text-[29px] text-[#1C1612] outline-none"
                       />
                     </div>
                   </div>
                   <div className="mt-5">
-                    <label className="text-sm text-[#2D2D2D]/85">Anmerkung (Optional)</label>
+                    <label className="text-sm text-[#1C1612]/85">Anmerkung (Optional)</label>
                     <textarea
                       value={form.note}
                       onChange={(e) => setForm({ ...form, note: e.target.value })}
                       rows={3}
-                      className="mt-2 w-full border-b border-[#7D7870] bg-transparent pb-1.5 text-sm text-[#2D2D2D] outline-none"
+                      className="mt-2 w-full border-b border-[#7D7870] bg-transparent pb-1.5 text-sm text-[#1C1612] outline-none"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#2D2D2D]/45">
+                  <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#1C1612]/45">
                     Buchungsbedingungen
                   </p>
-                  <p className="mt-4 text-[#2D2D2D]/90">
+                  <p className="mt-4 text-[#1C1612]/90">
                     Wenn sich deine Pläne ändern, kannst du deinen Termin bis 24 Stunden vorher
                     kostenlos umbuchen oder stornieren.
                   </p>
-                  <p className="mt-4 text-[#2D2D2D]/85">
+                  <p className="mt-4 text-[#1C1612]/85">
                     Bitte gib uns möglichst früh Bescheid, damit wir den Termin neu vergeben können.
                     Bei kurzfristigen Absagen oder Nichterscheinen behalten wir uns vor, den Termin in
                     Rechnung zu stellen.
@@ -1191,34 +1191,34 @@ export default function BuchungsFlow() {
               </div>
 
               <aside className="space-y-4">
-                <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#2D2D2D]/45">
+                <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#1C1612]/45">
                   Übersicht
                 </p>
                 <div className="overflow-hidden rounded-xl border border-[#DBD4CB] bg-[#F7F5F1]">
-                  <div className="flex items-center justify-between border-b border-[#DDD7CE] px-4 py-3 text-sm text-[#2D2D2D]">
+                  <div className="flex items-center justify-between border-b border-[#DDD7CE] px-4 py-3 text-sm text-[#1C1612]">
                     <span>Stylistin</span>
                     <span>{selectedStaff ? selectedStaff.firstName : "Beliebig"}</span>
                   </div>
-                  <div className="flex items-center justify-between border-b border-[#DDD7CE] px-4 py-3 text-sm text-[#2D2D2D]">
+                  <div className="flex items-center justify-between border-b border-[#DDD7CE] px-4 py-3 text-sm text-[#1C1612]">
                     <span>Datum</span>
                     <span>{selectedDateLabelLong}</span>
                   </div>
-                  <div className="flex items-center justify-between border-b border-[#DDD7CE] px-4 py-3 text-sm text-[#2D2D2D]">
+                  <div className="flex items-center justify-between border-b border-[#DDD7CE] px-4 py-3 text-sm text-[#1C1612]">
                     <span>Uhrzeit</span>
                     <span>{selectedTimeLabel}</span>
                   </div>
                   {selectedServices.map((s) => (
-                    <div key={s._id} className="flex items-center justify-between border-b border-[#DDD7CE] px-4 py-3 text-sm text-[#2D2D2D]">
+                    <div key={s._id} className="flex items-center justify-between border-b border-[#DDD7CE] px-4 py-3 text-sm text-[#1C1612]">
                       <span>{baseServiceTitle(s.name)}</span>
                       <span>{s.priceEur} €</span>
                     </div>
                   ))}
-                  <div className="flex items-center justify-between px-4 py-3 text-[#2D2D2D]">
+                  <div className="flex items-center justify-between px-4 py-3 text-[#1C1612]">
                     <span className="text-sm">Vor Ort bezahlen</span>
                     <span className="text-[33px] leading-none">{totalPrice} €</span>
                   </div>
                 </div>
-                <p className="text-sm text-[#2D2D2D]/70">
+                <p className="text-sm text-[#1C1612]/70">
                   Mit der Bestätigung deiner Buchung stimmst du unseren{" "}
                   <Link href="/datenschutz" className="underline underline-offset-2">
                     Buchungsbedingungen
@@ -1240,7 +1240,7 @@ export default function BuchungsFlow() {
                     type="button"
                     onClick={handleWaitlist}
                     disabled={loading}
-                    className="w-full rounded-full border border-[#2D2D2D]/70 bg-transparent py-3 text-sm font-medium text-[#2D2D2D] transition hover:bg-black/5 disabled:opacity-60"
+                    className="w-full rounded-full border border-[#1C1612]/70 bg-transparent py-3 text-sm font-medium text-[#1C1612] transition hover:bg-black/5 disabled:opacity-60"
                   >
                     {loading ? "Wird gesendet…" : "Zur Warteliste"}
                   </button>
@@ -1248,7 +1248,7 @@ export default function BuchungsFlow() {
                 <button
                   type="button"
                   onClick={() => goToStep(2)}
-                  className="w-full rounded-full border border-[#2D2D2D]/70 bg-transparent py-3 text-sm font-medium text-[#2D2D2D] transition hover:bg-black/5"
+                  className="w-full rounded-full border border-[#1C1612]/70 bg-transparent py-3 text-sm font-medium text-[#1C1612] transition hover:bg-black/5"
                 >
                   Zurück
                 </button>

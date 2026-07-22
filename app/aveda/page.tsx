@@ -21,15 +21,15 @@ export default function AvedaPage() {
               </div>
             </div>
             <div>
-              <h1 className="text-h1 text-[#2D2D2D]">
+              <h1 className="text-h1 text-[#1C1612]">
                 Aveda
               </h1>
-              <p className="mt-6 text-lg leading-relaxed text-[#2D2D2D]/85">
+              <p className="mt-6 text-lg leading-relaxed text-[#1C1612]/85">
                 AVEDA steht für nachhaltige Haarpflege und einen bewussten
                 Umgang mit Ressourcen. Diese Haltung passt zu unserer Arbeit –
                 verantwortungsvoll, achtsam und mit Anspruch an Qualität.
               </p>
-              <p className="mt-4 text-lg leading-relaxed text-[#2D2D2D]/85">
+              <p className="mt-4 text-lg leading-relaxed text-[#1C1612]/85">
                 Als Aveda-Salon arbeiten wir mit Produkten, die nicht nur
                 deinem Haar guttun, sondern auch der Umwelt. Von der Wurzel bis
                 zur Spitze – das ist die Philosophie, die wir teilen.
@@ -42,10 +42,10 @@ export default function AvedaPage() {
       {/* Philosophie */}
       <section className="bg-[#EBEAE7] py-20 md:py-28">
         <div className="mx-auto max-w-3xl px-6">
-          <h2 className="text-h2 font-medium tracking-tight text-[#2D2D2D]">
+          <h2 className="text-h2 font-medium tracking-tight text-[#1C1612]">
             Die Aveda-Philosophie
           </h2>
-          <div className="mt-8 space-y-6 text-lg leading-relaxed text-[#2D2D2D]/85">
+          <div className="mt-8 space-y-6 text-lg leading-relaxed text-[#1C1612]/85">
             <p>
               Aveda wurde mit der Vision gegründet, Schönheit und Nachhaltigkeit
               zu verbinden. Die Marke setzt auf pflanzliche Inhaltsstoffe,
@@ -65,10 +65,10 @@ export default function AvedaPage() {
       {/* Aktuelle Produkte */}
       <section className="border-t border-[#E8E4DF] py-20 md:py-28">
         <div className="mx-auto max-w-7xl px-6">
-          <h2 className="text-h2 font-medium tracking-tight text-[#2D2D2D]">
+          <h2 className="text-h2 font-medium tracking-tight text-[#1C1612]">
             Unsere Produkte
           </h2>
-          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[#2D2D2D]/85">
+          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[#1C1612]/85">
             Wir arbeiten mit ausgewählten Aveda-Produkten für Farbe, Pflege und
             Styling. Im Salon kannst du sie auch zum Mitnehmen erwerben – für
             zu Hause und unterwegs.
@@ -93,16 +93,16 @@ export default function AvedaPage() {
       {/* CTA */}
       <section className="bg-[#E8E4DF] py-20 md:py-24">
         <div className="mx-auto max-w-2xl px-6 text-center">
-          <h2 className="text-h2 font-medium tracking-tight text-[#2D2D2D]">
+          <h2 className="text-h2 font-medium tracking-tight text-[#1C1612]">
             Entdecke unsere Arbeit
           </h2>
-          <p className="mt-4 text-lg leading-relaxed text-[#2D2D2D]/85">
+          <p className="mt-4 text-lg leading-relaxed text-[#1C1612]/85">
             Wir freuen uns darauf, dich bei uns begrüßen zu dürfen – mit Aveda
             und allem, was dazu gehört.
           </p>
           <Link
             href="/kontakt?buchung=1"
-            className="mt-10 inline-block rounded-full bg-[#2D2D2D] px-8 py-4 font-medium text-white transition hover:bg-[#4A5D4A]"
+            className="mt-10 inline-block rounded-full bg-[#1C1612] px-8 py-4 font-medium text-white transition hover:bg-[#4A5D4A]"
           >
             Termin buchen
           </Link>

@@ -20,10 +20,10 @@ function ResetPasswordForm() {
     return (
       <main className="min-h-screen bg-[#EBEAE7] py-16">
         <div className="mx-auto max-w-md px-6">
-          <h1 className="text-h2 text-[#2D2D2D]">
+          <h1 className="text-h2 text-[#1C1612]">
             Passwort zurücksetzen
           </h1>
-          <p className="mt-4 text-[#2D2D2D]/85">
+          <p className="mt-4 text-[#1C1612]/85">
             Der Link ist ungültig oder unvollständig.
           </p>
           <p className="mt-4">
@@ -61,10 +61,10 @@ function ResetPasswordForm() {
   return (
     <main className="min-h-screen bg-[#EBEAE7] py-16">
       <div className="mx-auto max-w-md px-6">
-        <h1 className="text-h2 text-[#2D2D2D]">
+        <h1 className="text-h2 text-[#1C1612]">
           Passwort zurücksetzen
         </h1>
-        <p className="mt-2 text-[#2D2D2D]/85">
+        <p className="mt-2 text-[#1C1612]/85">
           Vergib ein neues Passwort für dein Konto.
         </p>
 
@@ -81,7 +81,7 @@ function ResetPasswordForm() {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-[#2D2D2D]">
+            <label className="block text-sm font-medium text-[#1C1612]">
               Neues Passwort *
             </label>
             <input
@@ -94,7 +94,7 @@ function ResetPasswordForm() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-[#2D2D2D]">
+            <label className="block text-sm font-medium text-[#1C1612]">
               Passwort wiederholen *
             </label>
             <input
@@ -125,7 +125,7 @@ export default function ResetPasswordPage() {
     <Suspense
       fallback={
         <main className="flex min-h-screen items-center justify-center bg-[#EBEAE7]">
-          <p className="text-[#2D2D2D]/70">Laden…</p>
+          <p className="text-[#1C1612]/70">Laden…</p>
         </main>
       }
     >

@@ -197,7 +197,7 @@ export default function LoginPage() {
   return (
     <Suspense fallback={
       <main className="flex min-h-screen items-center justify-center bg-[#E4E1DC]">
-        <p className="text-[#2D2D2D]/70">Laden…</p>
+        <p className="text-[#1C1612]/70">Laden…</p>
       </main>
     }>
       <LoginForm />

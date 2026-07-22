@@ -48,15 +48,15 @@ export default function CookieBanner() {
       role="dialog"
       aria-label="Cookie Einstellungen"
     >
-      <h2 className="text-h3 text-[#2D2D2D]">
+      <h2 className="text-h3 text-[#1C1612]">
         Cookie Einstellungen
       </h2>
-      <p className="text-copy mt-3 leading-relaxed text-[#2D2D2D]/90">
+      <p className="text-copy mt-3 leading-relaxed text-[#1C1612]/90">
         Wir verwenden Cookies, damit unsere Website reibungslos läuft. Weitere
         Informationen finden Sie in unserer{" "}
         <Link
           href="/datenschutz"
-          className="underline underline-offset-2 transition hover:text-[#2D2D2D]"
+          className="underline underline-offset-2 transition hover:text-[#1C1612]"
         >
           Datenschutzerklärung
         </Link>
@@ -66,14 +66,14 @@ export default function CookieBanner() {
         <button
           type="button"
           onClick={reject}
-          className="text-copy font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
+          className="text-copy font-medium text-[#1C1612] underline underline-offset-2 transition hover:opacity-80"
         >
           Ablehnen
         </button>
         <button
           type="button"
           onClick={accept}
-          className="text-copy rounded-full border border-[#2D2D2D] bg-transparent px-6 py-2.5 font-medium text-[#2D2D2D] transition hover:bg-[#2D2D2D]/5"
+          className="text-copy rounded-full border border-[#1C1612] bg-transparent px-6 py-2.5 font-medium text-[#1C1612] transition hover:bg-[#1C1612]/5"
         >
           Akzeptieren
         </button>

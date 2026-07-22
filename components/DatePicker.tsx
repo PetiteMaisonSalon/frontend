@@ -96,25 +96,25 @@ export function DatePicker({ value, onChange, className = "", id }: DatePickerPr
             <button
               type="button"
               onClick={() => setViewMonth((d) => new Date(d.getFullYear(), d.getMonth() - 1, 1))}
-              className="rounded-md px-2 py-1 text-[#2D2D2D]/70 hover:bg-[#F5F2ED]"
+              className="rounded-md px-2 py-1 text-[#1C1612]/70 hover:bg-[#F5F2ED]"
               aria-label="Vorheriger Monat"
             >
               ‹
             </button>
-            <p className="text-sm font-medium text-[#2D2D2D]">
+            <p className="text-sm font-medium text-[#1C1612]">
               {MONTH_NAMES[month]} {year}
             </p>
             <button
               type="button"
               onClick={() => setViewMonth((d) => new Date(d.getFullYear(), d.getMonth() + 1, 1))}
-              className="rounded-md px-2 py-1 text-[#2D2D2D]/70 hover:bg-[#F5F2ED]"
+              className="rounded-md px-2 py-1 text-[#1C1612]/70 hover:bg-[#F5F2ED]"
               aria-label="Nächster Monat"
             >
               ›
             </button>
           </div>
 
-          <div className="mt-3 grid grid-cols-7 gap-1 text-center text-xs text-[#2D2D2D]/45">
+          <div className="mt-3 grid grid-cols-7 gap-1 text-center text-xs text-[#1C1612]/45">
             {WEEKDAY_LABELS.map((l) => (
               <span key={l}>{l}</span>
             ))}
@@ -138,8 +138,8 @@ export function DatePicker({ value, onChange, className = "", id }: DatePickerPr
                       : isToday
                         ? "border border-[#4A5D4A] bg-[#4A5D4A]/15 text-[#4A5D4A]"
                         : isCurrentMonth
-                          ? "text-[#2D2D2D] hover:bg-[#4A5D4A]/10"
-                          : "text-[#2D2D2D]/35"
+                          ? "text-[#1C1612] hover:bg-[#4A5D4A]/10"
+                          : "text-[#1C1612]/35"
                   }`}
                 >
                   {date.getDate()}

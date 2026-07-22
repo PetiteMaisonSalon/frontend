@@ -573,7 +573,7 @@ export default function AdminPage() {
   if (loading) {
     return (
       <main className="mx-auto max-w-6xl px-6 py-14">
-        <p className="text-[#2D2D2D]/70">Lade CMS…</p>
+        <p className="text-[#1C1612]/70">Lade CMS…</p>
       </main>
     );
   }
@@ -581,8 +581,8 @@ export default function AdminPage() {
   if (!isAllowed) {
     return (
       <main className="mx-auto max-w-2xl px-6 py-14">
-        <h1 className="text-h2 text-[#2D2D2D]">Admin CMS</h1>
-        <p className="mt-4 text-[#2D2D2D]/80">
+        <h1 className="text-h2 text-[#1C1612]">Admin CMS</h1>
+        <p className="mt-4 text-[#1C1612]/80">
           Kein Zugriff. Diese Seite ist nur für Inhaber/Team.
         </p>
       </main>
@@ -830,7 +830,7 @@ export default function AdminPage() {
           <button
             type="button"
             onClick={() => setDashboardExpanded((e) => !e)}
-            className="flex w-full items-center justify-between gap-2 rounded-lg border border-[#E8E4DF] px-3 py-2 text-left text-sm font-medium text-[#2D2D2D] transition hover:bg-[#F5F2ED]"
+            className="flex w-full items-center justify-between gap-2 rounded-lg border border-[#E8E4DF] px-3 py-2 text-left text-sm font-medium text-[#1C1612] transition hover:bg-[#F5F2ED]"
           >
             <span className="flex items-center gap-2">
               <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -838,11 +838,11 @@ export default function AdminPage() {
               </svg>
               Dashboard
             </span>
-            <span className={`shrink-0 text-[#2D2D2D]/50 transition-transform ${dashboardExpanded ? "rotate-180" : ""}`} aria-hidden>▼</span>
+            <span className={`shrink-0 text-[#1C1612]/50 transition-transform ${dashboardExpanded ? "rotate-180" : ""}`} aria-hidden>▼</span>
           </button>
           {dashboardExpanded && (
           <>
-          <p className="mt-3 px-1 text-xs font-medium uppercase tracking-wide text-[#2D2D2D]/55">
+          <p className="mt-3 px-1 text-xs font-medium uppercase tracking-wide text-[#1C1612]/55">
             Kategorie
           </p>
           <div className="mt-3 space-y-1">
@@ -854,7 +854,7 @@ export default function AdminPage() {
                 className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm transition ${
                   activeSection === item.id
                     ? "bg-[#4A5D4A]/10 font-medium text-[#4A5D4A]"
-                    : "text-[#2D2D2D]/90 hover:bg-[#F5F2ED]"
+                    : "text-[#1C1612]/90 hover:bg-[#F5F2ED]"
                 }`}
               >
                 <span className="flex items-center gap-2">
@@ -867,8 +867,8 @@ export default function AdminPage() {
           </div>
 
           <div className="mt-6 hidden border-t border-[#E8E4DF] pt-5 text-center md:block">
-            <p className="text-6xl font-light leading-none text-[#2D2D2D]">{nowTimeLabel}</p>
-            <p className="mt-2 text-[#2D2D2D]/85">{nowDateLabel}</p>
+            <p className="text-6xl font-light leading-none text-[#1C1612]">{nowTimeLabel}</p>
+            <p className="mt-2 text-[#1C1612]/85">{nowDateLabel}</p>
           </div>
 
           <div className="mt-6 hidden rounded-xl border border-[#E8E4DF] p-3 md:block">
@@ -886,12 +886,12 @@ export default function AdminPage() {
                     )
                   )
                 }
-                className="rounded-md px-2 py-1 text-[#2D2D2D]/70 hover:bg-[#F5F2ED]"
+                className="rounded-md px-2 py-1 text-[#1C1612]/70 hover:bg-[#F5F2ED]"
                 aria-label="Vorheriger Monat"
               >
                 ‹
               </button>
-              <p className="text-sm font-medium capitalize text-[#2D2D2D]">{sidebarMonthLabel}</p>
+              <p className="text-sm font-medium capitalize text-[#1C1612]">{sidebarMonthLabel}</p>
               <button
                 type="button"
                 onClick={() =>
@@ -905,14 +905,14 @@ export default function AdminPage() {
                     )
                   )
                 }
-                className="rounded-md px-2 py-1 text-[#2D2D2D]/70 hover:bg-[#F5F2ED]"
+                className="rounded-md px-2 py-1 text-[#1C1612]/70 hover:bg-[#F5F2ED]"
                 aria-label="Nächster Monat"
               >
                 ›
               </button>
             </div>
 
-            <div className="mt-3 grid grid-cols-7 gap-1 text-center text-xs text-[#2D2D2D]/45">
+            <div className="mt-3 grid grid-cols-7 gap-1 text-center text-xs text-[#1C1612]/45">
               {sidebarWeekdayLabels.map((label, idx) => (
                 <span key={`${label}-${idx}`}>{label}</span>
               ))}
@@ -933,8 +933,8 @@ export default function AdminPage() {
                         : isToday
                           ? "border border-[#4A5D4A]/40 text-[#4A5D4A]"
                           : isCurrentMonth
-                            ? "text-[#2D2D2D]"
-                            : "text-[#2D2D2D]/35"
+                            ? "text-[#1C1612]"
+                            : "text-[#1C1612]/35"
                     } hover:bg-[#4A5D4A]/10`}
                   >
                     {date.getDate()}
@@ -956,7 +956,7 @@ export default function AdminPage() {
               type="button"
               onClick={() => setViewMode("day")}
               className={`rounded-full px-4 py-1.5 text-sm font-medium ${
-                viewMode === "day" ? "bg-[#4A5D4A] text-white" : "text-[#2D2D2D]"
+                viewMode === "day" ? "bg-[#4A5D4A] text-white" : "text-[#1C1612]"
               }`}
             >
               Tagesansicht
@@ -965,7 +965,7 @@ export default function AdminPage() {
               type="button"
               onClick={() => setViewMode("week")}
               className={`rounded-full px-4 py-1.5 text-sm font-medium ${
-                viewMode === "week" ? "bg-[#4A5D4A] text-white" : "text-[#2D2D2D]"
+                viewMode === "week" ? "bg-[#4A5D4A] text-white" : "text-[#1C1612]"
               }`}
             >
               Wochenansicht
@@ -973,7 +973,7 @@ export default function AdminPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <label className="text-sm font-medium text-[#2D2D2D]">Datum</label>
+            <label className="text-sm font-medium text-[#1C1612]">Datum</label>
             <button
               type="button"
               onClick={() =>
@@ -1004,7 +1004,7 @@ export default function AdminPage() {
             </button>
           </div>
           <div className="flex min-w-[160px] items-center gap-2">
-            <span className="text-sm font-medium text-[#2D2D2D]">Mitarbeiter</span>
+            <span className="text-sm font-medium text-[#1C1612]">Mitarbeiter</span>
             <CustomSelect
               value={staffFilter}
               onChange={setStaffFilter}
@@ -1024,7 +1024,7 @@ export default function AdminPage() {
             <button
               type="button"
               onClick={exportAppointmentsCsv}
-              className="rounded-full border border-[#E8E4DF] px-4 py-2 text-sm font-medium text-[#2D2D2D] hover:bg-[#F5F2ED]"
+              className="rounded-full border border-[#E8E4DF] px-4 py-2 text-sm font-medium text-[#1C1612] hover:bg-[#F5F2ED]"
             >
               CSV exportieren
             </button>
@@ -1041,7 +1041,7 @@ export default function AdminPage() {
           >
             <div className="sticky left-0 z-10 border-r border-[#E8E4DF] bg-[#F8F7F4]" />
             {calendarStaff.map((s) => (
-              <div key={s._id} className="border-r border-[#E8E4DF] bg-[#F8F7F4] p-2 text-center text-sm font-medium text-[#2D2D2D]">
+              <div key={s._id} className="border-r border-[#E8E4DF] bg-[#F8F7F4] p-2 text-center text-sm font-medium text-[#1C1612]">
                 {s.firstName} {s.lastName}
               </div>
             ))}
@@ -1050,7 +1050,7 @@ export default function AdminPage() {
               {calendarRows.map((m) => (
                 <div
                   key={m}
-                  className="border-t border-[#E8E4DF] px-2 pt-1 text-xs text-[#2D2D2D]/60"
+                  className="border-t border-[#E8E4DF] px-2 pt-1 text-xs text-[#1C1612]/60"
                   style={{ height: `${CALENDAR_ROW_HEIGHT}px` }}
                 >
                   {minuteLabel(m)}
@@ -1132,7 +1132,7 @@ export default function AdminPage() {
                     return (
                       <div
                         key={a._id}
-                        className="absolute left-1 right-1 rounded-md border border-[#4A5D4A]/30 bg-[#4A5D4A]/15 p-1 text-[11px] text-[#2D2D2D]"
+                        className="absolute left-1 right-1 rounded-md border border-[#4A5D4A]/30 bg-[#4A5D4A]/15 p-1 text-[11px] text-[#1C1612]"
                         style={{ top: `${top}px`, height: `${height}px` }}
                         title={`${a.customer.firstName} ${a.customer.lastName}`}
                       >
@@ -1190,19 +1190,19 @@ export default function AdminPage() {
         ) : (
           <div className="rounded-2xl border border-[#E8E4DF] bg-white p-4">
             {weeklyGroups.length === 0 ? (
-              <p className="text-[#2D2D2D]/70">Keine Termine in dieser Woche.</p>
+              <p className="text-[#1C1612]/70">Keine Termine in dieser Woche.</p>
             ) : (
               <div className="space-y-5">
                 {weeklyGroups.map(([day, dayAppointments]) => (
                   <div key={day}>
-                    <h3 className="text-sm font-semibold text-[#2D2D2D]">{day}</h3>
+                    <h3 className="text-sm font-semibold text-[#1C1612]">{day}</h3>
                     <div className="mt-2 space-y-2">
                       {dayAppointments.map((a) => (
                         <div key={a._id} className="rounded-lg border border-[#E8E4DF] p-3">
-                          <p className="font-medium text-[#2D2D2D]">
+                          <p className="font-medium text-[#1C1612]">
                             {appointmentRangeLabel(a)} • {a.customer.firstName} {a.customer.lastName}
                           </p>
-                          <p className="text-sm text-[#2D2D2D]/75">
+                          <p className="text-sm text-[#1C1612]/75">
                             {a.serviceId?.name || "Leistung"} • {a.staffId?.firstName || "Team"}
                           </p>
                         </div>
@@ -1220,11 +1220,11 @@ export default function AdminPage() {
           {activeSection === "termine" && (
             <section className="space-y-4">
               <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-[#E8E4DF] bg-white p-3 shadow-sm">
-                <p className="mr-2 text-sm font-semibold uppercase tracking-wide text-[#2D2D2D]/70">
+                <p className="mr-2 text-sm font-semibold uppercase tracking-wide text-[#1C1612]/70">
                   Termine & Zahlungen
                 </p>
                 <div className="flex items-center gap-2">
-                  <label className="text-sm font-medium text-[#2D2D2D]">Datum</label>
+                  <label className="text-sm font-medium text-[#1C1612]">Datum</label>
                   <button
                     type="button"
                     onClick={() =>
@@ -1251,7 +1251,7 @@ export default function AdminPage() {
                   </button>
                 </div>
                 <div className="flex min-w-[160px] items-center gap-2">
-                  <span className="text-sm font-medium text-[#2D2D2D]">Mitarbeiter</span>
+                  <span className="text-sm font-medium text-[#1C1612]">Mitarbeiter</span>
                   <CustomSelect
                     value={staffFilter}
                     onChange={setStaffFilter}
@@ -1270,7 +1270,7 @@ export default function AdminPage() {
                 <button
                   type="button"
                   onClick={exportAppointmentsCsv}
-                  className="ml-auto hidden rounded-full border border-[#E8E4DF] px-4 py-2 text-sm font-medium text-[#2D2D2D] hover:bg-[#F5F2ED] md:inline-flex"
+                  className="ml-auto hidden rounded-full border border-[#E8E4DF] px-4 py-2 text-sm font-medium text-[#1C1612] hover:bg-[#F5F2ED] md:inline-flex"
                 >
                   CSV exportieren
                 </button>
@@ -1288,7 +1288,7 @@ export default function AdminPage() {
                   >
                     <div className="flex flex-wrap items-start justify-between gap-4">
                       <div>
-                        <p className="font-medium text-[#2D2D2D]">
+                        <p className="font-medium text-[#1C1612]">
                           {new Date(a.startAt).toLocaleDateString("de-DE", {
                             weekday: "long",
                             day: "2-digit",
@@ -1298,11 +1298,11 @@ export default function AdminPage() {
                           })}{" "}
                           • {appointmentRangeLabel(a)}
                         </p>
-                        <p className="text-sm text-[#2D2D2D]/80">
+                        <p className="text-sm text-[#1C1612]/80">
                           {a.customer.firstName} {a.customer.lastName} • {a.serviceId?.name} •{" "}
                           {a.staffId ? `${a.staffId.firstName}` : "Team"}
                         </p>
-                        <p className="text-sm text-[#2D2D2D]/70">
+                        <p className="text-sm text-[#1C1612]/70">
                           Status: {a.status} • Zahlung: {a.paymentStatus}
                         </p>
                       </div>
@@ -1337,7 +1337,7 @@ export default function AdminPage() {
                             a.status === "cancelled"
                           }
                           onClick={() => markPaid(a._id, a.amountPaidEur ?? a.priceEur, "cash")}
-                          className="rounded-full bg-[#2D2D2D] px-4 py-2 text-sm text-white hover:bg-black disabled:opacity-50"
+                          className="rounded-full bg-[#1C1612] px-4 py-2 text-sm text-white hover:bg-black disabled:opacity-50"
                         >
                           Bezahlt (Bar)
                         </button>
@@ -1346,7 +1346,7 @@ export default function AdminPage() {
                   </div>
                 ))}
                 {visibleAppointments.length === 0 && (
-                  <p className="rounded-xl border border-[#E8E4DF] bg-white p-6 text-[#2D2D2D]/70">
+                  <p className="rounded-xl border border-[#E8E4DF] bg-white p-6 text-[#1C1612]/70">
                     Keine Termine für dieses Datum.
                   </p>
                 )}
@@ -1358,10 +1358,10 @@ export default function AdminPage() {
             <section className="rounded-2xl border border-[#E8E4DF] bg-white p-4 shadow-sm md:p-5">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <h3 className="text-h2 text-[#2D2D2D]">
+                  <h3 className="text-h2 text-[#1C1612]">
                     Leistungen verwalten
                   </h3>
-                  <p className="text-sm text-[#2D2D2D]/70">
+                  <p className="text-sm text-[#1C1612]/70">
                     Preise, Dauer und neue Leistungen direkt im CMS bearbeiten.
                   </p>
                 </div>
@@ -1374,7 +1374,7 @@ export default function AdminPage() {
                     Neue Leistung
                   </button>
                 ) : (
-                  <span className="rounded-full border border-[#E8E4DF] px-4 py-2 text-xs font-medium uppercase tracking-wide text-[#2D2D2D]/55">
+                  <span className="rounded-full border border-[#E8E4DF] px-4 py-2 text-xs font-medium uppercase tracking-wide text-[#1C1612]/55">
                     Nur Ansicht
                   </span>
                 )}
@@ -1391,14 +1391,14 @@ export default function AdminPage() {
                         className={`w-full rounded-lg px-3 py-2.5 text-left text-sm font-medium ${
                           effectiveActiveServiceGroupId === group.id
                             ? "border border-[#4A5D4A]/35 bg-[#4A5D4A]/10 text-[#4A5D4A]"
-                            : "border border-[#E8E4DF] bg-white text-[#2D2D2D]/90 hover:bg-[#F5F2ED]"
+                            : "border border-[#E8E4DF] bg-white text-[#1C1612]/90 hover:bg-[#F5F2ED]"
                         }`}
                       >
                         {group.label} ({group.count})
                       </button>
                     ))}
                     {serviceGroupStats.length === 0 && (
-                      <p className="rounded-lg border border-[#E8E4DF] bg-white px-3 py-2 text-sm text-[#2D2D2D]/65">
+                      <p className="rounded-lg border border-[#E8E4DF] bg-white px-3 py-2 text-sm text-[#1C1612]/65">
                         Noch keine Leistungen vorhanden.
                       </p>
                     )}
@@ -1407,9 +1407,9 @@ export default function AdminPage() {
 
                 <div className="min-w-0 rounded-xl border border-[#E8E4DF] bg-white">
                   {servicesLoading ? (
-                    <div className="p-6 text-sm text-[#2D2D2D]/70">Leistungen werden geladen…</div>
+                    <div className="p-6 text-sm text-[#1C1612]/70">Leistungen werden geladen…</div>
                   ) : visibleServiceRows.length === 0 ? (
-                    <div className="p-6 text-sm text-[#2D2D2D]/70">
+                    <div className="p-6 text-sm text-[#1C1612]/70">
                       Keine Leistungen in dieser Kategorie.
                     </div>
                   ) : (
@@ -1419,13 +1419,13 @@ export default function AdminPage() {
                         className="grid grid-cols-1 items-center gap-3 border-b border-[#E8E4DF] p-4 last:border-b-0 md:grid-cols-[minmax(0,1fr)_auto_auto]"
                       >
                         <div className="min-w-0">
-                          <p className="truncate font-medium text-[#2D2D2D]">{service.name}</p>
-                          <p className="text-sm text-[#2D2D2D]/70">
+                          <p className="truncate font-medium text-[#1C1612]">{service.name}</p>
+                          <p className="text-sm text-[#1C1612]/70">
                             {formatDuration(service.durationMinutes)}{" "}
                             {service.bufferMinutes ? `· +${service.bufferMinutes} Min. Puffer` : ""} ·{" "}
                             {serviceCategoryLabel[service.category]}
                           </p>
-                          <p className="text-xs text-[#2D2D2D]/55">
+                          <p className="text-xs text-[#1C1612]/55">
                             {service.displaySection || "Ohne Sektion"} · Reihenfolge{" "}
                             {service.displayOrder ?? 1000}
                             {service.groupKey ? ` · Gruppe ${service.groupKey}` : ""}
@@ -1435,7 +1435,7 @@ export default function AdminPage() {
                             {service.ctaType === "call" ? " · CTA Anrufen" : ""}
                           </p>
                         </div>
-                        <p className="text-sm font-semibold text-[#2D2D2D] md:text-base">
+                        <p className="text-sm font-semibold text-[#1C1612] md:text-base">
                           {service.priceEur} €
                         </p>
                         {canManageServices ? (
@@ -1459,7 +1459,7 @@ export default function AdminPage() {
                             </button>
                           </div>
                         ) : (
-                          <span className="text-xs text-[#2D2D2D]/55 md:justify-self-end">Nur Ansicht</span>
+                          <span className="text-xs text-[#1C1612]/55 md:justify-self-end">Nur Ansicht</span>
                         )}
                       </div>
                     ))
@@ -1472,7 +1472,7 @@ export default function AdminPage() {
           {activeSection !== "kalender" &&
             activeSection !== "termine" &&
             activeSection !== "leistungen" && (
-            <div className="rounded-2xl border border-[#E8E4DF] bg-white p-6 text-[#2D2D2D]/75">
+            <div className="rounded-2xl border border-[#E8E4DF] bg-white p-6 text-[#1C1612]/75">
               Dieser Bereich wird als Nächstes umgesetzt.
             </div>
           )}
@@ -1483,13 +1483,13 @@ export default function AdminPage() {
         <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/40 px-3 py-4 sm:items-center sm:px-4 sm:py-6">
           <div className="w-full max-w-2xl shrink-0 rounded-2xl bg-white p-4 shadow-xl sm:p-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <h2 className="text-h3 text-[#2D2D2D] sm:text-2xl">
+              <h2 className="text-h3 text-[#1C1612] sm:text-2xl">
                 Neuen Termin anlegen
               </h2>
               <button
                 type="button"
                 onClick={() => setShowCreateModal(false)}
-                className="shrink-0 rounded-lg px-3 py-2 text-sm text-[#2D2D2D]/70 hover:bg-[#F5F2ED] hover:text-[#2D2D2D]"
+                className="shrink-0 rounded-lg px-3 py-2 text-sm text-[#1C1612]/70 hover:bg-[#F5F2ED] hover:text-[#1C1612]"
               >
                 Schließen
               </button>
@@ -1497,7 +1497,7 @@ export default function AdminPage() {
 
             <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-[#2D2D2D]">Leistung</label>
+                <label className="block text-sm font-medium text-[#1C1612]">Leistung</label>
                 <CustomSelect
                   value={createForm.serviceId}
                   onChange={(v) =>
@@ -1512,7 +1512,7 @@ export default function AdminPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#2D2D2D]">Mitarbeiter</label>
+                <label className="block text-sm font-medium text-[#1C1612]">Mitarbeiter</label>
                 <CustomSelect
                   value={createForm.staffId}
                   onChange={(v) => setCreateForm({ ...createForm, staffId: v })}
@@ -1525,7 +1525,7 @@ export default function AdminPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#2D2D2D]">Datum</label>
+                <label className="block text-sm font-medium text-[#1C1612]">Datum</label>
                 <DatePicker
                   value={createForm.date}
                   onChange={(v) => setCreateForm({ ...createForm, date: v || formatDateInput(new Date()) })}
@@ -1533,7 +1533,7 @@ export default function AdminPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#2D2D2D]">Uhrzeit</label>
+                <label className="block text-sm font-medium text-[#1C1612]">Uhrzeit</label>
                 <TimePicker
                   value={createForm.time}
                   onChange={(v) => setCreateForm({ ...createForm, time: v })}
@@ -1543,7 +1543,7 @@ export default function AdminPage() {
             </div>
             <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-[#2D2D2D]">Kunde Vorname</label>
+                <label className="block text-sm font-medium text-[#1C1612]">Kunde Vorname</label>
                 <input
                   type="text"
                   value={createForm.firstName}
@@ -1554,7 +1554,7 @@ export default function AdminPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#2D2D2D]">Kunde Nachname</label>
+                <label className="block text-sm font-medium text-[#1C1612]">Kunde Nachname</label>
                 <input
                   type="text"
                   value={createForm.lastName}
@@ -1565,7 +1565,7 @@ export default function AdminPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#2D2D2D]">E-Mail</label>
+                <label className="block text-sm font-medium text-[#1C1612]">E-Mail</label>
                 <input
                   type="email"
                   value={createForm.email}
@@ -1574,7 +1574,7 @@ export default function AdminPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#2D2D2D]">
+                <label className="block text-sm font-medium text-[#1C1612]">
                   Telefon (optional)
                 </label>
                 <input
@@ -1586,7 +1586,7 @@ export default function AdminPage() {
               </div>
             </div>
             <div className="mt-4">
-              <label className="block text-sm font-medium text-[#2D2D2D]">
+              <label className="block text-sm font-medium text-[#1C1612]">
                 Notiz (optional)
               </label>
               <textarea
@@ -1600,7 +1600,7 @@ export default function AdminPage() {
               <button
                 type="button"
                 onClick={() => setShowCreateModal(false)}
-                className="w-full rounded-full border border-[#E8E4DF] px-5 py-3 text-sm font-medium text-[#2D2D2D] focus:outline-none focus:ring-2 focus:ring-[#4A5D4A] focus:ring-offset-1 sm:w-auto sm:py-2"
+                className="w-full rounded-full border border-[#E8E4DF] px-5 py-3 text-sm font-medium text-[#1C1612] focus:outline-none focus:ring-2 focus:ring-[#4A5D4A] focus:ring-offset-1 sm:w-auto sm:py-2"
               >
                 Abbrechen
               </button>
@@ -1623,8 +1623,8 @@ export default function AdminPage() {
       {serviceDeleteTarget && (
         <div className="fixed inset-0 z-[64] flex items-center justify-center bg-black/45 px-4">
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
-            <h3 className="text-h2 text-[#2D2D2D]">Leistung löschen?</h3>
-            <p className="mt-2 text-sm text-[#2D2D2D]/75">
+            <h3 className="text-h2 text-[#1C1612]">Leistung löschen?</h3>
+            <p className="mt-2 text-sm text-[#1C1612]/75">
               Die Leistung {serviceDeleteTarget.name} wird dauerhaft entfernt. Dieser Schritt kann nicht
               rückgängig gemacht werden.
             </p>
@@ -1633,7 +1633,7 @@ export default function AdminPage() {
                 type="button"
                 onClick={() => setServiceDeleteTarget(null)}
                 disabled={serviceDeletingId === serviceDeleteTarget.id}
-                className="rounded-full border border-[#E8E4DF] px-5 py-2 text-sm font-medium text-[#2D2D2D] focus:outline-none focus:ring-2 focus:ring-[#4A5D4A] focus:ring-offset-1 disabled:opacity-50"
+                className="rounded-full border border-[#E8E4DF] px-5 py-2 text-sm font-medium text-[#1C1612] focus:outline-none focus:ring-2 focus:ring-[#4A5D4A] focus:ring-offset-1 disabled:opacity-50"
               >
                 Abbrechen
               </button>
@@ -1654,13 +1654,13 @@ export default function AdminPage() {
         <div className="fixed inset-0 z-[65] flex items-center justify-center bg-black/45 px-4">
           <div className="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl">
             <div className="flex items-center justify-between gap-3">
-              <h3 className="text-h2 text-[#2D2D2D]">
+              <h3 className="text-h2 text-[#1C1612]">
                 {serviceEditorMode === "create" ? "Neue Leistung" : "Leistung bearbeiten"}
               </h3>
               <button
                 type="button"
                 onClick={() => setShowServiceEditor(false)}
-                className="text-sm text-[#2D2D2D]/70 hover:text-[#2D2D2D]"
+                className="text-sm text-[#1C1612]/70 hover:text-[#1C1612]"
               >
                 Schließen
               </button>
@@ -1668,7 +1668,7 @@ export default function AdminPage() {
 
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               <div className="sm:col-span-2">
-                <label className="block text-sm font-medium text-[#2D2D2D]">Name</label>
+                <label className="block text-sm font-medium text-[#1C1612]">Name</label>
                 <input
                   type="text"
                   value={serviceEditorForm.name}
@@ -1680,7 +1680,7 @@ export default function AdminPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#2D2D2D]">Kategorie</label>
+                <label className="block text-sm font-medium text-[#1C1612]">Kategorie</label>
                 <CustomSelect
                   value={serviceEditorForm.category}
                   onChange={(v) =>
@@ -1700,7 +1700,7 @@ export default function AdminPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#2D2D2D]">Dauer (Minuten)</label>
+                <label className="block text-sm font-medium text-[#1C1612]">Dauer (Minuten)</label>
                 <input
                   type="number"
                   min={1}
@@ -1716,7 +1716,7 @@ export default function AdminPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#2D2D2D]">Preis (€)</label>
+                <label className="block text-sm font-medium text-[#1C1612]">Preis (€)</label>
                 <input
                   type="number"
                   min={0}
@@ -1729,7 +1729,7 @@ export default function AdminPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#2D2D2D]">Puffer (Minuten)</label>
+                <label className="block text-sm font-medium text-[#1C1612]">Puffer (Minuten)</label>
                 <input
                   type="number"
                   min={0}
@@ -1745,7 +1745,7 @@ export default function AdminPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#2D2D2D]">Display-Reihenfolge</label>
+                <label className="block text-sm font-medium text-[#1C1612]">Display-Reihenfolge</label>
                 <input
                   type="number"
                   step={1}
@@ -1760,7 +1760,7 @@ export default function AdminPage() {
                 />
               </div>
               <div className="sm:col-span-2">
-                <label className="block text-sm font-medium text-[#2D2D2D]">Display-Sektion (optional)</label>
+                <label className="block text-sm font-medium text-[#1C1612]">Display-Sektion (optional)</label>
                 <input
                   type="text"
                   value={serviceEditorForm.displaySection}
@@ -1775,7 +1775,7 @@ export default function AdminPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#2D2D2D]">Group-Key (optional)</label>
+                <label className="block text-sm font-medium text-[#1C1612]">Group-Key (optional)</label>
                 <input
                   type="text"
                   value={serviceEditorForm.groupKey}
@@ -1787,7 +1787,7 @@ export default function AdminPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#2D2D2D]">Gruppen-Dauer (optional)</label>
+                <label className="block text-sm font-medium text-[#1C1612]">Gruppen-Dauer (optional)</label>
                 <input
                   type="text"
                   value={serviceEditorForm.groupDurationLabel}
@@ -1802,7 +1802,7 @@ export default function AdminPage() {
                 />
               </div>
               <div className="sm:col-span-2">
-                <label className="block text-sm font-medium text-[#2D2D2D]">CTA-Typ</label>
+                <label className="block text-sm font-medium text-[#1C1612]">CTA-Typ</label>
                 <CustomSelect
                   value={serviceEditorForm.ctaType}
                   onChange={(v) =>
@@ -1821,7 +1821,7 @@ export default function AdminPage() {
                 />
               </div>
               <div className="sm:col-span-2">
-                <label className="block text-sm font-medium text-[#2D2D2D]">Beschreibung (optional)</label>
+                <label className="block text-sm font-medium text-[#1C1612]">Beschreibung (optional)</label>
                 <textarea
                   rows={3}
                   value={serviceEditorForm.description}
@@ -1837,7 +1837,7 @@ export default function AdminPage() {
               <button
                 type="button"
                 onClick={() => setShowServiceEditor(false)}
-                className="rounded-full border border-[#E8E4DF] px-5 py-2 text-sm font-medium text-[#2D2D2D]"
+                className="rounded-full border border-[#E8E4DF] px-5 py-2 text-sm font-medium text-[#1C1612]"
               >
                 Abbrechen
               </button>
@@ -1858,16 +1858,16 @@ export default function AdminPage() {
         <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 px-4">
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
             <div className="flex items-center justify-between gap-3">
-              <h3 className="text-h3 text-[#2D2D2D]">Abwesenheit eintragen</h3>
+              <h3 className="text-h3 text-[#1C1612]">Abwesenheit eintragen</h3>
               <button
                 type="button"
                 onClick={() => setBlockEditor(null)}
-                className="text-sm text-[#2D2D2D]/70 hover:text-[#2D2D2D]"
+                className="text-sm text-[#1C1612]/70 hover:text-[#1C1612]"
               >
                 Schließen
               </button>
             </div>
-            <p className="mt-2 text-sm text-[#2D2D2D]/75">
+            <p className="mt-2 text-sm text-[#1C1612]/75">
               {staff.find((s) => s._id === blockEditor.staffId)?.firstName || "Mitarbeiter"} am{" "}
               {new Date(`${dateFilter}T12:00:00`).toLocaleDateString("de-DE", {
                 day: "2-digit",
@@ -1875,7 +1875,7 @@ export default function AdminPage() {
                 year: "numeric",
               })}
             </p>
-            <label className="mt-3 inline-flex items-center gap-2 text-sm text-[#2D2D2D]">
+            <label className="mt-3 inline-flex items-center gap-2 text-sm text-[#1C1612]">
               <input
                 type="checkbox"
                 checked={blockEditor.allDay}
@@ -1897,7 +1897,7 @@ export default function AdminPage() {
             </label>
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-[#2D2D2D]">Von</label>
+                <label className="block text-sm font-medium text-[#1C1612]">Von</label>
                 <input
                   type="time"
                   step={300}
@@ -1913,11 +1913,11 @@ export default function AdminPage() {
                         : current
                     )
                   }
-                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm disabled:bg-[#F5F2ED] disabled:text-[#2D2D2D]/50"
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm disabled:bg-[#F5F2ED] disabled:text-[#1C1612]/50"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#2D2D2D]">Bis</label>
+                <label className="block text-sm font-medium text-[#1C1612]">Bis</label>
                 <input
                   type="time"
                   step={300}
@@ -1933,12 +1933,12 @@ export default function AdminPage() {
                         : current
                     )
                   }
-                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm disabled:bg-[#F5F2ED] disabled:text-[#2D2D2D]/50"
+                  className="mt-1 w-full rounded-lg border border-[#E8E4DF] px-3 py-2 text-sm disabled:bg-[#F5F2ED] disabled:text-[#1C1612]/50"
                 />
               </div>
             </div>
             <div className="mt-4">
-              <label className="block text-sm font-medium text-[#2D2D2D]">Grund</label>
+              <label className="block text-sm font-medium text-[#1C1612]">Grund</label>
               <input
                 type="text"
                 value={blockEditor.reason}
@@ -1960,7 +1960,7 @@ export default function AdminPage() {
               <button
                 type="button"
                 onClick={() => setBlockEditor(null)}
-                className="rounded-full border border-[#E8E4DF] px-5 py-2 text-sm font-medium text-[#2D2D2D]"
+                className="rounded-full border border-[#E8E4DF] px-5 py-2 text-sm font-medium text-[#1C1612]"
               >
                 Abbrechen
               </button>

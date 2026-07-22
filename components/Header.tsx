@@ -1,6 +1,6 @@
 "use client";
 
-import { startTransition, useEffect, useMemo, useState } from "react";
+import { startTransition, useEffect, useMemo, useState, type MouseEvent } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "./AuthContext";
@@ -58,6 +58,21 @@ export default function Header() {
   /** Mobile: jedes Nav-Ziel schließt das Burger-Menü sofort, auch bei gleicher Route oder Hash-Link. */
   const closeMobileMenu = () => {
     setMenuOpen(false);
+  };
+
+  /** Startseite: gleiche Route → nach oben scrollen; Hash entfernen; Header zurück in Hero-Zustand. */
+  const handleBrandClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    closeMobileMenu();
+    if (!isHome) return;
+
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (window.location.hash) {
+      window.history.replaceState(null, "", "/");
+    }
+    setHomeHeroVisible(true);
+    setHomeSubActiveId("salon");
+    setHomeSectionBg(homeSubNavBgById.salon);
   };
 
   const navItemsToShow = useAdminLayout ? [] : mainNavItems;
@@ -135,9 +150,9 @@ export default function Header() {
 
   /** Hell (Startseite unterhalb Hero + alle anderen Seiten): Sans, dunkel; nur „Petite Maison“ unterstrichen */
   const lightNavText =
-    "text-copy font-medium text-[#2D2D2D] antialiased transition hover:opacity-90";
-  const lightBrandUnderline = "border-b border-[#2D2D2D] pb-px";
-  const lightActiveUnderline = "border-b border-[#2D2D2D] pb-px";
+    "text-copy font-medium text-[#1C1612] antialiased transition hover:opacity-90";
+  const lightBrandUnderline = "border-b border-[#1C1612] pb-px";
+  const lightActiveUnderline = "border-b border-[#1C1612] pb-px";
 
   /** Hero über Bild: #BEA8FF; Petite Maison unterstrichen */
   const heroNavText =
@@ -146,10 +161,10 @@ export default function Header() {
   const heroActiveUnderline = "border-b border-[#BEA8FF] pb-px";
 
   const outlineBtnHero =
-    "text-copy rounded-full border border-[#BEA8FF] bg-transparent px-5 py-2.5 font-medium text-[#BEA8FF] transition hover:text-white hover:bg-[#BEA8FF]/60";
+    "rounded-[14px] border-[1.5px] border-[#BEA8FF]] bg-transparent px-5 py-1.5 text-sm font-normal text-[#BEA8FF] transition hover:border-[#BEA8FF]/100 hover:text-black hover:bg-[#BEA8FF]/100";
 
-  const outlineBtnLight =
-    "text-copy rounded-full border border-[#2D2D2D] bg-transparent px-5 py-2.5 font-medium text-[#2D2D2D] transition hover:bg-[#2D2D2D]/5";
+    const outlineBtnLight =
+    "rounded-[14px] border-[1.5px] border-[#1C1612] bg-transparent px-5 py-1.5 text-sm font-normal text-[#1C1612] transition hover:bg-[#1C1612] hover:text-white";
 
   const brandClass = isHomeHero
     ? `${heroNavText} ${isHome ? heroBrandUnderline : ""}`
@@ -199,13 +214,13 @@ export default function Header() {
     >
       <span
         className={`block h-0.5 w-10 transition-all ${
-          isHomeHero ? "bg-[#BEA8FF]" : "bg-[#2D2D2D]"
+          isHomeHero ? "bg-[#BEA8FF]" : "bg-[#1C1612]"
         } ${menuOpen ? "translate-y-0 rotate-45" : ""}`}
       />
 
       <span
         className={`block h-0.5 w-10 transition-all ${
-          isHomeHero ? "bg-[#BEA8FF]" : "bg-[#2D2D2D]"
+          isHomeHero ? "bg-[#BEA8FF]" : "bg-[#1C1612]"
         } ${menuOpen ? "-translate-y-2 -rotate-45 opacity-0" : ""}`}
       />
     </button>
@@ -265,7 +280,7 @@ export default function Header() {
                 isHomeHero
                   ? "whitespace-nowrap text-copy font-medium text-[#BEA8FF] transition hover:text-[#BEA8FF]/80"
                   : !isCmsArea
-                    ? "whitespace-nowrap text-copy font-medium text-[#2D2D2D] transition hover:opacity-80"
+                    ? "whitespace-nowrap text-copy font-medium text-[#1C1612] transition hover:opacity-80"
                     : "whitespace-nowrap rounded-full border-2 border-[#4A5D4A] px-5 py-2.5 text-sm font-medium text-[#4A5D4A] transition hover:bg-[#4A5D4A]/10"
               }
             >
@@ -327,7 +342,7 @@ export default function Header() {
           {!isAdminUser && (
             <Link
               href="/"
-              onClick={closeMobileMenu}
+              onClick={handleBrandClick}
               className={`shrink-0 whitespace-nowrap ${brandClass}`}
             >
               Petite Maison
@@ -342,11 +357,11 @@ export default function Header() {
                   className={`whitespace-nowrap ${mainNavLinkClass} ${
                     isNavActive(href)
                       ? isHomeHero
-                        ? `text-[#BEA8FF] ${heroActiveUnderline}`
-                        : `font-semibold text-[#2D2D2D] ${lightActiveUnderline}`
+                        ? `!font-normal text-[#BEA8FF] ${heroActiveUnderline}`
+                        : `!font-normal text-[#1C1612] ${lightActiveUnderline}`
                       : isHomeHero
-                        ? ""
-                        : "text-[#2D2D2D]/80"
+                        ? "text-[#1C1612]"
+                        : "text-[#1C1612]"
                   }`}
                 >
                   {label}
@@ -376,8 +391,8 @@ export default function Header() {
                 onClick={() => handleHomeSubNavClick(id)}
                 className={`font-medium transition hover:opacity-80 ${
                   homeSubActiveId === id
-                    ? "text-[#2D2D2D]"
-                    : "text-[#2D2D2D]/45"
+                    ? "!font-normal text-[#1C1612]"
+                    : "text-[#1C1612]"
                 }`}
               >
                 {label}
@@ -393,15 +408,15 @@ export default function Header() {
           <div className="flex items-center justify-between px-4 py-3">
             <Link
               href="/"
-              onClick={closeMobileMenu}
-              className="text-copy border-b border-[#2D2D2D] pb-px font-medium text-[#2D2D2D]"
+              onClick={handleBrandClick}
+              className="text-copy border-b border-[#1C1612] pb-px font-medium text-[#1C1612]"
             >
               Petite Maison
             </Link>
             <button
               type="button"
               onClick={closeMobileMenu}
-              className="flex h-10 w-10 items-center justify-center text-[#2D2D2D]"
+              className="flex h-10 w-10 items-center justify-center text-[#1C1612]"
               aria-label="Menü schließen"
             >
               <svg
@@ -428,7 +443,7 @@ export default function Header() {
                   key={href}
                   href={href}
                   onClick={closeMobileMenu}
-                  className={`font-display text-[2rem] leading-[1.1] text-[#2D2D2D] transition hover:opacity-80 ${
+                  className={`font-display text-[2rem] leading-[1.1] text-[#1C1612] transition hover:opacity-80 ${
                     isMobileNavActive(href) ? "opacity-100" : "opacity-90"
                   }`}
                 >
@@ -440,7 +455,7 @@ export default function Header() {
             <div className="mt-16">
               <BookingLink
                 onClick={closeMobileMenu}
-                className="text-copy font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
+                className="text-copy font-medium text-[#1C1612] underline underline-offset-2 transition hover:opacity-80"
               >
                 Jetzt buchen
               </BookingLink>

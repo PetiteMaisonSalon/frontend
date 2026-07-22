@@ -28,7 +28,7 @@ const WOMEN_SECTION_ORDER = [
 ] as const;
 
 const treatwellBtnClass =
-  "inline-flex w-full items-center justify-center rounded-full border border-[#2D2D2D]/55 px-4 py-[7px] text-[13px] font-medium text-[#2D2D2D] transition hover:bg-[#2D2D2D]/5 md:w-auto";
+  "inline-flex w-full items-center justify-center rounded-full border border-[#1C1612]/55 px-4 py-[7px] text-[13px] font-medium text-[#1C1612] transition hover:bg-[#1C1612]/5 md:w-auto";
 
 function extractVariantLabel(name: string) {
   const match = name.match(/\(([^)]+)\)\s*$/);
@@ -161,12 +161,12 @@ export default function LeistungenClient() {
       <section>
         <div className="mx-auto max-w-7xl px-6 pb-8 pt-16 md:pt-20">
           <h1
-            className="text-h1 text-[#2D2D2D]"
+            className="text-h1 text-[#1C1612]"
             style={{ fontFamily: "var(--font-heading)" }}
           >
             Unsere Leistungen
           </h1>
-          <p className="mt-4 max-w-xl text-[13px] leading-relaxed text-[#2D2D2D]/95">
+          <p className="mt-4 max-w-xl text-[13px] leading-relaxed text-[#1C1612]/95">
             Wir bieten Haarschnitte, Farb- und Pflegebehandlungen für Frauen und Männer an – immer
             individuell abgestimmt auf dein Haar, deinen Typ und deinen Alltag.
           </p>
@@ -176,8 +176,8 @@ export default function LeistungenClient() {
               onClick={() => setActiveGender("women")}
               className={`rounded-full border px-4 py-2 text-[13px] font-medium leading-none ${
                 activeGender === "women"
-                  ? "border-[#2D2D2D] bg-[#2D2D2D] text-white"
-                  : "border-[#2D2D2D]/55 bg-transparent text-[#2D2D2D]"
+                  ? "border-[#1C1612] bg-[#1C1612] text-white"
+                  : "border-[#1C1612]/55 bg-transparent text-[#1C1612]"
               }`}
             >
               Damen
@@ -187,8 +187,8 @@ export default function LeistungenClient() {
               onClick={() => setActiveGender("men")}
               className={`rounded-full border px-4 py-2 text-[13px] font-medium leading-none ${
                 activeGender === "men"
-                  ? "border-[#2D2D2D] bg-[#2D2D2D] text-white"
-                  : "border-[#2D2D2D]/55 bg-transparent text-[#2D2D2D]"
+                  ? "border-[#1C1612] bg-[#1C1612] text-white"
+                  : "border-[#1C1612]/55 bg-transparent text-[#1C1612]"
               }`}
             >
               Herren
@@ -199,14 +199,14 @@ export default function LeistungenClient() {
 
       <section>
         <div className="mx-auto max-w-7xl px-6">
-          <div className="border-[#2D2D2D]/40">
+          <div className="border-[#1C1612]/40">
             {activeGender === "women" ? (
               womenSections.map((section) => (
                 <div key={section.label} className="pt-7 first:pt-0">
-                  <p className="text-[11px] font-medium tracking-[0.12em] text-[#2D2D2D]/55">
+                  <p className="text-[11px] font-medium tracking-[0.12em] text-[#1C1612]/55">
                     {section.label}
                   </p>
-                  <div className="mt-3 border-[#2D2D2D]/40">
+                  <div className="mt-3 border-[#1C1612]/40">
                     {section.entries.map((entry) => {
                       const hasVariants = entry.variants.length > 1;
                       const isExpanded = expandedKeys[entry.key] || false;
@@ -221,27 +221,27 @@ export default function LeistungenClient() {
                           : `${formatDuration(minDuration)} – ${formatDuration(maxDuration)}`);
 
                       return (
-                        <div key={entry.key} className="border-b border-[#2D2D2D]/40">
+                        <div key={entry.key} className="border-b border-[#1C1612]/40">
                           <div className="grid grid-cols-1 items-center gap-6 py-4 md:grid-cols-[minmax(0,1fr)_auto_auto]">
                             <div className="min-w-0">
-                              <p className="text-[13px] font-medium text-[#2D2D2D]">
+                              <p className="text-[13px] font-medium text-[#1C1612]">
                                 {toDisplayTitle(entry.title)}
                               </p>
-                              <p className="mt-1 text-[12px] leading-snug text-[#2D2D2D]/65">
+                              <p className="mt-1 text-[12px] leading-snug text-[#1C1612]/65">
                                 {durationLabel}
                               </p>
                             </div>
                             <div className="md:text-right">
                               {isCallRow ? (
-                                <span className="text-h3 font-display text-[#2D2D2D]">
+                                <span className="text-h3 font-display text-[#1C1612]">
                                   Auf Anfrage (telefonisch)
                                 </span>
                               ) : hasVariants ? (
-                                <span className="text-h3 font-display tabular-nums text-[#2D2D2D]">
+                                <span className="text-h3 font-display tabular-nums text-[#1C1612]">
                                   ab {formatPrice(minPrice)}
                                 </span>
                               ) : (
-                                <span className="text-h3 font-display tabular-nums text-[#2D2D2D]">
+                                <span className="text-h3 font-display tabular-nums text-[#1C1612]">
                                   {formatPrice(minPrice)}
                                 </span>
                               )}
@@ -249,7 +249,7 @@ export default function LeistungenClient() {
                             {isCallRow ? (
                               <a
                                 href="tel:+4917669150964"
-                                className="inline-flex w-full items-center justify-center rounded-full border border-[#2D2D2D]/55 px-4 py-[7px] text-[13px] font-medium text-[#2D2D2D] md:w-auto"
+                                className="inline-flex w-full items-center justify-center rounded-full border border-[#1C1612]/55 px-4 py-[7px] text-[13px] font-medium text-[#1C1612] md:w-auto"
                               >
                                 Anrufen
                               </a>
@@ -257,7 +257,7 @@ export default function LeistungenClient() {
                               <button
                                 type="button"
                                 onClick={() => toggleExpanded(entry.key)}
-                                className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-[#2D2D2D]/55 px-4 py-[7px] text-[13px] font-medium text-[#2D2D2D] md:w-auto"
+                                className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-[#1C1612]/55 px-4 py-[7px] text-[13px] font-medium text-[#1C1612] md:w-auto"
                               >
                                 {isExpanded ? "Schließen" : "Optionen"}
                                 <svg
@@ -278,16 +278,16 @@ export default function LeistungenClient() {
                               {entry.variants.map((variant) => (
                                 <div
                                   key={variant.id}
-                                  className="grid grid-cols-1 items-center gap-6 border-t border-[#2D2D2D]/25 py-4 pl-10 md:grid-cols-[minmax(0,1fr)_auto_auto]"
+                                  className="grid grid-cols-1 items-center gap-6 border-t border-[#1C1612]/25 py-4 pl-10 md:grid-cols-[minmax(0,1fr)_auto_auto]"
                                 >
                                   <div className="min-w-0">
-                                    <p className="text-[13px] font-medium text-[#2D2D2D]">{variant.label}</p>
-                                    <p className="mt-1 text-[12px] leading-snug text-[#2D2D2D]/65">
+                                    <p className="text-[13px] font-medium text-[#1C1612]">{variant.label}</p>
+                                    <p className="mt-1 text-[12px] leading-snug text-[#1C1612]/65">
                                       {formatDuration(variant.durationMinutes)}
                                     </p>
                                   </div>
                                   <div className="md:text-right">
-                                    <span className="text-h3 font-display tabular-nums text-[#2D2D2D]">
+                                    <span className="text-h3 font-display tabular-nums text-[#1C1612]">
                                       {formatPrice(variant.priceEur)}
                                     </span>
                                   </div>
@@ -306,16 +306,16 @@ export default function LeistungenClient() {
               menEntries.map((entry) => {
                 const item = entry.variants[0];
                 return (
-                  <div key={entry.key} className="border-b border-[#2D2D2D]/40">
+                  <div key={entry.key} className="border-b border-[#1C1612]/40">
                     <div className="grid grid-cols-1 items-center gap-6 py-4 md:grid-cols-[minmax(0,1fr)_auto_auto]">
                       <div className="min-w-0">
-                        <p className="text-[13px] font-medium text-[#2D2D2D]">{toDisplayTitle(entry.title)}</p>
-                        <p className="mt-1 text-[12px] leading-snug text-[#2D2D2D]/65">
+                        <p className="text-[13px] font-medium text-[#1C1612]">{toDisplayTitle(entry.title)}</p>
+                        <p className="mt-1 text-[12px] leading-snug text-[#1C1612]/65">
                           {formatDuration(item.durationMinutes)}
                         </p>
                       </div>
                       <div className="md:text-right">
-                        <span className="text-h3 font-display tabular-nums text-[#2D2D2D]">
+                        <span className="text-h3 font-display tabular-nums text-[#1C1612]">
                           {formatPrice(item.priceEur)}
                         </span>
                       </div>

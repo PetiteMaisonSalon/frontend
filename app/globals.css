@@ -31,12 +31,12 @@
   --petite-terracotta: #c9a86c;
   --petite-cream: #ebeae7;
   --petite-page: #ebeae7;
-  --petite-charcoal: #2d2d2d;
+  --petite-charcoal: #1c1612;
 }
 
 :root {
   --background: #ebeae7;
-  --foreground: #2d2d2d;
+  --foreground: #1c1612;
 }
 
 html {

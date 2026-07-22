@@ -9,10 +9,10 @@ export default function DatenschutzPage() {
     <main className="bg-[#EBEAE7]">
       <section className="border-b border-[#E8E4DF]">
         <div className="mx-auto max-w-4xl px-6 py-16 md:py-20">
-          <h1 className="text-h1 text-[#2D2D2D]">
+          <h1 className="text-h1 text-[#1C1612]">
             Datenschutz und Cookie-Richtlinie
           </h1>
-          <p className="mt-6 text-lg leading-relaxed text-[#2D2D2D]/85">
+          <p className="mt-6 text-lg leading-relaxed text-[#1C1612]/85">
             Wir, von Petite Maison Hamburg, nehmen den Schutz der Daten unserer Nutzer unserer
             Website{" "}
             <a
@@ -27,12 +27,12 @@ export default function DatenschutzPage() {
             der Nutzung unserer Website zur Verfugung stellen, zu schutzen. Des Weiteren
             verpflichten wir uns, Ihre Daten gemaß anwendbarem Recht zu schutzen und zu verwenden.
           </p>
-          <p className="mt-4 text-lg leading-relaxed text-[#2D2D2D]/85">
+          <p className="mt-4 text-lg leading-relaxed text-[#1C1612]/85">
             Diese Datenschutzrichtlinie erlautert unsere Praktiken in Bezug auf die Erfassung,
             Verwendung und Offenlegung Ihrer Daten durch die Nutzung unserer digitalen Assets (die
             "Dienste"), wenn Sie uber Ihre Gerate auf die Dienste zugreifen.
           </p>
-          <p className="mt-4 text-lg leading-relaxed text-[#2D2D2D]/85">
+          <p className="mt-4 text-lg leading-relaxed text-[#1C1612]/85">
             Lesen Sie die Datenschutzrichtlinie bitte sorgfaltig durch und stellen Sie sicher, dass
             Sie unsere Praktiken in Bezug auf Ihre Daten vollumfanglich verstehen, bevor Sie unsere
             Dienste verwenden. Wenn Sie diese Richtlinie gelesen, vollumfanglich verstanden haben
@@ -45,9 +45,9 @@ export default function DatenschutzPage() {
       </section>
 
       <section className="bg-[#EBEAE7]">
-        <div className="mx-auto max-w-4xl space-y-10 px-6 py-12 text-[#2D2D2D]/85">
+        <div className="mx-auto max-w-4xl space-y-10 px-6 py-12 text-[#1C1612]/85">
           <section>
-            <h2 className="text-h2 text-[#2D2D2D]">
+            <h2 className="text-h2 text-[#1C1612]">
               In dieser Datenschutzrichtlinie erfahren Sie:
             </h2>
             <ul className="mt-4 list-disc space-y-1 pl-6">
@@ -64,7 +64,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-h2 text-[#2D2D2D]">Welche Daten erfassen wir?</h2>
+            <h2 className="text-h2 text-[#1C1612]">Welche Daten erfassen wir?</h2>
             <p className="mt-4 text-sm font-medium uppercase tracking-wide text-[#4A5D4A]">
               Kategorie: Immer
             </p>
@@ -91,7 +91,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-h2 text-[#2D2D2D]">Wie sammeln wir Daten?</h2>
+            <h2 className="text-h2 text-[#1C1612]">Wie sammeln wir Daten?</h2>
             <p className="mt-4 text-sm font-medium uppercase tracking-wide text-[#4A5D4A]">
               Kategorie: Immer
             </p>
@@ -115,7 +115,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-h2 text-[#2D2D2D]">
+            <h2 className="text-h2 text-[#1C1612]">
               Warum erfassen wir diese Daten?
             </h2>
             <p className="mt-4 text-sm font-medium uppercase tracking-wide text-[#4A5D4A]">
@@ -148,7 +148,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-h2 text-[#2D2D2D]">
+            <h2 className="text-h2 text-[#1C1612]">
               An wen geben wir diese Daten weiter?
             </h2>
             <p className="mt-4 text-sm font-medium uppercase tracking-wide text-[#4A5D4A]">
@@ -201,7 +201,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-h2 text-[#2D2D2D]">
+            <h2 className="text-h2 text-[#1C1612]">
               Cookies und ahnliche Technologien
             </h2>
             <p className="mt-3">
@@ -250,7 +250,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-h2 text-[#2D2D2D]">Wo speichern wir die Daten?</h2>
+            <h2 className="text-h2 text-[#1C1612]">Wo speichern wir die Daten?</h2>
             <p className="mt-4 text-sm font-medium uppercase tracking-wide text-[#4A5D4A]">
               Kategorie: Immer - Nicht personenbezogene Daten
             </p>
@@ -273,7 +273,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-h2 text-[#2D2D2D]">
+            <h2 className="text-h2 text-[#1C1612]">
               Wie lange werden die Daten vorgehalten?
             </h2>
             <p className="mt-4 text-sm font-medium uppercase tracking-wide text-[#4A5D4A]">
@@ -292,7 +292,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-h2 text-[#2D2D2D]">
+            <h2 className="text-h2 text-[#1C1612]">
               Wie schutzen wir die Daten?
             </h2>
             <p className="mt-4 text-sm font-medium uppercase tracking-wide text-[#4A5D4A]">
@@ -334,7 +334,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-h2 text-[#2D2D2D]">
+            <h2 className="text-h2 text-[#1C1612]">
               Wie gehen wir mit Minderjahrigen um?
             </h2>
             <p className="mt-4 text-sm font-medium uppercase tracking-wide text-[#4A5D4A]">
@@ -454,7 +454,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-h2 text-[#2D2D2D]">
+            <h2 className="text-h2 text-[#1C1612]">
               Rechte gemaß kalifornischem Verbraucherschutzgesetz
             </h2>
             <p className="mt-3">
@@ -484,7 +484,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-h2 text-[#2D2D2D]">
+            <h2 className="text-h2 text-[#1C1612]">
               Aktualisierungen oder Anderungen der Datenschutzrichtlinie
             </h2>
             <p className="mt-4 text-sm font-medium uppercase tracking-wide text-[#4A5D4A]">
@@ -506,7 +506,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-h2 text-[#2D2D2D]">Kontakt</h2>
+            <h2 className="text-h2 text-[#1C1612]">Kontakt</h2>
             <p className="mt-4 text-sm font-medium uppercase tracking-wide text-[#4A5D4A]">
               Kategorie: Immer
             </p>
@@ -516,14 +516,14 @@ export default function DatenschutzPage() {
             </p>
             <div className="mt-3 rounded-xl border border-[#E8E4DF] bg-white p-4">
               <p>
-                <span className="font-medium text-[#2D2D2D]">Name:</span> Mehtap Küçük
+                <span className="font-medium text-[#1C1612]">Name:</span> Mehtap Küçük
               </p>
               <p className="mt-1">
-                <span className="font-medium text-[#2D2D2D]">Anschrift:</span> Arndtstrasse 33,
+                <span className="font-medium text-[#1C1612]">Anschrift:</span> Arndtstrasse 33,
                 22085 Hamburg
               </p>
               <p className="mt-1">
-                <span className="font-medium text-[#2D2D2D]">E-Mail-Adresse:</span>{" "}
+                <span className="font-medium text-[#1C1612]">E-Mail-Adresse:</span>{" "}
                 <a href="mailto:info@petitemaison.hamburg" className="text-[#4A5D4A] hover:underline">
                   info@petitemaison.hamburg
                 </a>
@@ -532,7 +532,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-h2 text-[#2D2D2D]">Ausschlussklausel</h2>
+            <h2 className="text-h2 text-[#1C1612]">Ausschlussklausel</h2>
             <p className="mt-3">
               Die hier enthaltenen Informationen ersetzen keine Rechtsberatung und Sie sollten sich
               nicht allein darauf stutzen. Spezifische Anforderungen in Bezug auf Rechtsbegriffe und

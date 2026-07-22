@@ -58,8 +58,9 @@ export default function HomeMain() {
     () => [
       "/mehtap_arbeit.png",
       "/main_leftbild1_2.jpg",
-      "/main_leftbild1_3.jpg",
-      "/main_leftbild1_4.avif",
+      "/main_leftbild-3.png",
+      "/main_leftbild1-4.png",
+      "/main_leftbild-1-5.png"
     ],
     [],
   );
@@ -159,7 +160,7 @@ export default function HomeMain() {
             <br className="hidden md:block" />
             Vertrauenssache.
           </h1>
-          <BookingLink className="text-copy mt-10 inline-block rounded-full border border-[#BEA8FF] bg-transparent px-10 py-4 font-medium text-[#BEA8FF] transition hover:bg-[#BEA8FF]/50 hover:text-white">
+          <BookingLink className="text-copy mt-10 inline-block rounded-full border border-[#BEA8FF] bg-transparent px-10 py-4 font-medium text-[#BEA8FF] transition hover:bg-[#BEA8FF]/100 hover:text-black">
             Jetzt buchen
           </BookingLink>
         </div>
@@ -176,7 +177,7 @@ export default function HomeMain() {
       >
         <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
           <div className="w-full shrink-0 lg:w-[min(48vw,540px)]">
-            <div className="relative aspect-15/12 w-full overflow-hidden bg-[#E8E4DF]">
+          <div className="relative aspect-square w-full overflow-hidden bg-[#E8E4DF]">
               <div
                 ref={mainLeftRef}
                 className="no-scrollbar absolute inset-0 overflow-x-auto scroll-smooth snap-x snap-mandatory"
@@ -212,7 +213,7 @@ export default function HomeMain() {
                 {mainLeftImages.map((_, i) => (
                   <div
                     key={i}
-                    className={`h-px w-8 ${i === mainLeftIndex ? "bg-[#2D2D2D]/60" : "bg-[#2D2D2D]/20"}`}
+                    className={`h-px w-8 ${i === mainLeftIndex ? "bg-[#1C1612]/60" : "bg-[#1C1612]/20"}`}
                   />
                 ))}
               </div>
@@ -221,7 +222,7 @@ export default function HomeMain() {
                 <button
                   type="button"
                   aria-label="Zurück"
-                  className="grid h-10 w-16 place-items-center text-[#2D2D2D] transition hover:opacity-70 disabled:opacity-30"
+                  className="grid h-10 w-16 place-items-center text-[#1C1612] transition hover:opacity-70 disabled:opacity-30"
                   onClick={() => {
                     const el = mainLeftRef.current;
                     if (!el) return;
@@ -254,7 +255,7 @@ export default function HomeMain() {
                 <button
                   type="button"
                   aria-label="Weiter"
-                  className="grid h-10 w-16 place-items-center text-[#2D2D2D] transition hover:opacity-70 disabled:opacity-30"
+                  className="grid h-10 w-16 place-items-center text-[#1C1612] transition hover:opacity-70 disabled:opacity-30"
                   onClick={() => {
                     const el = mainLeftRef.current;
                     if (!el) return;
@@ -291,7 +292,7 @@ export default function HomeMain() {
             </div>
           </div>
           <div className="shrink-0 lg:max-w-[min(42vw,32rem)]">
-            <p className="text-intro text-[#2D2D2D]">
+            <p className="text-intro text-[#1C1612]">
               Petite Maison ist ein Salon, in dem man sich Zeit füreinander
               nimmt. Für Gespräche, für Beratung und für eine Arbeit, mit Liebe
               zum Detail, die nicht zwischen Tür und Angel entsteht.
@@ -314,7 +315,7 @@ export default function HomeMain() {
               stehen und wir unsere Arbeit mit Ruhe und Sorgfalt ausführen
               können.
             </p>
-            <BookingLink className="text-copy mt-8 inline-block font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80">
+            <BookingLink className="text-copy mt-8 inline-block font-medium text-[#1C1612] underline underline-offset-2 transition hover:opacity-80">
               Jetzt Termin buchen
             </BookingLink>
           </div>
@@ -336,24 +337,24 @@ export default function HomeMain() {
         aria-labelledby="home-services-heading"
       >
         <div className="px-4 py-32 text-center md:py-40">
-          <p className="text-copy-sm font-medium tracking-[0.04em] text-[#2D2D2D]">
+          <p className="text-copy-sm font-medium tracking-[0.04em] text-[#1C1612]">
             Unsere Leistungen
           </p>
           <h2
             id="home-services-heading"
-            className="text-intro mx-auto mt-6 max-w-140 text-[#2D2D2D]"
+            className="text-intro mx-auto mt-6 max-w-140 text-[#1C1612]"
           >
             Wir bieten Haarschnitte, Farb- und Pflegebehandlungen für Frauen und
             Männer an — immer individuell abgestimmt auf dein Haar, deinen Typ
             und deinen Alltag.
           </h2>
           <div className="mt-10 flex items-center justify-center gap-8 text-copy-sm">
-            <BookingLink className="font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80">
+            <BookingLink className="font-medium text-[#1C1612] underline underline-offset-2 transition hover:opacity-80">
               Jetzt buchen
             </BookingLink>
             <Link
               href="/leistungen"
-              className="font-medium text-[#2D2D2D] underline underline-offset-2 transition hover:opacity-80"
+              className="font-medium text-[#1C1612] underline underline-offset-2 transition hover:opacity-80"
             >
               Zur Leistungsübersicht
             </Link>
@@ -371,58 +372,62 @@ export default function HomeMain() {
 
         {/* lg:grid-cols-3 statt md: */}
         <div className="mx-auto grid max-w-280 grid-cols-1 gap-6 lg:grid-cols-3">
-          {[
-            {
-              icon: "/schere_new.png",
-              title: "Haarschnitt & Styling",
-              description:
-                "Präzise Schnitte für jeden Typ – vom klassischen Look bis zum modernen Statement.",
-            },
-            {
-              icon: "/farbe_new.png",
-              title: "Farbe & Highlights",
-              description:
-                "Natürlich oder ausdrucksstark: Wir finden den Farbton, der wirklich zu dir passt.",
-            },
-            {
-              icon: "/hand_new.png",
-              title: "Pflege & individuelle Beratung",
-              description:
-                "Wir schauen genau hin, was dein Haar braucht und beraten dich ehrlich und ohne Umwege.",
-            },
-          ].map((card) => (
-            /* ÄNDERUNG: 'block h-full' zwingt den Link, die volle Grid-Höhe zu nutzen */
-            <Link href="/leistungen" key={card.title} className="block h-full">
-              <div
-                /* ÄNDERUNG: 'h-full' macht alle weißen Kacheln exakt gleich hoch */
-                className="flex h-full flex-col items-center justify-start rounded-[28px] bg-white px-6 py-12 text-center transition-colors duration-300 ease-out hover:bg-[#BEA8FF] md:px-8 md:py-14"
-              >
-                <div className="relative h-24 w-28 shrink-0">
-                  <Image
-                    src={card.icon}
-                    alt=""
-                    fill
-                    className="object-contain"
-                    sizes="112px"
-                  />
-                </div>
-                <h3 className="text-h3 mt-8 text-[#2D2D2D]">{card.title}</h3>
-                {/* ÄNDERUNG: max-w-60 entfernt für natürlichen Textfluss */}
-                <p className="text-copy-sm mt-3 leading-relaxed text-[#2D2D2D]">
-                  {card.description}
-                </p>
-              </div>
-            </Link>
-          ))}
-        </div>
+  {[
+    {
+      icon: "/schere_new.png",
+      title: "Haarschnitt & Styling",
+      description:
+        "Präzise Schnitte für jeden Typ – vom klassischen Look bis zum modernen Statement.",
+    },
+    {
+      icon: "/farbe_new.png",
+      title: "Farbe & Highlights",
+      description:
+        "Natürlich oder ausdrucksstark: Wir finden den Farbton, der wirklich zu dir passt.",
+    },
+    {
+      icon: "/hand_new.png",
+      title: "Pflege & individuelle Beratung",
+      description:
+        "Wir schauen genau hin, was dein Haar braucht und beraten dich ehrlich und ohne Umwege.",
+    },
+  ].map((card) => (
+    <Link
+      href="/leistungen"
+      key={card.title}
+      /* WICHTIG: pt-12 & pb-6 bringen den Text nach unten, halten die Kachel aber kompakt! */
+      className="flex h-full flex-col items-center justify-start rounded-[28px] bg-white px-8 pt-12 pb-6 text-center transition-colors duration-300 ease-out hover:bg-[#BEA8FF] md:px-8 md:pt-12 md:pb-8"
+    >
+      {/* Icon-Container quadratisch (h-28 w-28) verhindert, dass die Kachel zu lang wird */}
+      <div className="relative h-28 w-28 shrink-0">
+        <Image
+          src={card.icon}
+          alt=""
+          fill
+          className="object-contain"
+          sizes="112px"
+        />
+      </div>
+
+
+
+
+      {/* mt-14 bringt den idealen Abstand zum Icon, ohne die Kachel in die Länge zu ziehen */}
+      <h3 className="text-h3 mt-16 text-[#1C1612]">{card.title}</h3>
+      <p className="text-copy-sm mt-3 leading-relaxed text-[#1C1612]">
+        {card.description}
+      </p>
+    </Link>
+  ))}
+</div>
       </section>
 
       <section className="pm-home-section bg-[#EBEAE7] px-4 py-32 md:py-40">
         <div className="mx-auto max-w-md text-center lg:max-w-130">
-          <p className="text-copy font-medium tracking-[0.04em] text-[#1a1a1a]">
+          <p className="text-copy font-medium tracking-[0.04em] text-[#1C1612]">
             Unser Team
           </p>
-          <p className="text-intro mt-6 text-[#1a1a1a]">
+          <p className="text-intro mt-6 text-[#1C1612]">
             Was uns verbindet, ist die Freude am Handwerk, ein ruhiger
             Arbeitsstil und der Wunsch, eine Atmosphäre zu schaffen, in der man
             sich wohl und ernst genommen fühlt.
@@ -460,14 +465,14 @@ export default function HomeMain() {
               />
             </div>
             <div className="lg:max-w-85 lg:pt-2">
-              <h3 className="text-h2 text-[#2D2D2D]">Mehtap</h3>
-              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D] lg:w-147.5">
+              <h3 className="text-h2 text-[#1C1612]">Mehtap</h3>
+              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#1C1612] lg:w-147.5">
                 Ich bin Mehtap, Friseurmeisterin und Inhaberin von Petite
                 Maison. Seit vielen Jahren arbeite ich in diesem Beruf und habe
                 früh gemerkt, dass mir der persönliche Umgang mit Menschen
                 genauso wichtig ist wie das Handwerk selbst.
               </p>
-              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D] lg:w-147.5">
+              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#1C1612] lg:w-147.5">
                 Für mich bedeutet Friseurhandwerk, Verantwortung zu übernehmen —
                 für Entscheidungen, für Wünsche und für das Vertrauen, das mir
                 entgegengebracht wird. Diese Haltung prägt meine tägliche Arbeit
@@ -491,8 +496,8 @@ export default function HomeMain() {
               />
             </div>
             <div className="lg:max-w-85 lg:pt-2">
-              <h3 className="text-h2 text-[#2D2D2D]">Maria</h3>
-              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D]">
+              <h3 className="text-h2 text-[#1C1612]">Maria</h3>
+              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#1C1612]">
                 Maria ist unsere Schnittspezialistin! Sie ist seit 35 Jahren
                 Friseurin mit Leidenschaft und hat 31 Jahre für den Starfriseur
                 Jaques Le Coz gearbeitet. Maria isst gerne Tapas und tanzt
@@ -517,8 +522,8 @@ export default function HomeMain() {
               />
             </div>
             <div className="lg:max-w-85 lg:pt-2">
-              <h3 className="text-h2 text-[#2D2D2D]">Sevim</h3>
-              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D]">
+              <h3 className="text-h2 text-[#1C1612]">Sevim</h3>
+              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#1C1612]">
                 Sevim ist unsere Farbspezialistin! Sie liebt es, mit Haaren zu
                 experimentieren, einschließlich ihren Haaren. Zwölf Jahre lang
                 hat sie beim Starfriseur Jaques Le Coz gearbeitet und ist seit
@@ -529,17 +534,7 @@ export default function HomeMain() {
 
           {/* Masoud — rechts */}
           <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-end">
-            <div className="lg:max-w-85 lg:pt-2">
-              <h3 className="text-h2 text-[#2D2D2D]">Masoud</h3>
-              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D]">
-                Masoud ist spezialisiert auf präzise Schnitte und Farbtechniken.
-                Geboren im Iran, ausgebildet auf zwei Kontinenten, ist er seit
-                über 20 Jahren Friseur und seit Ende 2025 bei Petite Maison. Als
-                zertifizierter Aveda-Spezialist schwört er auf natürliche,
-                nachhaltige Produkte.
-              </p>
-            </div>
-            <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-70">
+                        <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-transparent lg:w-70">
               <Image
                 src="/masoud.png"
                 alt="Masoud"
@@ -551,6 +546,17 @@ export default function HomeMain() {
                 onDragStart={blockImageDownloadInteraction}
               />
             </div>
+            <div className="lg:max-w-85 lg:pt-2">
+              <h3 className="text-h2 text-[#1C1612]">Masoud</h3>
+              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#1C1612]">
+                Masoud ist spezialisiert auf präzise Schnitte und Farbtechniken.
+                Geboren im Iran, ausgebildet auf zwei Kontinenten, ist er seit
+                über 20 Jahren Friseur und seit Ende 2025 bei Petite Maison. Als
+                zertifizierter Aveda-Spezialist schwört er auf natürliche,
+                nachhaltige Produkte.
+              </p>
+            </div>
+
           </article>
 
           {/* Sarah — links */}
@@ -568,8 +574,8 @@ export default function HomeMain() {
               />
             </div>
             <div className="lg:max-w-85 lg:pt-2">
-              <h3 className="text-h2 text-[#2D2D2D]">Sarah</h3>
-              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D]">
+              <h3 className="text-h2 text-[#1C1612]">Sarah</h3>
+              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#1C1612]">
                 Sarah ist spezialisiert auf Haarschnitte, Styling und natürliche
                 Färbungen. Seit über 15 Jahren arbeitet sie mit Aveda-Produkten,
                 2022 hat sie ihren Meister gemacht — unter anderem lebte und
@@ -594,8 +600,8 @@ export default function HomeMain() {
               />
             </div>
             <div className="lg:max-w-85 lg:pt-2">
-              <h3 className="text-h2 text-[#2D2D2D]">Kanj</h3>
-              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D]">
+              <h3 className="text-h2 text-[#1C1612]">Kanj</h3>
+              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#1C1612]">
                 Kanj ist spezialisiert auf Strähnen, Balayage und Schnitte. Er
                 hat 2016 im Libanon seine Ausbildung gemacht und ist seit August
                 2025 fester Bestandteil des Teams. Nebenbei spielt er
@@ -621,8 +627,8 @@ export default function HomeMain() {
               />
             </div>
             <div className="lg:max-w-85 lg:pt-2">
-              <h3 className="text-h2 text-[#2D2D2D]">Cooper</h3>
-              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#2D2D2D]">
+              <h3 className="text-h2 text-[#1C1612]">Cooper</h3>
+              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#1C1612]">
                 Cooper ist spezialisiert auf gute Laune und ist als Sarahs
                 treuer Begleiter fester Bestandteil des Salons.
               </p>
@@ -647,7 +653,7 @@ export default function HomeMain() {
             <button
               type="button"
               aria-label="Zurück"
-              className="grid h-10 w-16 place-items-center text-[#2D2D2D] transition hover:opacity-70 disabled:opacity-30"
+              className="grid h-10 w-16 place-items-center text-[#1C1612] transition hover:opacity-70 disabled:opacity-30"
               onClick={() => {
                 const el = galerieRef.current;
                 if (!el) return;
@@ -680,7 +686,7 @@ export default function HomeMain() {
             <button
               type="button"
               aria-label="Weiter"
-              className="grid h-10 w-16 place-items-center text-[#2D2D2D] transition hover:opacity-70 disabled:opacity-30"
+              className="grid h-10 w-16 place-items-center text-[#1C1612] transition hover:opacity-70 disabled:opacity-30"
               onClick={() => {
                 const el = galerieRef.current;
                 if (!el) return;
@@ -788,10 +794,10 @@ export default function HomeMain() {
         aria-labelledby="home-aveda-heading"
       >
         <div className="mx-auto w-full max-w-lg text-center min-[1400px]:max-w-152">
-          <p className="text-copy-sm font-bold text-[#2D2D2D]">Aveda</p>
+          <p className="text-copy-sm font-bold text-[#1C1612]">Aveda</p>
           <h2
             id="home-aveda-heading"
-            className="text-intro mt-0 text-[#2D2D2D]"
+            className="text-intro mt-0 text-[#1C1612]"
           >
             Als Aveda-Salon arbeiten wir mit
             <br className="hidden lg:inline" />
