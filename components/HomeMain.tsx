@@ -161,7 +161,7 @@ export default function HomeMain() {
           loop
           muted
           playsInline
-          poster="/header_bg.mp4"
+          poster="/header_bg.webm"
           className="absolute inset-0 h-full w-full object-cover"
         >
           <source src="/header_bg.mp4" type="video/mp4" />
