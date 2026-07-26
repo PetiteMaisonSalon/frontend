@@ -44,13 +44,11 @@ export default function CookieBanner() {
 
   return (
     <div
-      className="fixed bottom-5 right-5 z-[60] max-w-[min(100vw-2.5rem,26rem)] rounded-[18px] bg-[#BEA8FF] px-6 py-2 shadow-lg"
+      className="fixed bottom-5 right-5 z-60 max-w-[min(100vw-2.5rem,26rem)] rounded-[18px] bg-[#BEA8FF] p-6 shadow-lg"
       role="dialog"
       aria-label="Cookie Einstellungen"
     >
-      <h2 className="text-h3 text-[#1C1612]">
-        Cookie Einstellungen
-      </h2>
+      <h2 className="text-h3 text-[#1C1612]">Cookie Einstellungen</h2>
       <p className="text-copy mt-3 leading-relaxed text-[#1C1612]/90">
         Wir verwenden Cookies, damit unsere Website reibungslos läuft. Weitere
         Informationen finden Sie in unserer{" "}

@@ -177,7 +177,7 @@ export default function Header() {
     : `${lightNavText} ${isHome ? lightBrandUnderline : ""}`;
   const mainNavLinkClass = isHomeHero ? heroNavText : lightNavText;
 
-  /** Mobile: Scroll sperren wenn Vollbild-Menü offen */
+  /** Mobile: Scroll */
   useEffect(() => {
     if (!menuOpen) return;
     const prev = document.body.style.overflow;
@@ -210,28 +210,25 @@ export default function Header() {
     <button
       type="button"
       onClick={() => setMenuOpen(!menuOpen)}
-      className={
-        isHomeHero
-          ? "flex h-10 w-10 shrink-0 flex-col items-center justify-center gap-1.5 rounded-lg md:hidden"
-          : "flex h-10 w-10 shrink-0 flex-col items-center justify-center gap-1.5 rounded-lg md:hidden"
-      }
+      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg md:hidden"
       aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
       aria-expanded={menuOpen}
     >
       <span
-        className={`block h-0.5 w-10 transition-all ${
+        className={`block h-8 w-8 transition-colors ${
           isHomeHero ? "bg-[#BEA8FF]" : "bg-[#1C1612]"
-        } ${menuOpen ? "translate-y-0 rotate-45" : ""}`}
-      />
-
-      <span
-        className={`block h-0.5 w-10 transition-all ${
-          isHomeHero ? "bg-[#BEA8FF]" : "bg-[#1C1612]"
-        } ${menuOpen ? "-translate-y-2 -rotate-45 opacity-0" : ""}`}
+        }`}
+        style={{
+          WebkitMask: menuOpen
+            ? "url('/icons/Icon_Close.svg') center/contain no-repeat"
+            : "url('/icons/Icon_Burger.svg') center/contain no-repeat",
+          mask: menuOpen
+            ? "url('/icons/Icon_Close.svg') center/contain no-repeat"
+            : "url('/icons/Icon_Burger.svg') center/contain no-repeat",
+        }}
       />
     </button>
   );
-
   const desktopAuthActions = (
     <>
       {SHOW_CUSTOMER_AUTH ? (
@@ -415,7 +412,7 @@ export default function Header() {
             <Link
               href="/"
               onClick={handleBrandClick}
-              className="text-copy border-b border-[#1C1612] pb-px font-medium text-[#1C1612]"
+              className="petite-maison-text border-[#1C1612] pb-px font-medium text-[#1C1612]"
             >
               Petite Maison
             </Link>
@@ -449,7 +446,7 @@ export default function Header() {
                   key={href}
                   href={href}
                   onClick={closeMobileMenu}
-                  className={`font-display text-[2rem] leading-[1.1] text-[#1C1612] transition hover:opacity-80 ${
+                  className={`font-display text-[64px] leading-[1.1] text-[#1C1612] transition hover:opacity-80 ${
                     isMobileNavActive(href) ? "opacity-100" : "opacity-90"
                   }`}
                 >
@@ -458,10 +455,10 @@ export default function Header() {
               ))}
             </nav>
 
-            <div className="mt-16">
+            <div className="mt-4">
               <BookingLink
                 onClick={closeMobileMenu}
-                className="text-copy font-medium text-[#1C1612] underline underline-offset-2 transition hover:opacity-80"
+                className="text-copy text-[#1C1612] underline underline-offset-2 transition hover:opacity-80"
               >
                 Jetzt buchen
               </BookingLink>

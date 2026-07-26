@@ -177,29 +177,47 @@ export default function HomeMain() {
             <br className="hidden md:block" />
             Vertrauenssache.
           </h1>
-          <BookingLink className="text-copy mt-10 inline-block rounded-full border border-[#BEA8FF] bg-transparent px-10 py-4 font-medium text-[#BEA8FF] transition hover:bg-[#BEA8FF] hover:text-black">
+          <BookingLink className="text-copy mt-6 inline-block rounded-full border border-[#BEA8FF] bg-transparent px-10 py-4 font-medium text-[#BEA8FF] transition hover:bg-[#BEA8FF] hover:text-black">
             Jetzt buchen
           </BookingLink>
         </div>
 
+        {/* Pfeil-Container (Animiert springend) */}
         <div
           aria-hidden="true"
-          className="animate-custom-jump absolute bottom-10 left-10 z-10 p-2 text-[#BEA8FF] md:bottom-16 md:left-17"
+          className="animate-custom-jump absolute bottom-1 left-1 z-10 p-1 md:bottom-16 md:left-17"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="0.65"
-            stroke="currentColor"
-            className="h-30 w-10 md:h-12 md:w-12"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M 12 2 L 12 22 M 10 18 L 12 24 L 14 18"
-            />
-          </svg>
+          {/* MOBILE PFEIL (sichtbar auf Handy, versteckt auf Desktop) */}
+          <span
+            className="block h-10 w-10 bg-[#BEA8FF] md:hidden"
+            style={{
+              transform: "rotate(-90deg)", // <- Rotiert 90 Grad nach links/unten
+              WebkitMaskImage: "url('/icons/icon_arrow.svg')",
+              WebkitMaskSize: "contain",
+              WebkitMaskPosition: "center",
+              WebkitMaskRepeat: "no-repeat",
+              maskImage: "url('/icons/Icon_Arrow.svg')",
+              maskSize: "contain",
+              maskPosition: "center",
+              maskRepeat: "no-repeat",
+            }}
+          />
+
+          {/* DESKTOP PFEIL (versteckt auf Handy, sichtbar auf Desktop) */}
+          <span
+            className="hidden h-12 w-12 bg-[#BEA8FF] md:block"
+            style={{
+              transform: "rotate(-90deg)", // <- Rotiert 90 Grad nach links/unten
+              WebkitMaskImage: "url('/icons/Icon_Arrow_Large.svg')",
+              WebkitMaskSize: "contain",
+              WebkitMaskPosition: "center",
+              WebkitMaskRepeat: "no-repeat",
+              maskImage: "url('/icons/icon_arrow_larg.svg')",
+              maskSize: "contain",
+              maskPosition: "center",
+              maskRepeat: "no-repeat",
+            }}
+          />
         </div>
       </section>
 

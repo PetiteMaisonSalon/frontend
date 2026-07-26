@@ -17,13 +17,14 @@ const gildaDisplay = localFont({
 const publicSans = localFont({
   src: "../public/PublicSans-VariableFont_wght.ttf",
   variable: "--font-public-sans",
+  weight: "200",
   display: "swap",
-  // Variable font: weight is handled by the font file itself.
 });
 
 export const metadata: Metadata = {
   title: "Petite Maison | Friseursalon Hamburg",
-  description: "Verbindlich, herzlich, professionell – Deine Haare sind Vertrauenssache. Individuelle Beratung in ruhiger Atmosphäre auf der Uhlenhorst.",
+  description:
+    "Verbindlich, herzlich, professionell – Deine Haare sind Vertrauenssache. Individuelle Beratung in ruhiger Atmosphäre auf der Uhlenhorst.",
   icons: {
     icon: "/social_logo.png",
   },

@@ -17,8 +17,8 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   /* Tailwind v4 font tokens */
-  --font-sans: var(--font-public-sans, system-ui, sans-serif);
-  --font-body: var(--font-public-sans, system-ui, sans-serif);
+  --font-sans: var(--font-public-sans);
+  --font-body: var(--font-public-sans);
 
   /* Petite Maison Palette */
   --petite-sand: #e8e4df;
@@ -59,7 +59,7 @@ body {
     damit sie überall korrekt aufgelöst werden.
   */
   --font-heading: var(--font-gilda-display, Georgia, serif);
-  --font-copy: var(--font-body);
+  --font-copy: var(--font-public-sans);
 
   font-family: var(--font-copy);
   font-size: 0.875rem;
@@ -131,11 +131,24 @@ body {
 }
 
 .text-copy {
-  font-size: 0.875rem;
+  font-family: var(--font-public-sans);
+  font-size: 0.875rem; /* 14px */
   line-height: 1.5;
+  font-weight: 600;
   letter-spacing: 0;
+  word-spacing: 5px;
 }
 
+.petite-maison-text {
+  font-family: var(--font-public-sans), sans-serif;
+  font-weight: 600;
+  color: #1c1612;
+  font-size: 0.889rem; /* 14px */
+  line-height: 1.5;
+  letter-spacing: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 .text-aveda {
   font-size: 0.975rem;
   line-height: 1.5;
@@ -143,8 +156,9 @@ body {
 }
 
 .text-copy-sm {
-  font-size: 0.88rem;
+  font-size: 0.78rem;
   line-height: 1.7;
+  font-weight: 600;
   letter-spacing: 0.01em;
 }
 
