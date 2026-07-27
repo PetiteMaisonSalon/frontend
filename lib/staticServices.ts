@@ -32,7 +32,7 @@ export const STATIC_SERVICES: StaticService[] = [
   },
   {
     _id: sid("women", 20),
-    name: "Damen - Haarschnitt & Styling (Neukunden)",
+    name: "Damen - Haarschnitt & Styling 'Neukunden'",
     category: "women",
     durationMinutes: 90,
     priceEur: 125,

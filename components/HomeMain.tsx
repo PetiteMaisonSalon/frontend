@@ -161,7 +161,7 @@ export default function HomeMain() {
           loop
           muted
           playsInline
-          poster="/header_bg.webm"
+          poster="/header_bg.png"
           className="absolute inset-0 h-full w-full object-cover"
         >
           <source src="/header_bg.mp4" type="video/mp4" />
@@ -192,7 +192,7 @@ export default function HomeMain() {
             className="block h-10 w-10 bg-[#BEA8FF] md:hidden"
             style={{
               transform: "rotate(-90deg)", // <- Rotiert 90 Grad nach links/unten
-              WebkitMaskImage: "url('/icons/icon_arrow.svg')",
+              WebkitMaskImage: "url('/icons/Icon_Arrow.svg')",
               WebkitMaskSize: "contain",
               WebkitMaskPosition: "center",
               WebkitMaskRepeat: "no-repeat",
@@ -212,7 +212,7 @@ export default function HomeMain() {
               WebkitMaskSize: "contain",
               WebkitMaskPosition: "center",
               WebkitMaskRepeat: "no-repeat",
-              maskImage: "url('/icons/icon_arrow_larg.svg')",
+              maskImage: "url('/icons/Icon_Arrow_Large.svg')",
               maskSize: "contain",
               maskPosition: "center",
               maskRepeat: "no-repeat",

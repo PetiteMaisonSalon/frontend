@@ -170,7 +170,7 @@ export default function Header() {
     "rounded-[14px] border-[1.5px] border-[#BEA8FF]] bg-transparent px-5 py-1.5 text-sm font-normal text-[#BEA8FF] transition hover:border-[#BEA8FF]/100 hover:text-black hover:bg-[#BEA8FF]/100";
 
   const outlineBtnLight =
-    "rounded-[14px] border-[1.5px] border-[#1C1612] bg-transparent px-5 py-1.5 text-sm font-normal text-[#1C1612] transition hover:bg-[#1C1612] hover:text-white";
+    "rounded-[14px] border-[1.5px] border-[#1C1612] bg-transparent px-5 py-1.5 text-sm font-semibold text-[#1C1612] transition hover:bg-[#1C1612] hover:text-white";
 
   const brandClass = isHomeHero
     ? `${heroNavText} ${isHome ? heroBrandUnderline : ""}`
@@ -215,7 +215,7 @@ export default function Header() {
       aria-expanded={menuOpen}
     >
       <span
-        className={`block h-8 w-8 transition-colors ${
+        className={`block h-8 w-9  transition-colors ${
           isHomeHero ? "bg-[#BEA8FF]" : "bg-[#1C1612]"
         }`}
         style={{
@@ -360,8 +360,8 @@ export default function Header() {
                   className={`whitespace-nowrap ${mainNavLinkClass} ${
                     isNavActive(href)
                       ? isHomeHero
-                        ? `font-normal! text-[#BEA8FF] ${heroActiveUnderline}`
-                        : `font-normal! text-[#1C1612] ${lightActiveUnderline}`
+                        ? `font-semibold text-[#BEA8FF] ${heroActiveUnderline}`
+                        : `font-semibold text-[#1C1612] ${lightActiveUnderline}`
                       : isHomeHero
                         ? "text-[#1C1612]"
                         : "text-[#1C1612]"
@@ -394,8 +394,8 @@ export default function Header() {
                 onClick={() => handleHomeSubNavClick(id)}
                 className={`font-medium transition hover:opacity-80 ${
                   homeSubActiveId === id
-                    ? "font-normal! text-[#1C1612]"
-                    : "text-[#1C1612]"
+                    ? "font-semibold text-[#1C1612]"
+                    : "font-semibold text-[#1C1612]"
                 }`}
               >
                 {label}

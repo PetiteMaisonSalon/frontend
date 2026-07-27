@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { STATIC_SERVICES, type StaticService } from "@/lib/staticServices";
 import { TREATWELL_BOOKING_URL } from "@/lib/siteConfig";
+import BookingLink from "@/components/BookingLink";
 
 type Service = StaticService;
 
@@ -40,7 +41,10 @@ function baseTitle(name: string) {
 }
 
 function toDisplayTitle(name: string) {
-  return baseTitle(name).replace(/^Damen\s*-\s*/i, "").replace(/^Herren\s*-\s*/i, "").trim();
+  return baseTitle(name)
+    .replace(/^Damen\s*-\s*/i, "")
+    .replace(/^Herren\s*-\s*/i, "")
+    .trim();
 }
 
 function formatDuration(minutes: number) {
@@ -79,7 +83,7 @@ export default function LeistungenClient() {
       .sort(
         (a, b) =>
           (a.displayOrder ?? 1000) - (b.displayOrder ?? 1000) ||
-          a.name.localeCompare(b.name, "de")
+          a.name.localeCompare(b.name, "de"),
       );
     const sectionMap = new Map<string, Service[]>();
     for (const s of women) {
@@ -89,8 +93,12 @@ export default function LeistungenClient() {
     }
 
     const sortedSections = Array.from(sectionMap.entries()).sort((a, b) => {
-      const ai = WOMEN_SECTION_ORDER.indexOf(a[0] as (typeof WOMEN_SECTION_ORDER)[number]);
-      const bi = WOMEN_SECTION_ORDER.indexOf(b[0] as (typeof WOMEN_SECTION_ORDER)[number]);
+      const ai = WOMEN_SECTION_ORDER.indexOf(
+        a[0] as (typeof WOMEN_SECTION_ORDER)[number],
+      );
+      const bi = WOMEN_SECTION_ORDER.indexOf(
+        b[0] as (typeof WOMEN_SECTION_ORDER)[number],
+      );
       const safeAi = ai === -1 ? 999 : ai;
       const safeBi = bi === -1 ? 999 : bi;
       return safeAi - safeBi;
@@ -134,7 +142,7 @@ export default function LeistungenClient() {
       .sort(
         (a, b) =>
           (a.displayOrder ?? 1000) - (b.displayOrder ?? 1000) ||
-          a.name.localeCompare(b.name, "de")
+          a.name.localeCompare(b.name, "de"),
       )
       .map((s) => ({
         key: s._id,
@@ -159,18 +167,32 @@ export default function LeistungenClient() {
   return (
     <main className="bg-[#EBEAE7] pb-16 font-normal [font-family:var(--font-public-sans)]">
       <section>
-        <div className="mx-auto max-w-7xl px-6 pb-8 pt-16 md:pt-20">
+        <div className="mx-auto max-w-7xl px-4 md:px-6 pb-8 pt-16 md:pt-20">
           <h1
             className="text-h1 text-[#1C1612]"
             style={{ fontFamily: "var(--font-heading)" }}
           >
             Unsere Leistungen
           </h1>
-          <p className="mt-4 max-w-xl text-[13px] leading-relaxed text-[#1C1612]/95">
-            Wir bieten Haarschnitte, Farb- und Pflegebehandlungen für Frauen und Männer an – immer
-            individuell abgestimmt auf dein Haar, deinen Typ und deinen Alltag.
+          <p className="mt-4 max-w-xl text-[13px] leading-relaxed text-[#1C1612] font-semibold">
+            Wir bieten Haarschnitte, Farb- und Pflegebehandlungen für Frauen und
+            Männer an – immer individuell abgestimmt auf dein Haar, deinen Typ
+            und deinen Alltag.
           </p>
-          <div className="mt-10 flex items-center gap-2">
+
+          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[0.875rem] [font-family:var(--font-public-sans)]">
+            <BookingLink className="underline decoration-[#1C1612]/30 underline-offset-[6px] transition hover:decoration-[#1C1612] font-semibold">
+              Online buchen
+            </BookingLink>
+            <a
+              href="tel:+4917669150964"
+              className="underline decoration-[#1C1612]/30 underline-offset-[6px] transition hover:decoration-[#1C1612] font-semibold"
+            >
+              Anrufen
+            </a>
+          </div>
+
+          <div className="mt-16 flex items-center gap-2">
             <button
               type="button"
               onClick={() => setActiveGender("women")}
@@ -198,133 +220,154 @@ export default function LeistungenClient() {
       </section>
 
       <section>
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto max-w-7xl px-2 md:px-6">
           <div className="border-[#1C1612]/40">
-            {activeGender === "women" ? (
-              womenSections.map((section) => (
-                <div key={section.label} className="pt-7 first:pt-0">
-                  <p className="text-[11px] font-medium tracking-[0.12em] text-[#1C1612]/55">
-                    {section.label}
-                  </p>
-                  <div className="mt-3 border-[#1C1612]/40">
-                    {section.entries.map((entry) => {
-                      const hasVariants = entry.variants.length > 1;
-                      const isExpanded = expandedKeys[entry.key] || false;
-                      const minPrice = Math.min(...entry.variants.map((v) => v.priceEur));
-                      const minDuration = Math.min(...entry.variants.map((v) => v.durationMinutes));
-                      const maxDuration = Math.max(...entry.variants.map((v) => v.durationMinutes));
-                      const isCallRow = entry.variants.some((v) => v.ctaType === "call");
-                      const durationLabel =
-                        entry.groupDurationLabel ||
-                        (minDuration === maxDuration
-                          ? formatDuration(minDuration)
-                          : `${formatDuration(minDuration)} – ${formatDuration(maxDuration)}`);
+            {activeGender === "women"
+              ? womenSections.map((section) => (
+                  <div key={section.label} className="pt-5 first:pt-0">
+                    <p className="text-[12px] font-medium tracking-[0.22em] text-[#524f48]">
+                      {section.label}
+                    </p>
+                    <div className="mt-1 border-[#1C1612]/40">
+                      {section.entries.map((entry) => {
+                        const hasVariants = entry.variants.length > 1;
+                        const isExpanded = expandedKeys[entry.key] || false;
+                        const minPrice = Math.min(
+                          ...entry.variants.map((v) => v.priceEur),
+                        );
+                        const minDuration = Math.min(
+                          ...entry.variants.map((v) => v.durationMinutes),
+                        );
+                        const maxDuration = Math.max(
+                          ...entry.variants.map((v) => v.durationMinutes),
+                        );
+                        const isCallRow = entry.variants.some(
+                          (v) => v.ctaType === "call",
+                        );
+                        const durationLabel =
+                          entry.groupDurationLabel ||
+                          (minDuration === maxDuration
+                            ? formatDuration(minDuration)
+                            : `${formatDuration(minDuration)} – ${formatDuration(maxDuration)}`);
 
-                      return (
-                        <div key={entry.key} className="border-b border-[#1C1612]/40">
-                          <div className="grid grid-cols-1 items-center gap-6 py-4 md:grid-cols-[minmax(0,1fr)_auto_auto]">
-                            <div className="min-w-0">
-                              <p className="text-[13px] font-medium text-[#1C1612]">
-                                {toDisplayTitle(entry.title)}
-                              </p>
-                              <p className="mt-1 text-[12px] leading-snug text-[#1C1612]/65">
-                                {durationLabel}
-                              </p>
-                            </div>
-                            <div className="md:text-right">
+                        return (
+                          <div
+                            key={entry.key}
+                            className="border-b border-[#1C1612]/40"
+                          >
+                            <div className="flex items-center justify-between gap-4 py-2.5 md:grid md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-center md:py-4">
+                              <div className="min-w-0">
+                                <p className="text-[14px] text-[#1C1612] font-semibold">
+                                  {toDisplayTitle(entry.title)}
+                                </p>
+                                <p className="mt-1 text-[12px] leading-snug text-[#1C1612]/65">
+                                  {durationLabel}
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                {isCallRow ? (
+                                  <span className="hidden text-h3 font-display text-[#1C1612] md:inline">
+                                    Auf Anfrage (telefonisch)
+                                  </span>
+                                ) : hasVariants ? (
+                                  <span className="hidden text-h3 font-display tabular-nums text-[#1C1612] md:inline">
+                                    ab {formatPrice(minPrice)}
+                                  </span>
+                                ) : (
+                                  <span className="text-h3 font-display tabular-nums text-[#1C1612]">
+                                    {formatPrice(minPrice)}
+                                  </span>
+                                )}
+                              </div>
                               {isCallRow ? (
-                                <span className="text-h3 font-display text-[#1C1612]">
-                                  Auf Anfrage (telefonisch)
-                                </span>
+                                <a
+                                  href="tel:+4917669150964"
+                                  className="inline-flex items-center justify-center rounded-full border border-[#1C1612]/55 px-4 py-[7px] text-[13px] font-medium text-[#1C1612] md:w-auto"
+                                >
+                                  Anrufen
+                                </a>
                               ) : hasVariants ? (
-                                <span className="text-h3 font-display tabular-nums text-[#1C1612]">
-                                  ab {formatPrice(minPrice)}
-                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => toggleExpanded(entry.key)}
+                                  className="inline-flex items-center justify-center gap-2 rounded-full border border-[#1C1612]/55 px-4 py-[7px] text-[13px] font-medium text-[#1C1612] md:w-auto"
+                                >
+                                  {isExpanded ? "Schließen" : "Optionen"}
+                                  <svg
+                                    aria-hidden="true"
+                                    viewBox="0 0 20 20"
+                                    className={`h-4 w-4 transition ${isExpanded ? "rotate-180" : ""}`}
+                                    fill="none"
+                                  >
+                                    <path
+                                      d="M5 7.5L10 12.5L15 7.5"
+                                      stroke="currentColor"
+                                      strokeWidth="1.7"
+                                      strokeLinecap="round"
+                                    />
+                                  </svg>
+                                </button>
                               ) : (
-                                <span className="text-h3 font-display tabular-nums text-[#1C1612]">
-                                  {formatPrice(minPrice)}
-                                </span>
+                                <></>
                               )}
                             </div>
-                            {isCallRow ? (
-                              <a
-                                href="tel:+4917669150964"
-                                className="inline-flex w-full items-center justify-center rounded-full border border-[#1C1612]/55 px-4 py-[7px] text-[13px] font-medium text-[#1C1612] md:w-auto"
-                              >
-                                Anrufen
-                              </a>
-                            ) : hasVariants ? (
-                              <button
-                                type="button"
-                                onClick={() => toggleExpanded(entry.key)}
-                                className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-[#1C1612]/55 px-4 py-[7px] text-[13px] font-medium text-[#1C1612] md:w-auto"
-                              >
-                                {isExpanded ? "Schließen" : "Optionen"}
-                                <svg
-                                  aria-hidden="true"
-                                  viewBox="0 0 20 20"
-                                  className={`h-4 w-4 transition ${isExpanded ? "rotate-180" : ""}`}
-                                  fill="none"
-                                >
-                                  <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-                                </svg>
-                              </button>
-                            ) : (
-                              <TreatwellBookButton />
+                            {hasVariants && isExpanded && (
+                              <div className="pb-2">
+                                {entry.variants.map((variant) => (
+                                  <div
+                                    key={variant.id}
+                                    className="flex items-center justify-between gap-4 border-t border-[#1C1612]/25 py-2.5 pl-6 md:grid md:grid-cols-[minmax(0,1fr)_auto_auto] md:py-4 md:pl-10"
+                                  >
+                                    <div className="min-w-0">
+                                      <p className="text-[13px] font-medium text-[#1C1612]">
+                                        {variant.label}
+                                      </p>
+                                      <p className="mt-1 text-[12px] leading-snug text-[#1C1612]/65">
+                                        {formatDuration(
+                                          variant.durationMinutes,
+                                        )}
+                                      </p>
+                                    </div>
+                                    <div className="text-right">
+                                      <span className="text-h3 font-display tabular-nums text-[#1C1612]">
+                                        {formatPrice(variant.priceEur)}
+                                      </span>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
                             )}
                           </div>
-                          {hasVariants && isExpanded && (
-                            <div className="pb-2">
-                              {entry.variants.map((variant) => (
-                                <div
-                                  key={variant.id}
-                                  className="grid grid-cols-1 items-center gap-6 border-t border-[#1C1612]/25 py-4 pl-10 md:grid-cols-[minmax(0,1fr)_auto_auto]"
-                                >
-                                  <div className="min-w-0">
-                                    <p className="text-[13px] font-medium text-[#1C1612]">{variant.label}</p>
-                                    <p className="mt-1 text-[12px] leading-snug text-[#1C1612]/65">
-                                      {formatDuration(variant.durationMinutes)}
-                                    </p>
-                                  </div>
-                                  <div className="md:text-right">
-                                    <span className="text-h3 font-display tabular-nums text-[#1C1612]">
-                                      {formatPrice(variant.priceEur)}
-                                    </span>
-                                  </div>
-                                  <TreatwellBookButton />
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))
-            ) : (
-              menEntries.map((entry) => {
-                const item = entry.variants[0];
-                return (
-                  <div key={entry.key} className="border-b border-[#1C1612]/40">
-                    <div className="grid grid-cols-1 items-center gap-6 py-4 md:grid-cols-[minmax(0,1fr)_auto_auto]">
-                      <div className="min-w-0">
-                        <p className="text-[13px] font-medium text-[#1C1612]">{toDisplayTitle(entry.title)}</p>
-                        <p className="mt-1 text-[12px] leading-snug text-[#1C1612]/65">
-                          {formatDuration(item.durationMinutes)}
-                        </p>
-                      </div>
-                      <div className="md:text-right">
-                        <span className="text-h3 font-display tabular-nums text-[#1C1612]">
-                          {formatPrice(item.priceEur)}
-                        </span>
-                      </div>
-                      <TreatwellBookButton />
+                        );
+                      })}
                     </div>
                   </div>
-                );
-              })
-            )}
+                ))
+              : menEntries.map((entry) => {
+                  const item = entry.variants[0];
+                  return (
+                    <div
+                      key={entry.key}
+                      className="border-b border-[#1C1612]/40"
+                    >
+                      <div className="flex items-center justify-between gap-4 py-2.5 md:grid md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-center md:py-4">
+                        <div className="min-w-0">
+                          <p className="text-[13px] font-medium text-[#1C1612]">
+                            {toDisplayTitle(entry.title)}
+                          </p>
+                          <p className="mt-1 text-[12px] leading-snug text-[#1C1612]/65">
+                            {formatDuration(item.durationMinutes)}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-h3 font-display tabular-nums text-[#1C1612]">
+                            {formatPrice(item.priceEur)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
           </div>
         </div>
       </section>

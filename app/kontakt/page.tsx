@@ -19,13 +19,13 @@ export default function KontaktPage() {
               Wir freuen uns darauf, dich bei uns begrüßen zu dürfen. Deinen
               Termin kannst du jederzeit online oder telefonisch vereinbaren.
             </p>
-            <div className="mt-4 flex flex-wrap gap-x-12 gap-y-2 text-[0.875rem] [font-family:var(--font-public-sans)]">
-              <BookingLink className="underline decoration-[#1C1612]/30 underline-offset-[6px] transition hover:decoration-[#1C1612]/60">
+            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[0.875rem] [font-family:var(--font-public-sans)]">
+              <BookingLink className="underline decoration-[#1C1612]/30 underline-offset-[6px] transition hover:decoration-[#1C1612]/60 font-semibold">
                 Online buchen
               </BookingLink>
               <a
                 href="tel:+4917669150964"
-                className="underline decoration-[#1C1612]/30 underline-offset-[6px] transition hover:decoration-[#1C1612]/60"
+                className="underline decoration-[#1C1612]/30 underline-offset-[6px] transition hover:decoration-[#1C1612]/60 font-semibold"
               >
                 Anrufen
               </a>
