@@ -282,7 +282,7 @@ export default function LeistungenClient() {
                               {isCallRow ? (
                                 <a
                                   href="tel:+4917669150964"
-                                  className="inline-flex items-center justify-center rounded-full border border-[#1C1612]/55 px-4 py-[7px] text-[13px] font-medium text-[#1C1612] md:w-auto"
+                                  className="inline-flex items-center justify-center rounded-full border border-[#1C1612]/55 px-4 py-1.75 text-[13px] font-medium text-[#1C1612] md:w-auto"
                                 >
                                   Anrufen
                                 </a>
@@ -290,7 +290,7 @@ export default function LeistungenClient() {
                                 <button
                                   type="button"
                                   onClick={() => toggleExpanded(entry.key)}
-                                  className="inline-flex items-center justify-center gap-2 rounded-full border border-[#1C1612]/55 px-4 py-[7px] text-[13px] font-medium text-[#1C1612] md:w-auto"
+                                  className="inline-flex items-center justify-center gap-2 rounded-full border border-[#1C1612]/55 px-4 py-1.75 text-[13px] font-medium text-[#1C1612] md:w-auto"
                                 >
                                   {isExpanded ? "Schließen" : "Optionen"}
                                   <svg
@@ -352,7 +352,7 @@ export default function LeistungenClient() {
                     >
                       <div className="flex items-center justify-between gap-4 py-2.5 md:grid md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-center md:py-4">
                         <div className="min-w-0">
-                          <p className="text-[13px] font-medium text-[#1C1612]">
+                          <p className="text-[14px] text-[#1C1612] font-semibold">
                             {toDisplayTitle(entry.title)}
                           </p>
                           <p className="mt-1 text-[12px] leading-snug text-[#1C1612]/65">
