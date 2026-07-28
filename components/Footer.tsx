@@ -20,7 +20,7 @@ export default function Footer() {
       <div className="w-full px-4 pb-8 pt-4 md:pt-6">
         {/* CTA oben links */}
         <div className="max-w-136 lg:max-w-152">
-          <h2 className="text-intro text-[#1C1612]">
+          <h2 className="md:text-intro text-[#1C1612] text-intro-mobile">
             Wir freuen uns darauf, dich bei uns begrüßen zu dürfen.
           </h2>
           <p className="text-copy-sm mt-2 max-w-lg leading-relaxed text-[#1C1612]">

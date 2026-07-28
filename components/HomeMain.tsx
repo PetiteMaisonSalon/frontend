@@ -901,11 +901,11 @@ export default function HomeMain() {
         ref={(el) => {
           sectionRefs.current.aveda = el;
         }}
-        className="pm-home-section bg-[#BEA8FF] px-4 pb-10 pt-12 md:pb-4 md:pt-10 lg:pb-4 lg:pt-25"
+        className="pm-home-section bg-[#BEA8FF] px-2 pb-10 pt-5 md:pb-4 md:pt-10 lg:pb-4 lg:pt-25"
         aria-labelledby="home-aveda-heading"
       >
         <div className="mx-auto w-full max-w-lg text-left lg:text-center min-[1400px]:max-w-152">
-          <p className="text-copy-sm text-[#1C1612]">Aveda</p>
+          <p className="text-copy-sm font-semibold! text-[#1C1612]">Aveda</p>
           <h2
             id="home-aveda-heading"
             className="text-intro mt-2 text-[#1C1612] leading-8"
