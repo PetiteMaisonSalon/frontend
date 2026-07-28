@@ -167,7 +167,7 @@ export default function Header() {
   const heroActiveUnderline = "border-b border-[#BEA8FF] pb-px";
 
   const outlineBtnHero =
-    "rounded-[14px] border-[1.5px] border-[#BEA8FF]] bg-transparent px-5 py-1.5 text-sm font-normal text-[#BEA8FF] transition hover:border-[#BEA8FF]hover:text-black hover:bg-[#BEA8FF]";
+    "rounded-[14px] border-[1.5px] border-[#BEA8FF]] bg-transparent px-5 py-1.5 text-sm font-normal text-[#BEA8FF] transition hover:border-[#BEA8FF] hover:text-white hover:bg-[#BEA8FF]";
 
   const outlineBtnLight =
     "rounded-[14px] border-[1.5px] border-[#1C1612] bg-transparent px-5 py-1.5 text-sm font-semibold text-[#1C1612] transition hover:bg-[#1C1612] hover:text-white";
