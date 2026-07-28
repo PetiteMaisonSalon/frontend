@@ -41,7 +41,7 @@ export default function KontaktPage() {
               <p>Di – Fr 9–20 Uhr</p>
               <p>Sa 9–14 Uhr</p>
             </div>
-            <div className="space-y-2 leading-[1.65]">
+            <div className="flex flex-col space-y-1 leading-[1.65]">
               <a
                 href="tel:+4917669150964"
                 className="block transition hover:opacity-70"
@@ -54,8 +54,6 @@ export default function KontaktPage() {
               >
                 info@petitemaison.hamburg
               </a>
-            </div>
-            <div className="flex flex-col gap-2 leading-[1.65]">
               <a
                 href="https://wa.me/4917669150964"
                 target="_blank"

@@ -264,7 +264,7 @@ export default function HomeMain() {
             </div>
 
             {/* Indicators + Buttons: Auf Mobile nur Pfeile links, auf Desktop mit Linie */}
-            <div className="mt-3 flex items-center justify-start lg:justify-between">
+            <div className="flex items-center justify-start lg:justify-between">
               <div className="hidden items-center gap-2 lg:flex" aria-hidden>
                 {mainLeftImages.map((_, i) => (
                   <div
@@ -274,7 +274,7 @@ export default function HomeMain() {
                 ))}
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-0">
                 <button
                   type="button"
                   aria-label="Zurück"
@@ -291,22 +291,12 @@ export default function HomeMain() {
                   }}
                   disabled={mainLeftIndex === 0}
                 >
-                  <svg
-                    width="64"
-                    height="16"
-                    viewBox="0 0 64 16"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+                  <img
+                    src="/icons/Icon_Arrow.svg"
+                    alt="arrow_icon"
                     aria-hidden
-                  >
-                    <path
-                      d="M12 2L2 8l10 6M4 8h58"
-                      stroke="currentColor"
-                      strokeWidth="1.25"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                    className="w-16 h-4"
+                  />
                 </button>
                 <button
                   type="button"
@@ -327,22 +317,12 @@ export default function HomeMain() {
                   }}
                   disabled={mainLeftIndex >= mainLeftSlides - 1}
                 >
-                  <svg
-                    width="64"
-                    height="16"
-                    viewBox="0 0 64 16"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+                  <img
+                    src="/icons/Icon_Arrow.svg"
+                    alt="arrow_icon"
                     aria-hidden
-                  >
-                    <path
-                      d="M52 2l10 6-10 6M2 8h58"
-                      stroke="currentColor"
-                      strokeWidth="1.25"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                    className="w-16 h-4 rotate-180"
+                  />
                 </button>
               </div>
             </div>
@@ -605,7 +585,7 @@ export default function HomeMain() {
       </section>
 
       {/* Unser Team Intro — Screenshot 2 (unten): Linksbündig auf Mobile */}
-      <section className="pm-home-section bg-[#EBEAE7] px-4 py-20 md:py-30">
+      <section className="pm-home-section bg-[#EBEAE7] px-4 py-20 md:py-10 md:pb-35">
         <div className="mx-auto max-w-md text-left lg:max-w-130 lg:text-center">
           <p className="text-copy font-medium tracking-[0.04em] text-[#1C1612]">
             Unser Team
@@ -914,7 +894,7 @@ export default function HomeMain() {
         </div>
       </section>
 
-      {/* AVEDA SECTION */}
+      {/* AVEDA SECTION*/}
       <section
         id="aveda"
         data-section-id="aveda"

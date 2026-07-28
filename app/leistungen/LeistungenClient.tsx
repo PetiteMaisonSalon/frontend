@@ -222,152 +222,159 @@ export default function LeistungenClient() {
       <section>
         <div className="mx-auto max-w-7xl px-2 md:px-6">
           <div className="border-[#1C1612]/40">
-            {activeGender === "women"
-              ? womenSections.map((section) => (
-                  <div key={section.label} className="pt-5 first:pt-0">
-                    <p className="text-[12px] font-medium tracking-[0.22em] text-[#524f48]">
-                      {section.label}
-                    </p>
-                    <div className="mt-1 border-[#1C1612]/40">
-                      {section.entries.map((entry) => {
-                        const hasVariants = entry.variants.length > 1;
-                        const isExpanded = expandedKeys[entry.key] || false;
-                        const minPrice = Math.min(
-                          ...entry.variants.map((v) => v.priceEur),
-                        );
-                        const minDuration = Math.min(
-                          ...entry.variants.map((v) => v.durationMinutes),
-                        );
-                        const maxDuration = Math.max(
-                          ...entry.variants.map((v) => v.durationMinutes),
-                        );
-                        const isCallRow = entry.variants.some(
-                          (v) => v.ctaType === "call",
-                        );
-                        const durationLabel =
-                          entry.groupDurationLabel ||
-                          (minDuration === maxDuration
-                            ? formatDuration(minDuration)
-                            : `${formatDuration(minDuration)} – ${formatDuration(maxDuration)}`);
+            {activeGender === "women" ? (
+              womenSections.map((section) => (
+                <div key={section.label} className="pt-5 first:pt-0">
+                  <p className="text-[12px] font-medium tracking-[0.22em] text-[#524f48]">
+                    {section.label}
+                  </p>
+                  <div className="mt-1 border-[#1C1612]/40">
+                    {section.entries.map((entry) => {
+                      const hasVariants = entry.variants.length > 1;
+                      const isExpanded = expandedKeys[entry.key] || false;
+                      const minPrice = Math.min(
+                        ...entry.variants.map((v) => v.priceEur),
+                      );
+                      const minDuration = Math.min(
+                        ...entry.variants.map((v) => v.durationMinutes),
+                      );
+                      const maxDuration = Math.max(
+                        ...entry.variants.map((v) => v.durationMinutes),
+                      );
+                      const isCallRow = entry.variants.some(
+                        (v) => v.ctaType === "call",
+                      );
+                      const durationLabel =
+                        entry.groupDurationLabel ||
+                        (minDuration === maxDuration
+                          ? formatDuration(minDuration)
+                          : `${formatDuration(minDuration)} – ${formatDuration(maxDuration)}`);
 
-                        return (
-                          <div
-                            key={entry.key}
-                            className="border-b border-[#1C1612]/40"
-                          >
-                            <div className="flex items-center justify-between gap-4 py-2.5 md:grid md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-center md:py-4">
-                              <div className="min-w-0">
-                                <p className="text-[14px] text-[#1C1612] font-semibold">
-                                  {toDisplayTitle(entry.title)}
-                                </p>
-                                <p className="mt-1 text-[12px] leading-snug text-[#1C1612]/65">
-                                  {durationLabel}
-                                </p>
-                              </div>
-                              <div className="text-right">
-                                {isCallRow ? (
-                                  <span className="hidden text-h3 font-display text-[#1C1612] md:inline">
-                                    Auf Anfrage (telefonisch)
-                                  </span>
-                                ) : hasVariants ? (
-                                  <span className="hidden text-h3 font-display tabular-nums text-[#1C1612] md:inline">
-                                    ab {formatPrice(minPrice)}
-                                  </span>
-                                ) : (
-                                  <span className="text-h3 font-display tabular-nums text-[#1C1612]">
-                                    {formatPrice(minPrice)}
-                                  </span>
-                                )}
-                              </div>
+                      return (
+                        <div
+                          key={entry.key}
+                          className="border-b border-[#1C1612]/40"
+                        >
+                          <div className="flex items-center justify-between gap-4 py-2.5 md:grid md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-center md:py-4">
+                            <div className="min-w-0">
+                              <p className="text-[14px] text-[#1C1612] font-semibold">
+                                {toDisplayTitle(entry.title)}
+                              </p>
+                              <p className="mt-1 text-[12px] leading-snug text-[#1C1612]/65">
+                                {durationLabel}
+                              </p>
+                            </div>
+                            <div className="text-right">
                               {isCallRow ? (
-                                <a
-                                  href="tel:+4917669150964"
-                                  className="inline-flex items-center justify-center rounded-full border border-[#1C1612]/55 px-4 py-1.75 text-[13px] font-medium text-[#1C1612] md:w-auto"
-                                >
-                                  Anrufen
-                                </a>
+                                <span className="hidden text-h3 font-display text-[#1C1612] md:inline">
+                                  Auf Anfrage (telefonisch)
+                                </span>
                               ) : hasVariants ? (
-                                <button
-                                  type="button"
-                                  onClick={() => toggleExpanded(entry.key)}
-                                  className="inline-flex items-center justify-center gap-2 rounded-full border border-[#1C1612]/55 px-4 py-1.75 text-[13px] font-medium text-[#1C1612] md:w-auto"
-                                >
-                                  {isExpanded ? "Schließen" : "Optionen"}
-                                  <svg
-                                    aria-hidden="true"
-                                    viewBox="0 0 20 20"
-                                    className={`h-4 w-4 transition ${isExpanded ? "rotate-180" : ""}`}
-                                    fill="none"
-                                  >
-                                    <path
-                                      d="M5 7.5L10 12.5L15 7.5"
-                                      stroke="currentColor"
-                                      strokeWidth="1.7"
-                                      strokeLinecap="round"
-                                    />
-                                  </svg>
-                                </button>
+                                <span className="hidden text-h3 font-display tabular-nums text-[#1C1612] md:inline">
+                                  ab {formatPrice(minPrice)}
+                                </span>
                               ) : (
-                                <></>
+                                <span className="text-h3 font-display tabular-nums text-[#1C1612]">
+                                  {formatPrice(minPrice)}
+                                </span>
                               )}
                             </div>
-                            {hasVariants && isExpanded && (
-                              <div className="pb-2">
-                                {entry.variants.map((variant) => (
-                                  <div
-                                    key={variant.id}
-                                    className="flex items-center justify-between gap-4 border-t border-[#1C1612]/25 py-2.5 pl-6 md:grid md:grid-cols-[minmax(0,1fr)_auto_auto] md:py-4 md:pl-10"
-                                  >
-                                    <div className="min-w-0">
-                                      <p className="text-[13px] font-medium text-[#1C1612]">
-                                        {variant.label}
-                                      </p>
-                                      <p className="mt-1 text-[12px] leading-snug text-[#1C1612]/65">
-                                        {formatDuration(
-                                          variant.durationMinutes,
-                                        )}
-                                      </p>
-                                    </div>
-                                    <div className="text-right">
-                                      <span className="text-h3 font-display tabular-nums text-[#1C1612]">
-                                        {formatPrice(variant.priceEur)}
-                                      </span>
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
+                            {isCallRow ? (
+                              <a
+                                href="tel:+4917669150964"
+                                className="inline-flex items-center justify-center rounded-full border border-[#1C1612]/55 px-4 py-1.75 text-[13px] font-medium text-[#1C1612] md:w-auto"
+                              >
+                                Anrufen
+                              </a>
+                            ) : hasVariants ? (
+                              <button
+                                type="button"
+                                onClick={() => toggleExpanded(entry.key)}
+                                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#1C1612]/55 px-4 py-1.75 text-[13px] font-medium text-[#1C1612] md:w-auto"
+                              >
+                                {isExpanded ? "Schließen" : "Optionen"}
+                                <svg
+                                  aria-hidden="true"
+                                  viewBox="0 0 20 20"
+                                  className={`h-4 w-4 transition ${isExpanded ? "rotate-180" : ""}`}
+                                  fill="none"
+                                >
+                                  <path
+                                    d="M5 7.5L10 12.5L15 7.5"
+                                    stroke="currentColor"
+                                    strokeWidth="1.7"
+                                    strokeLinecap="round"
+                                  />
+                                </svg>
+                              </button>
+                            ) : (
+                              <></>
                             )}
                           </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))
-              : menEntries.map((entry) => {
-                  const item = entry.variants[0];
-                  return (
-                    <div
-                      key={entry.key}
-                      className="border-b border-[#1C1612]/40"
-                    >
-                      <div className="flex items-center justify-between gap-4 py-2.5 md:grid md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-center md:py-4">
-                        <div className="min-w-0">
-                          <p className="text-[14px] text-[#1C1612] font-semibold">
-                            {toDisplayTitle(entry.title)}
-                          </p>
-                          <p className="mt-1 text-[12px] leading-snug text-[#1C1612]/65">
-                            {formatDuration(item.durationMinutes)}
-                          </p>
+                          {hasVariants && isExpanded && (
+                            <div className="pb-2">
+                              {entry.variants.map((variant) => (
+                                <div
+                                  key={variant.id}
+                                  className="flex items-center justify-between gap-4 border-t border-[#1C1612]/25 py-2.5 pl-6 md:grid md:grid-cols-[minmax(0,1fr)_auto_auto] md:py-4 md:pl-10"
+                                >
+                                  <div className="min-w-0">
+                                    <p className="text-[13px] font-medium text-[#1C1612]">
+                                      {variant.label}
+                                    </p>
+                                    <p className="mt-1 text-[12px] leading-snug text-[#1C1612]/65">
+                                      {formatDuration(variant.durationMinutes)}
+                                    </p>
+                                  </div>
+                                  <div className="text-right">
+                                    <span className="text-h3 font-display tabular-nums text-[#1C1612]">
+                                      {formatPrice(variant.priceEur)}
+                                    </span>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                        <div className="text-right">
-                          <span className="text-h3 font-display tabular-nums text-[#1C1612]">
-                            {formatPrice(item.priceEur)}
-                          </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="pt-5 first:pt-0">
+                <p className="text-[12px] font-medium tracking-[0.22em] text-[#524f48]">
+                  SCHNITT & STYLING
+                </p>
+                <div className="mt-1 border-[#1C1612]/40">
+                  {menEntries.map((entry) => {
+                    const item = entry.variants[0];
+                    return (
+                      <div
+                        key={entry.key}
+                        className="border-b border-[#1C1612]/40"
+                      >
+                        <div className="flex items-center justify-between gap-4 py-2.5 md:grid md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-center md:py-4">
+                          <div className="min-w-0">
+                            <p className="text-[14px] text-[#1C1612] font-semibold">
+                              {toDisplayTitle(entry.title)}
+                            </p>
+                            <p className="mt-1 text-[12px] leading-snug text-[#1C1612]/65">
+                              {formatDuration(item.durationMinutes)}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-h3 font-display tabular-nums text-[#1C1612]">
+                              {formatPrice(item.priceEur)}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>
