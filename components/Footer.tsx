@@ -17,32 +17,32 @@ const legalLinks = [
 export default function Footer() {
   return (
     <footer className="bg-[#BEA8FF] text-[#1C1612]">
-      <div className="w-full px-4 pb-16 pt-10 md:pb-20 md:pt-10">
+      <div className="w-full px-4 pb-8 pt-4 md:pt-6">
         {/* CTA oben links */}
         <div className="max-w-136 lg:max-w-152">
           <h2 className="text-intro text-[#1C1612]">
             Wir freuen uns darauf, dich bei uns begrüßen zu dürfen.
           </h2>
-          <p className="text-copy-sm mt-5 max-w-lg leading-relaxed text-[#1C1612]/90">
+          <p className="text-copy-sm mt-2 max-w-lg leading-relaxed text-[#1C1612]">
             Deinen Termin kannst du jederzeit online oder telefonisch
             vereinbaren. Du erreichst uns telefonisch unter{" "}
             <a
               href="tel:+4917669150964"
-              className="transition hover:opacity-80"
+              className="border-b border-[#1C1612] transition hover:opacity-80"
             >
               +49 176 69150964
             </a>
           </p>
-          <BookingLink className="text-copy mt-8 inline-block rounded-full border border-[#1C1612]/60 bg-transparent px-10 py-3 font-medium text-[#1C1612] transition hover:bg-[#1C1612]/5">
+          <BookingLink className="inline-block mt-6 rounded-[14px] border-[1.5px] border-[#1C1612] bg-transparent px-5 py-1.5 text-sm font-semibold text-[#1C1612] transition hover:bg-[#1C1612] hover:text-white">
             Jetzt buchen
           </BookingLink>
         </div>
 
         {/* Unten: Adresse links · Kontakt · Nav · Legal rechts */}
-        <div className="mt-24 flex flex-col gap-12 lg:mt-28 lg:flex-row lg:items-end lg:justify-between lg:gap-8">
-          <div className="shrink-0 text-copy-sm leading-relaxed text-[#1C1612]/90">
-            <p className="font-medium text-[#1C1612]">Petite Maison</p>
-            <address className="mt-4 not-italic">
+        <div className="mt-24 flex flex-col gap-6 lg:mt-20 lg:flex-row lg:items-end lg:justify-between lg:gap-8">
+          <div className="shrink-0 text-copy-sm leading-relaxed text-[#1C1612]">
+            <p className="text-[#1C1612]">Petite Maison</p>
+            <address className="not-italic">
               <p>Arndtstr. 33</p>
               <p>22085 Hamburg</p>
             </address>
@@ -52,7 +52,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="grid gap-10 text-copy-sm text-[#1C1612]/90 sm:grid-cols-3 sm:gap-x-12 lg:ml-auto lg:gap-x-16 xl:gap-x-20">
+          <div className="grid gap-10 text-copy-sm text-[#1C1612] sm:grid-cols-3 sm:gap-x-12 lg:ml-auto lg:gap-x-10 xl:gap-x-10">
             <div className="space-y-2">
               <a
                 href="tel:+4917669150964"
@@ -84,7 +84,7 @@ export default function Footer() {
               </a>
             </div>
 
-            <nav className="flex flex-col gap-2">
+            <nav className="flex flex-col gap-1 items-end">
               {navLinks.map(({ href, label }) => (
                 <Link
                   key={href}
@@ -96,7 +96,7 @@ export default function Footer() {
               ))}
             </nav>
 
-            <nav className="flex flex-col gap-2">
+            <nav className="flex flex-col gap-1 items-end">
               {legalLinks.map(({ href, label }) => (
                 <Link
                   key={href}

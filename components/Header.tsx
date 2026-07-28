@@ -157,8 +157,8 @@ export default function Header() {
   /** Hell (Startseite unterhalb Hero + alle anderen Seiten): Sans, dunkel; nur „Petite Maison“ unterstrichen */
   const lightNavText =
     "text-copy font-medium text-[#1C1612] antialiased transition hover:opacity-90";
-  const lightBrandUnderline = "border-b border-[#1C1612] pb-px";
-  const lightActiveUnderline = "border-b border-[#1C1612] pb-px";
+  const lightBrandUnderline = "border-[#1C1612] pb-px";
+  const lightActiveUnderline = "border-[#1C1612] pb-px";
 
   /** Hero über Bild: #BEA8FF; Petite Maison unterstrichen */
   const heroNavText =
@@ -167,7 +167,7 @@ export default function Header() {
   const heroActiveUnderline = "border-b border-[#BEA8FF] pb-px";
 
   const outlineBtnHero =
-    "rounded-[14px] border-[1.5px] border-[#BEA8FF]] bg-transparent px-5 py-1.5 text-sm font-normal text-[#BEA8FF] transition hover:border-[#BEA8FF]/100 hover:text-black hover:bg-[#BEA8FF]/100";
+    "rounded-[14px] border-[1.5px] border-[#BEA8FF]] bg-transparent px-5 py-1.5 text-sm font-normal text-[#BEA8FF] transition hover:border-[#BEA8FF]hover:text-black hover:bg-[#BEA8FF]";
 
   const outlineBtnLight =
     "rounded-[14px] border-[1.5px] border-[#1C1612] bg-transparent px-5 py-1.5 text-sm font-semibold text-[#1C1612] transition hover:bg-[#1C1612] hover:text-white";

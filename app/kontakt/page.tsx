@@ -32,7 +32,7 @@ export default function KontaktPage() {
             </div>
           </div>
 
-          <div className="mt-12 shrink-0 text-copy-sm space-y-7 text-[#1C1612]/90 lg:mt-60 lg:w-54">
+          <div className="mt-12 shrink-0 text-copy-sm space-y-7 text-[#1C1612] lg:mt-60 lg:w-54">
             <address className="not-italic leading-[1.65]">
               <p>Arndtstr. 33</p>
               <p>22085 Hamburg</p>

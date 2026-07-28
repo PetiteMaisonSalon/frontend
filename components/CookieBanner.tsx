@@ -49,7 +49,7 @@ export default function CookieBanner() {
       aria-label="Cookie Einstellungen"
     >
       <h2 className="text-h3 text-[#1C1612]">Cookie Einstellungen</h2>
-      <p className="text-copy mt-3 leading-relaxed text-[#1C1612]/90">
+      <p className="text-copy mt-3 leading-relaxed text-[#1C1612]">
         Wir verwenden Cookies, damit unsere Website reibungslos läuft. Weitere
         Informationen finden Sie in unserer{" "}
         <Link

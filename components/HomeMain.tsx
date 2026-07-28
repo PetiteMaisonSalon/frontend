@@ -177,7 +177,7 @@ export default function HomeMain() {
             <br className="hidden md:block" />
             Vertrauenssache.
           </h1>
-          <BookingLink className="text-copy mt-6 inline-block rounded-full border border-[#BEA8FF] bg-transparent px-10 py-4 font-medium text-[#BEA8FF] transition hover:bg-[#BEA8FF] hover:text-black">
+          <BookingLink className="rounded-[14px] border-[1.5px] border-[#BEA8FF]] bg-transparent px-5 py-1.5 text-sm font-normal text-[#BEA8FF] transition hover:border-[#BEA8FF] hover:text-black hover:bg-[#BEA8FF] mt-6">
             Jetzt buchen
           </BookingLink>
         </div>
@@ -396,7 +396,7 @@ export default function HomeMain() {
         className="pm-home-section bg-[#EBEAE7]"
         aria-labelledby="home-services-heading"
       >
-        <div className="px-4 py-20 text-left md:py-10 lg:py-12 lg:text-center">
+        <div className="px-4 py-10 text-left md:py-10 lg:py-12 lg:text-center">
           <p className="text-copy-sm font-medium tracking-[0.04em] text-[#1C1612]">
             Unsere Leistungen
           </p>
@@ -408,13 +408,13 @@ export default function HomeMain() {
             Männer an — immer individuell abgestimmt auf dein Haar, deinen Typ
             und deinen Alltag.
           </h2>
-          <div className="mt-10 flex items-center justify-start gap-8 text-copy-sm lg:justify-center">
-            <BookingLink className="font-medium text-[#1C1612] underline underline-offset-2 transition hover:opacity-80">
+          <div className="mt-3 flex items-center justify-start gap-8 text-copy-sm lg:justify-center">
+            <BookingLink className="font-semibold text-[#1C1612] underline underline-offset-2 transition hover:opacity-80">
               Jetzt buchen
             </BookingLink>
             <Link
               href="/leistungen"
-              className="font-medium text-[#1C1612] underline underline-offset-2 transition hover:opacity-80"
+              className="font-semibold text-[#1C1612] underline underline-offset-2 transition hover:opacity-80"
             >
               Zur Leistungsübersicht
             </Link>
@@ -424,7 +424,7 @@ export default function HomeMain() {
 
       {/* LEISTUNGEN KACHELN — Screenshot 2: Auf Mobile eine Galerie mit Pfeilen, Desktop originales 3er Grid! */}
       <section
-        className="pm-home-section bg-[#EBEAE7] px-4 py-10 md:py-28"
+        className="pm-home-section bg-[#EBEAE7] px-4 md:py-28"
         aria-labelledby="home-services-cards-heading"
       >
         <h2 id="home-services-cards-heading" className="sr-only">
@@ -478,16 +478,81 @@ export default function HomeMain() {
         {/* 2. MOBILE VERSION (lg:hidden) — Galerie wie im Screenshot 2 */}
         {/* 2. MOBILE VERSION (lg:hidden) — Alle Kacheln exakt gleich hoch (h-full & items-stretch) */}
         <div className="w-full lg:hidden">
+          {/* Pfeile unter der mobilen Leistungs-Galerie mit exakter Disabled-Logik */}
+          <div className="mt-6 flex items-center justify-end gap-3">
+            <button
+              type="button"
+              aria-label="Zurück"
+              className="grid h-10 w-12 place-items-center text-[#1C1612] transition hover:opacity-70 disabled:opacity-30"
+              onClick={() => {
+                const el =
+                  servicesRef.current ||
+                  document.getElementById("mobile-services-gallery");
+                if (!el) return;
+                const cardEl = el.children[0] as HTMLElement;
+                const slideWidth = cardEl
+                  ? cardEl.offsetWidth + 16
+                  : el.clientWidth;
+                const next = Math.max(0, servicesIndex - 1);
+                el.scrollTo({
+                  left: next * slideWidth,
+                  behavior: "smooth",
+                });
+                setServicesIndex(next);
+              }}
+              disabled={servicesIndex === 0}
+            >
+              <Image
+                src="/icons/Icon_Arrow.svg"
+                alt=""
+                width={40}
+                height={16}
+                className="rotate-180"
+              />
+            </button>
+            <button
+              type="button"
+              aria-label="Weiter"
+              className="grid h-10 w-12 place-items-center text-[#1C1612] transition hover:opacity-70 disabled:opacity-30"
+              onClick={() => {
+                const el =
+                  servicesRef.current ||
+                  document.getElementById("mobile-services-gallery");
+                if (!el) return;
+                const cardEl = el.children[0] as HTMLElement;
+                const slideWidth = cardEl
+                  ? cardEl.offsetWidth + 16
+                  : el.clientWidth;
+                const next = Math.min(servicesSlides - 1, servicesIndex + 1);
+                el.scrollTo({
+                  left: next * slideWidth,
+                  behavior: "smooth",
+                });
+                setServicesIndex(next);
+              }}
+              disabled={servicesIndex >= servicesSlides - 1}
+            >
+              <Image
+                src="/icons/Icon_Arrow.svg"
+                alt=""
+                width={40}
+                height={16}
+              />
+            </button>
+          </div>
           <div
             id="mobile-services-gallery"
             ref={servicesRef}
             onScroll={() => {
               const el = servicesRef.current;
               if (!el) return;
-              const idx = Math.round(el.scrollLeft / el.clientWidth);
+              const cardEl = el.children[0] as HTMLElement;
+              const slideWidth = cardEl
+                ? cardEl.offsetWidth + 16
+                : el.clientWidth;
+              const idx = Math.round(el.scrollLeft / slideWidth);
               if (idx !== servicesIndex) setServicesIndex(idx);
             }}
-            /* HIER NEU: items-stretch hinzugefügt */
             className="no-scrollbar flex w-full items-stretch overflow-x-auto scroll-smooth snap-x snap-mandatory gap-4"
           >
             {[
@@ -510,14 +575,13 @@ export default function HomeMain() {
                   "Wir schauen genau hin, was dein Haar braucht und beraten dich ehrlich und ohne Umwege.",
               },
             ].map((card) => (
-              /* HIER NEU: flex h-auto hinzugefügt */
+              /* w-[85%] sorgt dafür, dass die nächste Kachel leicht sichtbar ist */
               <div
                 key={card.title}
-                className="flex h-auto w-full flex-none snap-start"
+                className="flex h-auto w-[85%] flex-none snap-start"
               >
                 <Link
                   href="/leistungen"
-                  /* HIER NEU: h-full w-full hinzugefügt */
                   className="flex h-full w-full flex-col items-center justify-start rounded-[28px] bg-white px-8 pt-12 pb-10 text-center transition-colors duration-300 ease-out active:bg-[#BEA8FF]"
                 >
                   <div className="relative h-28 w-28 shrink-0">
@@ -536,80 +600,6 @@ export default function HomeMain() {
                 </Link>
               </div>
             ))}
-          </div>
-
-          {/* Pfeile unter der mobilen Leistungs-Galerie mit exakter Disabled-Logik */}
-          <div className="mt-6 flex items-center justify-start gap-3">
-            <button
-              type="button"
-              aria-label="Zurück"
-              className="grid h-10 w-16 place-items-center text-[#1C1612] transition hover:opacity-70 disabled:opacity-30"
-              onClick={() => {
-                const el =
-                  servicesRef.current ||
-                  document.getElementById("mobile-services-gallery");
-                if (!el) return;
-                const next = Math.max(0, servicesIndex - 1);
-                el.scrollTo({
-                  left: next * el.clientWidth,
-                  behavior: "smooth",
-                });
-                setServicesIndex(next);
-              }}
-              disabled={servicesIndex === 0}
-            >
-              <svg
-                width="64"
-                height="16"
-                viewBox="0 0 64 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden
-              >
-                <path
-                  d="M12 2L2 8l10 6M4 8h58"
-                  stroke="currentColor"
-                  strokeWidth="1.25"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-            <button
-              type="button"
-              aria-label="Weiter"
-              className="grid h-10 w-16 place-items-center text-[#1C1612] transition hover:opacity-70 disabled:opacity-30"
-              onClick={() => {
-                const el =
-                  servicesRef.current ||
-                  document.getElementById("mobile-services-gallery");
-                if (!el) return;
-                const next = Math.min(servicesSlides - 1, servicesIndex + 1);
-                el.scrollTo({
-                  left: next * el.clientWidth,
-                  behavior: "smooth",
-                });
-                setServicesIndex(next);
-              }}
-              disabled={servicesIndex >= servicesSlides - 1}
-            >
-              <svg
-                width="64"
-                height="16"
-                viewBox="0 0 64 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden
-              >
-                <path
-                  d="M52 2l10 6-10 6M2 8h58"
-                  stroke="currentColor"
-                  strokeWidth="1.25"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
           </div>
         </div>
       </section>
@@ -836,7 +826,7 @@ export default function HomeMain() {
         ref={(el) => {
           sectionRefs.current.gallerie = el;
         }}
-        className="pm-home-section bg-[#EBEAE7] pb-0 pt-6"
+        className="pm-home-section bg-[#EBEAE7] pb-0 pt-2"
         aria-label="Galerie"
       >
         <div className="w-full">
@@ -848,7 +838,7 @@ export default function HomeMain() {
               onClick={() => {
                 const el = galerieRef.current;
                 if (!el) return;
-                const next = Math.max(0, galerieIndex - 1);
+                const next = Math.max(0, galerieIndex - 3);
                 el.scrollTo({
                   left: next * el.clientWidth,
                   behavior: "smooth",
@@ -857,22 +847,13 @@ export default function HomeMain() {
               }}
               disabled={galerieIndex === 0}
             >
-              <svg
-                width="64"
-                height="16"
-                viewBox="0 0 64 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden
-              >
-                <path
-                  d="M12 2L2 8l10 6M4 8h58"
-                  stroke="currentColor"
-                  strokeWidth="1.25"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <Image
+                src="/icons/Icon_Arrow.svg"
+                alt=""
+                width={54}
+                height={16}
+                className="rotate-180"
+              />
             </button>
             <button
               type="button"
@@ -890,22 +871,12 @@ export default function HomeMain() {
               }}
               disabled={galerieIndex >= galerieSlides - 1}
             >
-              <svg
-                width="64"
-                height="16"
-                viewBox="0 0 64 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden
-              >
-                <path
-                  d="M52 2l10 6-10 6M2 8h58"
-                  stroke="currentColor"
-                  strokeWidth="1.25"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <Image
+                src="/icons/Icon_Arrow.svg"
+                alt=""
+                width={54}
+                height={16}
+              />
             </button>
           </div>
 
@@ -950,17 +921,16 @@ export default function HomeMain() {
         ref={(el) => {
           sectionRefs.current.aveda = el;
         }}
-        className="pm-home-section bg-[#BEA8FF] px-4 pb-20 pt-20 md:pb-4 md:pt-28 lg:pb-4 lg:pt-23"
+        className="pm-home-section bg-[#BEA8FF] px-4 pb-10 pt-12 md:pb-4 md:pt-10 lg:pb-4 lg:pt-25"
         aria-labelledby="home-aveda-heading"
       >
         <div className="mx-auto w-full max-w-lg text-left lg:text-center min-[1400px]:max-w-152">
-          <p className="text-copy-sm font-bold text-[#1C1612]">Aveda</p>
+          <p className="text-copy-sm text-[#1C1612]">Aveda</p>
           <h2
             id="home-aveda-heading"
-            className="text-intro mt-0 text-[#1C1612]"
+            className="text-intro mt-2 text-[#1C1612] leading-8"
           >
-            Als Aveda-Salon arbeiten wir mit
-            <br className="hidden lg:inline" />
+            Als Aveda-Salon arbeiten wir mit <br className="hidden lg:inline" />
             Produkten, die nicht nur deinem Haar{" "}
             <br className="hidden lg:inline" />
             guttun, sondern auch der Umwelt.
@@ -1039,13 +1009,10 @@ export default function HomeMain() {
             <div className="max-w-lg">
               <p className="text-copy leading-relaxed text-[#1C1612]">
                 Diese Haltung passt zu unserer Arbeit: verantwortungsvoll,
-                achtsam und mit <br />
-                echtem Anspruch an Qualität. Wir sind stolz darauf, dir Produkte
-                anbieten zu <br />
-                können, die genau das widerspiegeln – und freuen uns, diese
-                Werte <br />
-                gemeinsam mit unseren Kunden zu leben. Unsere Aveda-Produkte
-                kannst du <br />
+                achtsam und mit echtem Anspruch an Qualität. Wir sind stolz
+                darauf, dir Produkte anbieten können, die genau das
+                widerspiegeln – und freuen uns, diese Werte gemeinsam mit
+                unseren Kunden zu leben. Unsere Aveda-Produkte kannst du
                 übrigens nicht nur bei uns erleben, sondern auch direkt im Salon
                 erwerben.
               </p>
