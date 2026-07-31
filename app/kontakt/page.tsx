@@ -38,7 +38,7 @@ export default function KontaktPage() {
               <p>22085 Hamburg</p>
             </address>
             <div className="space-y-1 leading-[1.65]">
-              <p>Di – Fr 9–20 Uhr</p>
+              <p>Di – Fr 9–18 Uhr</p>
               <p>Sa 9–14 Uhr</p>
             </div>
             <div className="flex flex-col space-y-1 leading-[1.65]">
