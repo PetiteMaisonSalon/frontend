@@ -185,7 +185,7 @@ export default function HomeMain() {
         {/* Pfeil-Container (Animiert springend) */}
         <div
           aria-hidden="true"
-          className="animate-custom-jump absolute bottom-1 left-1 z-10 p-1 md:bottom-16 md:left-17"
+          className="animate-custom-jump absolute bottom-1 left-1 z-10 p-1 md:bottom-10 md:left-8"
         >
           {/* MOBILE PFEIL (sichtbar auf Handy, versteckt auf Desktop) */}
           <span

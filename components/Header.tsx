@@ -157,8 +157,8 @@ export default function Header() {
   /** Hell (Startseite unterhalb Hero + alle anderen Seiten): Sans, dunkel; nur „Petite Maison“ unterstrichen */
   const lightNavText =
     "text-copy font-medium text-[#1C1612] antialiased transition hover:opacity-90";
-  const lightBrandUnderline = "border-[#1C1612] pb-px";
-  const lightActiveUnderline = "border-[#1C1612] pb-px";
+  const lightBrandUnderline = "border-b border-[#1C1612] pb-px";
+  const lightActiveUnderline = "border-b border-[#1C1612] pb-px";
 
   /** Hero über Bild: #BEA8FF; Petite Maison unterstrichen */
   const heroNavText =

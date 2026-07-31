@@ -207,5 +207,5 @@ body {
 }
 
 .animate-custom-jump {
-  animation: custom-jump 1.4s infinite ease-in-out;
+  animation: custom-jump 7s infinite ease-in-out;
 }
