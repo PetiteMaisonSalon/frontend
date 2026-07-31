@@ -47,7 +47,7 @@ export default function Footer() {
               <p>22085 Hamburg</p>
             </address>
             <div className="mt-8">
-              <p>Di – Fr 9–20 Uhr</p>
+              <p>Di – Fr 9–18 Uhr</p>
               <p>Sa 9–14 Uhr</p>
             </div>
           </div>
