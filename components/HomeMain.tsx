@@ -421,22 +421,22 @@ export default function HomeMain() {
                 "Präzise Schnitte für jeden Typ – vom klassischen Look bis zum modernen Statement.",
             },
             {
-              icon: "/farbe_new.png",
-              title: "Farbe & Highlights",
-              description:
-                "Natürlich oder ausdrucksstark: Wir finden den Farbton, der wirklich zu dir passt.",
-            },
-            {
               icon: "/hand_new.png",
               title: "Pflege & individuelle Beratung",
               description:
                 "Wir schauen genau hin, was dein Haar braucht und beraten dich ehrlich und ohne Umwege.",
             },
+            {
+              icon: "/farbe_new.png",
+              title: "Farbe & Highlights",
+              description:
+                "Natürlich oder ausdrucksstark: Wir finden den Farbton, der wirklich zu dir passt.",
+            },
           ].map((card) => (
             <Link
               href="/leistungen"
               key={card.title}
-              className="flex h-full flex-col items-center justify-start rounded-[28px] bg-white px-8 pt-12 pb-6 text-center transition-colors duration-300 ease-out hover:bg-[#BEA8FF] md:px-8 md:pt-12 md:pb-8"
+              className="flex h-full flex-col items-center justify-start rounded-[28px] px-8 pt-12 pb-6 text-center transition-colors duration-300 ease-out md:px-8 md:pt-12 md:pb-8"
             >
               <div className="relative h-28 w-28 shrink-0">
                 <Image
@@ -648,10 +648,10 @@ export default function HomeMain() {
           <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-end">
             <div className="relative aspect-square w-3/5 self-end shrink-0 overflow-hidden bg-transparent lg:w-70 lg:self-auto">
               <Image
-                src="/maria.png"
+                src="/maria_new.jpg"
                 alt="Maria"
                 fill
-                className="object-cover grayscale"
+                className="object-cover object-top grayscale"
                 sizes="280px"
                 draggable={false}
                 onContextMenu={blockImageDownloadInteraction}
@@ -725,7 +725,7 @@ export default function HomeMain() {
           <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-start">
             <div className="relative aspect-square w-3/5 self-end shrink-0 overflow-hidden bg-transparent lg:w-70 lg:self-auto">
               <Image
-                src="/sarah.png"
+                src="/sarah_new.jpg"
                 alt="Sarah"
                 fill
                 className="object-cover"
@@ -770,29 +770,6 @@ export default function HomeMain() {
                 libanesische Flöte, tritt mit seiner eigenen Band bei Festivals
                 und Hochzeiten auf und war bereits im libanesischen Fernsehen zu
                 sehen.
-              </p>
-            </div>
-          </article>
-
-          {/* Cooper — links */}
-          <article className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-start">
-            <div className="relative aspect-square w-3/5 self-end shrink-0 overflow-hidden bg-transparent lg:w-70 lg:self-auto">
-              <Image
-                src="/cooper.png"
-                alt="Cooper"
-                fill
-                className="object-cover"
-                sizes="280px"
-                draggable={false}
-                onContextMenu={blockImageDownloadInteraction}
-                onDragStart={blockImageDownloadInteraction}
-              />
-            </div>
-            <div className="lg:max-w-85 lg:pt-2">
-              <h3 className="text-h2 text-[#1C1612]">Cooper</h3>
-              <p className="text-copy-sm mt-4 font-medium leading-relaxed text-[#1C1612]">
-                Cooper ist spezialisiert auf gute Laune und ist als Sarahs
-                treuer Begleiter fester Bestandteil des Salons.
               </p>
             </div>
           </article>
