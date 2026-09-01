@@ -184,6 +184,17 @@ body {
   letter-spacing: 0;
 }
 
+/* Versteckt den nativen Play-Button in iOS Safari (z.B. im Stromsparmodus) */
+video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  -webkit-appearance: none !important;
+}
+
+/* Optional: Versteckt auch den grauen Overlay-Hintergrund, den Safari manchmal generiert */
+video::-webkit-media-controls {
+  display: none !important;
+}
+
 @media (min-width: 1400px) {
   .text-intro {
     font-size: 1.75rem; /* Entspricht 40px ab 1400px Bildschirmbreite */
