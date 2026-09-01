@@ -12,6 +12,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "./AuthContext";
 import BookingLink from "./BookingLink";
 import { SHOW_CUSTOMER_AUTH } from "@/lib/siteConfig";
+import AnnouncementBanner from "./AnnouncementBanner";
 
 /** Hauptnavigation wie Screenshot: nur Leistungen + Kontakt (Salon/Team/Aveda im Submenü auf der Startseite) */
 const mainNavItems = [
@@ -338,6 +339,7 @@ export default function Header() {
       className={`${headerShell} ${headerChromeClass}`}
       style={headerStyle}
     >
+      <AnnouncementBanner />
       <div
         className={`mx-auto flex w-full items-center justify-between gap-4 ${containerPaddingClass} py-2`}
       >
