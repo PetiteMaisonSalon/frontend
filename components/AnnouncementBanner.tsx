@@ -37,8 +37,6 @@ export default function AnnouncementBanner() {
     <>
       {/* 
         BANNER LEISTE (Nur auf Desktop)
-        "relative w-full" drückt die Navigation sauber nach unten und überlagert sie NICHT.
-        Auf Mobile durch "hidden md:flex" komplett unsichtbar.
       */}
       {isBannerVisible && (
         <div className="relative z-50 hidden w-full items-center justify-center bg-[#BEA8FF] px-2 py-1.5 text-center md:flex">
@@ -78,27 +76,27 @@ export default function AnnouncementBanner() {
 
       {/* 
         OVERLAY / MODAL (Mobile & Desktop)
-        "fixed inset-0" legt sich über die GESAMTE Seite, blockiert alle Klicks dahinter.
       */}
       {isModalOpen && (
         <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm transition-opacity">
           <div
-            className="relative max-h-[90vh] w-full max-w-140 overflow-y-auto rounded-3xl bg-[#BEA8FF] px-6 py-10 text-[#1C1612] md:px-12 md:py-12"
+            className="relative max-h-[85vh] w-[95%] max-w-140 overflow-y-auto rounded-3xl bg-[#BEA8FF] px-5 py-8 text-[#1C1612] sm:w-full md:max-h-[90vh] md:px-12 md:py-12"
             role="dialog"
             aria-modal="true"
           >
             {/* Modal Schließen X */}
             <button
               onClick={() => setIsModalOpen(false)}
-              className="absolute right-4 top-4 p-2 transition hover:opacity-70 md:right-6 md:top-6"
+              className="absolute right-3 top-3 p-2 transition hover:opacity-70 md:right-6 md:top-6"
               aria-label="Modal schließen"
             >
               <svg
-                width="24"
-                height="24"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
+                className="md:h-6 md:w-6"
               >
                 <path
                   d="M6 18L18 6M6 6L18 18"
@@ -110,11 +108,17 @@ export default function AnnouncementBanner() {
               </svg>
             </button>
 
-            <h2 className="mb-2 font-serif text-4xl font-bold text-[#1C1612] md:text-[40px]">
+            <h2 className="mb-4 font-serif text-3xl font-bold text-[#1C1612] md:mb-6 md:text-[40px]">
               Liebe Gäste
             </h2>
 
-            <div className="space-y-4 font-semibold leading-relaxed md:text-[15px]">
+            {/* 
+              Textbereich: 
+              - Jetzt mit durchgehendem font-semibold auf allen Breakpoints
+              - Auf Mobile: text-sm (14px)
+              - Auf Desktop: text-[15px]
+            */}
+            <div className="space-y-4 text-sm font-semibold leading-snug text-[#1C1612] md:text-[15px] md:leading-relaxed">
               <p>
                 zunächst möchten wir uns herzlich für eure Treue und euer
                 Vertrauen bedanken. Eure Unterstützung motiviert uns jeden Tag,
@@ -122,7 +126,7 @@ export default function AnnouncementBanner() {
               </p>
 
               <div>
-                <h3 className="mb-2 font-semibold uppercase tracking-wider underline underline-offset-4">
+                <h3 className="mb-1.5 font-bold uppercase tracking-wider underline underline-offset-4">
                   Preisanpassung
                 </h3>
                 <p>
@@ -131,14 +135,14 @@ export default function AnnouncementBanner() {
                   Preise ab dem 01.09.2026 an. Diese Anpassung haben wir bewusst
                   so moderat wie möglich gehalten.
                 </p>
-                <p className="mt-4">
+                <p className="mt-3 md:mt-4">
                   Die aktuellen Preise findet ihr ab diesem Datum hier auf der
                   Website sowie im Buchungssystem.
                 </p>
               </div>
 
               <div>
-                <h3 className="mb-2 font-semibold uppercase tracking-wider underline underline-offset-4">
+                <h3 className="mb-1.5 font-bold uppercase tracking-wider underline underline-offset-4">
                   Buchungen
                 </h3>
                 <p>
@@ -168,8 +172,8 @@ export default function AnnouncementBanner() {
             </div>
 
             {/* Buttons unten */}
-            <div className="mt-8 flex items-center gap-6">
-              <BookingLink className="rounded-[14px] border-[1.5px] border-[#1C1612] bg-transparent px-5 py-1.5 text-sm font-semibold text-[#1C1612] transition hover:bg-[#1C1612] hover:text-white">
+            <div className="mt-6 flex items-center gap-5 md:mt-8 md:gap-6">
+              <BookingLink className="rounded-xl border-[1.5px] border-[#1C1612] bg-transparent px-4 py-1.5 text-sm font-semibold text-[#1C1612] transition hover:bg-[#1C1612] hover:text-white md:rounded-[14px] md:px-5">
                 Jetzt buchen
               </BookingLink>
               <button
