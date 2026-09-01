@@ -24,6 +24,7 @@ function dispatch(name: string, detail?: unknown) {
 
 export default function HomeMain() {
   const heroRef = useRef<HTMLElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
   const galerieRef = useRef<HTMLDivElement | null>(null);
   const [galerieIndex, setGalerieIndex] = useState(0);
@@ -56,6 +57,24 @@ export default function HomeMain() {
     updateView();
     window.addEventListener("resize", updateView);
     return () => window.removeEventListener("resize", updateView);
+  }, []);
+
+  useEffect(() => {
+    const playVideo = () => {
+      if (videoRef.current && videoRef.current.paused) {
+        // Zwingt das Video leise weiterzulaufen, wenn der User interagiert
+        videoRef.current.play().catch(() => {});
+      }
+    };
+
+    // Sobald der User irgendwo klickt (z.B. auf "Schließen" im Banner)
+    window.addEventListener("click", playVideo);
+    window.addEventListener("touchstart", playVideo);
+
+    return () => {
+      window.removeEventListener("click", playVideo);
+      window.removeEventListener("touchstart", playVideo);
+    };
   }, []);
 
   const galerieSlides = Math.ceil(galerieImages.length / itemsPerView);
@@ -157,12 +176,13 @@ export default function HomeMain() {
         className="relative flex min-h-screen flex-col overflow-hidden"
       >
         <video
+          ref={videoRef}
           autoPlay
           loop
           muted
           playsInline
           poster="/header_bg.png"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="pointer-events-none absolute inset-0 h-full w-full object-cover"
         >
           <source src="/header_bg.mp4" type="video/mp4" />
           Dein Browser unterstützt kein Video.
